@@ -4,7 +4,8 @@ services:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: npx prisma migrate deploy
+    command: npx prisma migrate deploy 2>&1
+    tty: true
 
   app-admin:
     image: $DOCKER_TAG
