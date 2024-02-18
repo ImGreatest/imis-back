@@ -11,6 +11,7 @@ test-job:
   tags:
     - build
   script:
+    - ls
     - docker build -t test .
     - docker rmi test
 
