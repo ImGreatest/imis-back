@@ -8,12 +8,16 @@ variables:
 
 test-job:
   stage: test
+  tags:
+    - build
   script:
     - docker build -t test .
     - docker rmi test
 
 push-docker-job:
   stage: push image
+  tags:
+    - build
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
       when: manual
@@ -26,6 +30,8 @@ push-docker-job:
 
 deploy-job:
   stage: deploy
+  tags:
+    - build
   environment:
     name: $CI_COMMIT_BRANCH
   rules:
