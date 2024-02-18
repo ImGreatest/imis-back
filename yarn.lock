@@ -717,9 +717,9 @@
     iterare "1.2.1"
     tslib "2.6.2"
 
-"@nestjs/core@^10.0.0":
+"@nestjs/core@^10.3.3":
   version "10.3.3"
-  resolved "https://registry.npmjs.org/@nestjs/core/-/core-10.3.3.tgz"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-10.3.3.tgz#f957068ddda59252b7c36fcdb07a0fb323b52bcf"
   integrity sha512-kxJWggQAPX3RuZx9JVec69eSLaYLNIox2emkZJpfBJ5Qq7cAq7edQIt1r4LGjTKq6kFubNTPsqhWf5y7yFRBPw==
   dependencies:
     uid "2.0.2"
@@ -4916,6 +4916,7 @@ which@^2.0.1:
     isexe "^2.0.0"
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
