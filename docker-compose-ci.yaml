@@ -16,6 +16,7 @@ services:
     ports:
       - "$PORT:3000"
     command: yarn run start:prod
+    tty: true
     depends_on:
       migrations:
         condition: service_completed_successfully
