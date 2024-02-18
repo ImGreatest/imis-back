@@ -6,10 +6,7 @@ services:
       - $ENV
     command: npx prisma migrate deploy 2>&1
     tty: true
-    depends_on:
-      postgres:
-        condition: service_completed_successfully
-
+    
   app-admin:
     image: $DOCKER_TAG
     container_name: SH-b-admin-$CI_COMMIT_BRANCH
