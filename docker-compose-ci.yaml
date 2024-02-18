@@ -13,7 +13,7 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$PORT:3001"
+      - "$PORT:3000"
     command: yarn run start:prod
     depends_on:
       migrations:
