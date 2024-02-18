@@ -1,0 +1,149 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  student
+  teacher
+  supervisor
+}
+
+model User {
+  id    Int     @default(autoincrement()) @id
+  email String  @unique
+  name  String
+  surname String
+  role UserRole
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt DateTime?
+
+  userSkils UserSkils[]
+  projects UserProject[]
+
+  company Company?
+}
+
+model Company {
+  id    Int     @default(autoincrement()) @id
+  name String
+  description String
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt DateTime?
+
+  spokesPerson User @relation(fields: [spokesPersonId], references: [id])
+  spokesPersonId Int @unique
+
+  themes Theme[]
+}
+
+model Theme {
+  id Int @default(autoincrement()) @id
+  name String
+  descripton String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt DateTime?
+  company Company? @relation(fields: [companyId], references: [id])
+  companyId Int?
+}
+
+model Project {
+  id Int @default(autoincrement()) @id
+  name String
+  
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt DateTime?
+  
+  descripton String
+
+  projectSkils ProjectSkils[]
+  users UserProject[]
+
+}
+
+model Skils {
+  id Int @default(autoincrement()) @id
+  name String @unique
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt DateTime?
+
+  projectSkils ProjectSkils[]
+  userSkils UserSkils[]
+}
+
+model ProjectSkils{
+  project Project @relation(fields: [projectId], references: [id])
+  projectId Int
+  skils Skils @relation(fields: [skilsId], references: [id])
+  skilsId Int
+  @@id([projectId,skilsId])
+}
+
+model UserSkils{
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  skils Skils @relation(fields: [skilsId], references: [id])
+  skilsId Int
+  @@id([userId,skilsId])
+}
+
+model UserProject{
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  project Project @relation(fields: [projectId], references: [id])
+  projectId Int
+  @@id([userId,projectId])
+
+}
+
+model Success{
+  id Int @default(autoincrement()) @id
+  name String @unique
+  description String
+  
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt DateTime?
+  
+  tags SuccessTags[]
+}
+
+model Tag{
+  id Int @id @default(autoincrement())
+  name String @unique
+  description String
+  baseTag Tag? @relation("BaseTag", fields: [baseTagId], references: [id])
+  baseTagId Int?
+  childTags Tag[] @relation("BaseTag")
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  deletedAt DateTime?
+  
+  success SuccessTags[]
+
+}
+
+model SuccessTags{
+  success Success @relation(fields: [successId], references: [id])
+  successId Int
+  tag Tag @relation(fields: [tagId], references: [id])
+  tagId Int
+  @@id([successId,tagId])
+
+}
