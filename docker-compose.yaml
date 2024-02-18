@@ -1,0 +1,21 @@
+version: '3'
+services:
+  migrations:
+    build: .
+    env_file:
+      - .env.example
+      - .env
+    command: npx prisma migrate deploy
+
+  backend-admin:
+    build: .
+    restart: always
+    env_file:
+      - .env.example
+      - .env
+    ports:
+      - "$PORT_ADMIN:$PORT_ADMIN"
+    command: yarn run start:prod
+    depends_on:
+      migrations:
+        condition: service_completed_successfully

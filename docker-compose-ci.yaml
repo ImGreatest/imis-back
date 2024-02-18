@@ -1,0 +1,20 @@
+version: '3'
+services:
+  migrations:
+    image: $DOCKER_TAG
+    env_file:
+      - $ENV
+    command: npx prisma migrate deploy
+
+  app-admin:
+    image: $DOCKER_TAG
+    container_name: SH-b-admin-$CI_COMMIT_BRANCH
+    restart: always
+    env_file:
+      - $ENV
+    ports:
+      - "$PORT:3001"
+    command: yarn run start:prod
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
