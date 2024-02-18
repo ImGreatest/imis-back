@@ -11,7 +11,6 @@ test-job:
   tags:
     - build
   script:
-    - docker ps
     - docker build -t test .
     - docker rmi test
 

@@ -1,11 +1,29 @@
 version: '3'
 services:
+  postgres:
+    image: postgres:15.5-alpine
+    restart: always
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    env_file:
+      - $ENV
+    
+
   migrations:
     image: $DOCKER_TAG
     env_file:
       - $ENV
     command: npx prisma migrate deploy 2>&1
     tty: true
+    depends_on:
+      postgres:
+        condition: service_completed_successfully
 
   app-admin:
     image: $DOCKER_TAG
@@ -19,3 +37,5 @@ services:
     depends_on:
       migrations:
         condition: service_completed_successfully
+volumes:
+  postgres-data:
