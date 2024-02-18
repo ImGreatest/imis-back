@@ -6,7 +6,7 @@ services:
       - $ENV
     command: npx prisma migrate deploy 2>&1
     tty: true
-    
+
   app-admin:
     image: $DOCKER_TAG
     container_name: SH-b-admin-$CI_COMMIT_BRANCH
@@ -15,8 +15,7 @@ services:
       - $ENV
     ports:
       - "$PORT:3000"
-    command: yarn run start:prod
-    tty: true
+    command: sh -c "yarn run start:prod | tee /app-admin/logs/app-admin.log"
     depends_on:
       migrations:
         condition: service_completed_successfully
