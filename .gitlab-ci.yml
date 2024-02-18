@@ -11,7 +11,7 @@ test-job:
   tags:
     - build
   script:
-    - docker build -t test .
+    - docker build test .
     - docker rmi test
 
 push-docker-job:
