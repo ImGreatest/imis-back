@@ -4,5 +4,25 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true
+  },
+  "projects": {
+    "cabinet": {
+      "type": "application",
+      "root": "apps/cabinet",
+      "sourceRoot": "apps/cabinet/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "apps/cabinet/tsconfig.app.json"
+      }
+    },
+    "math": {
+      "type": "application",
+      "root": "apps/math",
+      "sourceRoot": "apps/math/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "apps/math/tsconfig.app.json"
+      }
+    }
   }
 }
