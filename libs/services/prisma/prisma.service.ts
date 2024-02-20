@@ -18,13 +18,12 @@ export class PrismaService
     if (
       ![
         'User',
-        'Device',
-        'Ingredient',
-        'Recipes',
-        'Advertisement',
-        'AdvertisementContent',
-        'Cleaning',
-        'Maintenance',
+        'Company',
+        'Theme',
+        'Project',
+        'Skills',
+        'Success',
+        'Tag',
       ].includes(params.model)
     ) {
       return next(params);
@@ -77,6 +76,23 @@ export class PrismaService
           },
         },
       });
+    }
+    if (params.action === 'create') {
+      const existingObject = await this[params.model].findUnique({
+        where: params.args.where,
+      });
+      if (existingObject) {
+        return next({
+          ...params,
+          action: 'update',
+          args: {
+            ...params.args,
+            data: {
+              deletedAt: null,
+            },
+          },
+        });
+      }
     }
     return next(params);
   };

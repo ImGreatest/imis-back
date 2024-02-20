@@ -27,8 +27,9 @@ model User {
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime?
 
-  userSkils UserSkils[]
+  userSkils UserSkills[]
   projects UserProject[]
+  success Success[]
 
   company Company?
 }
@@ -74,7 +75,7 @@ model Project {
 
 }
 
-model Skils {
+model Skills {
   id Int @default(autoincrement()) @id
   name String @unique
 
@@ -83,21 +84,21 @@ model Skils {
   deletedAt DateTime?
 
   projectSkils ProjectSkils[]
-  userSkils UserSkils[]
+  userSkils UserSkills[]
 }
 
 model ProjectSkils{
   project Project @relation(fields: [projectId], references: [id])
   projectId Int
-  skils Skils @relation(fields: [skilsId], references: [id])
+  skils Skills @relation(fields: [skilsId], references: [id])
   skilsId Int
   @@id([projectId,skilsId])
 }
 
-model UserSkils{
+model UserSkills{
   user User @relation(fields: [userId], references: [id])
   userId Int
-  skils Skils @relation(fields: [skilsId], references: [id])
+  skils Skills @relation(fields: [skilsId], references: [id])
   skilsId Int
   @@id([userId,skilsId])
 }
@@ -120,6 +121,9 @@ model Success{
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime?
   
+  user User @relation(fields: [userId],references: [id])
+  userId Int
+
   tags SuccessTags[]
 }
 
