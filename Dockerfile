@@ -6,4 +6,4 @@ RUN yarn install
 COPY . .
 RUN npx prisma generate
 RUN yarn run build
-CMD ["yarn", "run", "start:prod"]
+CMD ["sh" "./launchBoth.sh"]

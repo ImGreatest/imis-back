@@ -7,15 +7,28 @@ services:
     command: npx prisma migrate deploy 
 
 
-  app-admin:
+  app-cabinet:
     image: $DOCKER_TAG
-    container_name: SH-b-admin-$CI_COMMIT_BRANCH
+    container_name: SH-b-cabinet-$CI_COMMIT_BRANCH
     restart: always
     env_file:
       - $ENV
     ports:
-      - "$PORT:3000"
-    command: yarn run start:prod
+      - "$CABPORT:3000"
+    command: node ./dist/apps/cabinet/src/main.js
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+  app-math:
+    image: $DOCKER_TAG
+    container_name: SH-b-math-$CI_COMMIT_BRANCH
+    restart: always
+    env_file:
+      - $ENV
+    ports:
+      - "$MATHPORT:3001"
+    command: node ./dist/apps/math/src/main.js
     depends_on:
       migrations:
         condition: service_completed_successfully
