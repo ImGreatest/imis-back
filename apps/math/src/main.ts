@@ -13,7 +13,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   swagger(app);
 
-  await app.listen(3005);
+  await app.listen(config.PortMath);
 }
 
 void bootstrap();
