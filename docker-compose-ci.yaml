@@ -14,7 +14,7 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$CABPORT:4000"
+      - "$CABPORT:3000"
     command: node ./dist/apps/cabinet/src/main.js
     depends_on:
       migrations:
@@ -27,7 +27,7 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$MATHPORT:4001"
+      - "$MATHPORT:3001"
     command: node ./dist/apps/math/src/main.js
     depends_on:
       migrations:
