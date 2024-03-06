@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export function swagger(app: INestApplication): INestApplication {
   const config = new DocumentBuilder()
-    .setTitle('API car-wash control-panel')
+    .setTitle('API для микросервиса ИМИСа по рейтингу')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
