@@ -30,5 +30,5 @@ services:
       - "$MATHPORT:3001"
     command: node ./dist/apps/math/src/main.js
     depends_on:
-      migrations:
+      migrations-stage:
         condition: service_completed_successfully
