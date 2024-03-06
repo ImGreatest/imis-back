@@ -1,0 +1,34 @@
+version: '3'
+services:
+  migrations-stage:
+    image: $DOCKER_TAG
+    env_file:
+      - $ENV
+    command: npx prisma migrate deploy 
+
+
+  app-cabinet-stage:
+    image: $DOCKER_TAG
+    container_name: SH-b-cabinet-$CI_COMMIT_BRANCH
+    restart: always
+    env_file:
+      - $ENV
+    ports:
+      - "$CABPORT:3000"
+    command: node ./dist/apps/cabinet/src/main.js
+    depends_on:
+      migrations-stage:
+        condition: service_completed_successfully
+
+  app-math-stage:
+    image: $DOCKER_TAG
+    container_name: SH-b-math-$CI_COMMIT_BRANCH
+    restart: always
+    env_file:
+      - $ENV
+    ports:
+      - "$MATHPORT:3001"
+    command: node ./dist/apps/math/src/main.js
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
