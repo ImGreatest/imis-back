@@ -78,8 +78,9 @@ export class PrismaService
       });
     }
     if (params.action === 'create') {
+      console.log(params.args);
       const existingObject = await this[params.model].findUnique({
-        where: params.args.where,
+        where: { email: params.args.data.email },
       });
       if (existingObject) {
         return next({
@@ -89,6 +90,9 @@ export class PrismaService
             ...params.args,
             data: {
               deletedAt: null,
+            },
+            where: {
+              id: existingObject.id,
             },
           },
         });

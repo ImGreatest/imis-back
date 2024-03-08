@@ -1,4 +1,4 @@
-import { UserRole } from 'libs/enums/user.enum';
+import { UserRole } from 'libs/enums/role';
 
 export interface IsignUp {
   email: string;
