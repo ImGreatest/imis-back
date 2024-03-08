@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from 'libs/domains/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { IsignUp } from './interface/signUp';
@@ -28,10 +32,10 @@ export class AuthService {
       access_token: await this.jwtService.signAsync(payload),
     };
   }
-  async signUp(signUpData: IsignUp): Promise<{ access_token: string }> {
+  async signUp(signUpData: IsignUp) {
     const user = await this.usersService.findOneByEmail(signUpData.email);
     if (user) {
-      throw new Error('User already exists');
+      throw new ConflictException('User already exists');
     }
     const hash = await bcrypt.hash(signUpData.pass, config.HashSaltRound);
     signUpData.pass = hash;

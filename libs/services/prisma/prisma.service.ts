@@ -10,11 +10,23 @@ export class PrismaService
     await this.$connect();
     this.$use(this.SoftDeleteMiddleware);
   }
+
   async onModuleDestroy() {
     await this.$disconnect();
   }
 
+  private readonly argsToFind = (requestData) => ({
+    User: { where: { email: requestData.args.data.email } },
+    Company: { where: { name: requestData.args.data.name } },
+    Theme: { where: { name: requestData.args.data.name } },
+    Project: { where: { name: requestData.args.data.name } },
+    Skills: { where: { name: requestData.args.data.name } },
+    Success: { where: { name: requestData.args.data.name } },
+    Tag: { where: { name: requestData.args.data.name } },
+  });
+
   private SoftDeleteMiddleware: Prisma.Middleware = async (params, next) => {
+    const { model, action, args } = params;
     if (
       ![
         'User',
@@ -24,80 +36,50 @@ export class PrismaService
         'Skills',
         'Success',
         'Tag',
-      ].includes(params.model)
+      ].includes(model)
     ) {
       return next(params);
     }
-    if (params.action === 'delete') {
+
+    if (action === 'delete' || action === 'deleteMany') {
+      const updatedAction = action === 'delete' ? 'update' : 'updateMany';
       return next({
         ...params,
-        action: 'update',
-        args: {
-          ...params.args,
-          data: {
-            deletedAt: new Date(),
-          },
-        },
+        action: updatedAction,
+        args: { ...args, data: { deletedAt: new Date() } },
       });
     }
-    if (params.action === 'deleteMany') {
+
+    if (
+      action === 'findUnique' ||
+      action === 'findFirst' ||
+      action === 'findMany'
+    ) {
       return next({
         ...params,
-        action: 'updateMany',
-        args: {
-          ...params.args,
-          data: {
-            deletedAt: new Date(),
-          },
-        },
+        action: action === 'findMany' ? action : 'findFirst',
+        args: { ...args, where: { ...args?.where, deletedAt: null } },
       });
     }
-    if (params.action === 'findUnique' || params.action === 'findFirst') {
-      return next({
-        ...params,
-        action: 'findFirst',
-        args: {
-          ...params.args,
-          where: {
-            ...params.args?.where,
-            deletedAt: null,
-          },
-        },
-      });
-    }
-    if (params.action === 'findMany') {
-      return next({
-        ...params,
-        args: {
-          ...params.args,
-          where: {
-            ...params.args?.where,
-            deletedAt: null,
-          },
-        },
-      });
-    }
-    if (params.action === 'create') {
-      console.log(params.args);
-      const existingObject = await this[params.model].findUnique({
-        where: { email: params.args.data.email },
-      });
+
+    if (action === 'create') {
+      console.log(args);
+      const existingObject = await this[model].findUnique(
+        this.argsToFind(params)[model],
+      );
       if (existingObject) {
         return next({
           ...params,
           action: 'update',
           args: {
-            ...params.args,
-            data: {
-              deletedAt: null,
-            },
-            where: {
-              id: existingObject.id,
-            },
+            ...args,
+            data: { deletedAt: null },
+            where: { id: existingObject.id },
           },
         });
       }
     }
+
     return next(params);
   };
 }
