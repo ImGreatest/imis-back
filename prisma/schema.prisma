@@ -22,7 +22,7 @@ model User {
   name  String
   surname String
   role UserRole
-
+  pass String
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime?
