@@ -20,15 +20,15 @@ services:
       migrations:
         condition: service_completed_successfully
 
-  app-math:
+  app-rating:
     image: $DOCKER_TAG
-    container_name: SH-b-math-$CI_COMMIT_BRANCH
+    container_name: SH-b-raiting-$CI_COMMIT_BRANCH
     restart: always
     env_file:
       - $ENV
     ports:
-      - "$MATHPORT:3001"
-    command: node ./dist/apps/math/src/main.js
+      - "$RATINGPORT:3001"
+    command: node ./dist/apps/rating/src/main.js
     depends_on:
       migrations:
         condition: service_completed_successfully

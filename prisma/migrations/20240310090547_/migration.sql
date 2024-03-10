@@ -1,23 +1,36 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('student', 'teacher', 'supervisor');
 
-  - The values [kurator] on the enum `UserRole` will be removed. If these variants are still used in the database, this will fail.
-  - Added the required column `updatedAt` to the `Company` table without a default value. This is not possible if the table is not empty.
+-- CreateTable
+CREATE TABLE "User" (
+    "id" SERIAL NOT NULL,
+    "email" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "surname" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL,
+    "pass" TEXT NOT NULL,
+    "course" INTEGER,
+    "direction" TEXT,
+    "group" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
-*/
--- AlterEnum
-BEGIN;
-CREATE TYPE "UserRole_new" AS ENUM ('student', 'teacher', 'supervisor');
-ALTER TABLE "User" ALTER COLUMN "role" TYPE "UserRole_new" USING ("role"::text::"UserRole_new");
-ALTER TYPE "UserRole" RENAME TO "UserRole_old";
-ALTER TYPE "UserRole_new" RENAME TO "UserRole";
-DROP TYPE "UserRole_old";
-COMMIT;
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
--- AlterTable
-ALTER TABLE "Company" ADD COLUMN     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-ADD COLUMN     "deletedAt" TIMESTAMP(3),
-ADD COLUMN     "updatedAt" TIMESTAMP(3) NOT NULL;
+-- CreateTable
+CREATE TABLE "Company" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+    "spokesPersonId" INTEGER NOT NULL,
+
+    CONSTRAINT "Company_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Theme" (
@@ -45,14 +58,14 @@ CREATE TABLE "Project" (
 );
 
 -- CreateTable
-CREATE TABLE "Skils" (
+CREATE TABLE "Skills" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
 
-    CONSTRAINT "Skils_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Skills_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -64,11 +77,11 @@ CREATE TABLE "ProjectSkils" (
 );
 
 -- CreateTable
-CREATE TABLE "UserSkils" (
+CREATE TABLE "UserSkills" (
     "userId" INTEGER NOT NULL,
     "skilsId" INTEGER NOT NULL,
 
-    CONSTRAINT "UserSkils_pkey" PRIMARY KEY ("userId","skilsId")
+    CONSTRAINT "UserSkills_pkey" PRIMARY KEY ("userId","skilsId")
 );
 
 -- CreateTable
@@ -87,6 +100,7 @@ CREATE TABLE "Success" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
+    "userId" INTEGER NOT NULL,
 
     CONSTRAINT "Success_pkey" PRIMARY KEY ("id")
 );
@@ -113,7 +127,22 @@ CREATE TABLE "SuccessTags" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Skils_name_key" ON "Skils"("name");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Company_name_key" ON "Company"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Company_spokesPersonId_key" ON "Company"("spokesPersonId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Theme_name_key" ON "Theme"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Project_name_key" ON "Project"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Skills_name_key" ON "Skills"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Success_name_key" ON "Success"("name");
@@ -122,25 +151,31 @@ CREATE UNIQUE INDEX "Success_name_key" ON "Success"("name");
 CREATE UNIQUE INDEX "Tag_name_key" ON "Tag"("name");
 
 -- AddForeignKey
+ALTER TABLE "Company" ADD CONSTRAINT "Company_spokesPersonId_fkey" FOREIGN KEY ("spokesPersonId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Theme" ADD CONSTRAINT "Theme_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProjectSkils" ADD CONSTRAINT "ProjectSkils_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ProjectSkils" ADD CONSTRAINT "ProjectSkils_skilsId_fkey" FOREIGN KEY ("skilsId") REFERENCES "Skils"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "ProjectSkils" ADD CONSTRAINT "ProjectSkils_skilsId_fkey" FOREIGN KEY ("skilsId") REFERENCES "Skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserSkils" ADD CONSTRAINT "UserSkils_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserSkills" ADD CONSTRAINT "UserSkills_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserSkils" ADD CONSTRAINT "UserSkils_skilsId_fkey" FOREIGN KEY ("skilsId") REFERENCES "Skils"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "UserSkills" ADD CONSTRAINT "UserSkills_skilsId_fkey" FOREIGN KEY ("skilsId") REFERENCES "Skills"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserProject" ADD CONSTRAINT "UserProject_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "UserProject" ADD CONSTRAINT "UserProject_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Success" ADD CONSTRAINT "Success_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Tag" ADD CONSTRAINT "Tag_baseTagId_fkey" FOREIGN KEY ("baseTagId") REFERENCES "Tag"("id") ON DELETE SET NULL ON UPDATE CASCADE;

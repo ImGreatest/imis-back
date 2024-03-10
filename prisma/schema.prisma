@@ -23,6 +23,9 @@ model User {
   surname String
   role UserRole
   pass String
+  course Int?
+  direction String?
+  group String?
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime?
@@ -30,7 +33,7 @@ model User {
   userSkils UserSkills[]
   projects UserProject[]
   success Success[]
-
+  favoritProject UserFavoritProject[]
   company Company?
 }
 
@@ -72,6 +75,7 @@ model Project {
 
   projectSkils ProjectSkils[]
   users UserProject[]
+  usersWithFavor UserFavoritProject[]
 
 }
 
@@ -111,7 +115,13 @@ model UserProject{
   @@id([userId,projectId])
 
 }
-
+model UserFavoritProject{
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  project Project @relation(fields: [projectId], references: [id])
+  projectId Int
+  @@id([userId,projectId])
+}
 model Success{
   id Int @default(autoincrement()) @id
   name String @unique
