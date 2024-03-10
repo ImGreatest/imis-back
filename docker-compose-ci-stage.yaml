@@ -32,3 +32,29 @@ services:
     depends_on:
       migrations-stage:
         condition: service_completed_successfully
+
+  app-employer-stage:
+    image: $DOCKER_TAG
+    container_name: SH-b-employer-$CI_COMMIT_BRANCH
+    restart: always
+    env_file:
+      - $ENV
+    ports:
+      - "$EMPLOYERPORT:3001"
+    command: node ./dist/apps/employer/src/main.js
+    depends_on:
+      migrations-stage:
+        condition: service_completed_successfully
+        
+  app-mobile-stage:
+    image: $DOCKER_TAG
+    container_name: SH-b-mobile-$CI_COMMIT_BRANCH
+    restart: always
+    env_file:
+      - $ENV
+    ports:
+      - "$MOBILEPORT:3001"
+    command: node ./dist/apps/mobile/src/main.js
+    depends_on:
+      migrations-stage:
+        condition: service_completed_successfully
