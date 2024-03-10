@@ -1,1 +1,1 @@
-node ./dist/apps/cabinet/src/main.js & node ./dist/apps/math/src/main.js
+node ./dist/apps/cabinet/src/main.js & node ./dist/apps/rating/src/main.js
