@@ -4,6 +4,7 @@ COPY package*.json ./
 COPY yarn.lock ./
 RUN yarn install
 COPY . .
-RUN npx prisma generate
+RUN yarn lint
+RUN yarn prisma generate
 RUN yarn run build
 CMD ["sh" "./launchBoth.sh"]

@@ -1,8 +1,7 @@
 import winston from 'winston';
-import { WinstonModuleOptions } from 'nest-winston/dist/winston.interfaces';
 import { utilities } from 'nest-winston';
 
-export const winstonModuleOptions: WinstonModuleOptions = {
+export const winstonModuleOptions = (filename: string) => ({
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
@@ -17,7 +16,7 @@ export const winstonModuleOptions: WinstonModuleOptions = {
     }),
     new winston.transports.File({
       dirname: 'logs',
-      filename: 'app.log',
+      filename: `${filename}.log`,
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.logstash(),
@@ -25,4 +24,4 @@ export const winstonModuleOptions: WinstonModuleOptions = {
       level: 'debug',
     }),
   ],
-};
+});

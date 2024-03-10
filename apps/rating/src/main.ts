@@ -7,13 +7,13 @@ import { winstonModuleOptions } from '../../../logger/logger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: WinstonModule.createLogger(winstonModuleOptions),
+    logger: WinstonModule.createLogger(winstonModuleOptions('rating')),
   });
 
   app.setGlobalPrefix('api');
   swagger(app);
 
-  await app.listen(config.PortMath);
+  await app.listen(config.PortRating);
 }
 
 void bootstrap();
