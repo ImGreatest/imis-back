@@ -15,13 +15,13 @@
         "tsConfigPath": "apps/cabinet/tsconfig.app.json"
       }
     },
-    "math": {
+    "rating": {
       "type": "application",
-      "root": "apps/math",
-      "sourceRoot": "apps/math/src",
+      "root": "apps/rating",
+      "sourceRoot": "apps/rating/src",
       "entryFile": "main",
       "compilerOptions": {
-        "tsConfigPath": "apps/math/tsconfig.app.json"
+        "tsConfigPath": "apps/rating/tsconfig.app.json"
       }
     }
   }

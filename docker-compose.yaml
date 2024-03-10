@@ -5,7 +5,7 @@ services:
     env_file:
       - .env.example
       - .env
-    command: npx prisma migrate deploy
+    command: yarn prisma migrate deploy
 
   backend-admin:
     build: .
