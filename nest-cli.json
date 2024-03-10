@@ -23,6 +23,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/rating/tsconfig.app.json"
       }
+    },
+    "mobile": {
+      "type": "application",
+      "root": "apps/mobile",
+      "sourceRoot": "apps/mobile/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mobile/tsconfig.app.json"
+      }
+    },
+    "employer": {
+      "type": "application",
+      "root": "apps/employer",
+      "sourceRoot": "apps/employer/src",
+      "entryFile": "main",
+      "compilerOptions": {
+        "tsConfigPath": "apps/employer/tsconfig.app.json"
+      }
     }
   }
 }
