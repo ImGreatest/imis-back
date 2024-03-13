@@ -10,18 +10,41 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  student
-  teacher
-  supervisor
-}
+model UserRole {
+  id         Int       @unique @default(autoincrement())
+  name       String    @db.VarChar()
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
 
+  Permission Permission[]
+  User       User[]
+
+  @@map("roles")
+}
+model Permission {
+  id         Int     @unique @default(autoincrement())
+  role       UserRole    @relation(fields: [role_id], references: [id])
+  role_id    Int     @db.Integer()
+  action     String  @db.VarChar()
+  subject    String  @db.VarChar()
+  inverted   Boolean @default(false)
+  conditions Json?   @db.JsonB()
+  reason     String? @db.Text()
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
+
+  @@map("permissions")
+}
 model User {
   id    Int     @default(autoincrement()) @id
   email String  @unique
   name  String
   surname String
-  role UserRole
+  role    UserRole @relation(fields: [role_id], references: [id])
+  role_id Int  @db.Integer()
   pass String
   course Int?
   direction String?
@@ -35,6 +58,7 @@ model User {
   success Success[]
   favoritProject UserFavoritProject[]
   company Company?
+  themes Theme[]
 }
 
 model Company {
@@ -61,6 +85,8 @@ model Theme {
   deletedAt DateTime?
   company Company? @relation(fields: [companyId], references: [id])
   companyId Int?
+  student User? @relation(fields: [studentId],references: [id])
+  studentId Int?
 }
 
 model Project {
