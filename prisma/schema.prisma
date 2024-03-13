@@ -40,18 +40,18 @@ model Permission {
 }
 model User {
   id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String
-  surname String
+  email String  @unique @db.VarChar()
+  name  String @db.VarChar(100)
+  surname String @db.VarChar(100)
   role    UserRole @relation(fields: [role_id], references: [id])
   role_id Int  @db.Integer()
-  pass String
-  course Int?
-  direction String?
-  group String?
+  pass String @db.VarChar()
+  course Int? @db.Integer()
+  direction String? @db.VarChar(50)
+  group String? @db.VarChar(50)
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
 
   userSkils UserSkills[]
   projects UserProject[]
@@ -63,41 +63,41 @@ model User {
 
 model Company {
   id    Int     @default(autoincrement()) @id
-  name String @unique
-  description String
+  name String @unique @db.VarChar()
+  description String @db.VarChar()
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
 
   spokesPerson User @relation(fields: [spokesPersonId], references: [id])
-  spokesPersonId Int @unique
+  spokesPersonId Int @unique @db.Integer()
 
   themes Theme[]
 }
 
 model Theme {
   id Int @default(autoincrement()) @id
-  name String @unique
-  descripton String
+  name String @unique @db.VarChar()
+  descripton String @db.VarChar()
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
   company Company? @relation(fields: [companyId], references: [id])
-  companyId Int?
+  companyId Int? @db.Integer()
   student User? @relation(fields: [studentId],references: [id])
-  studentId Int?
+  studentId Int? @db.Integer()
 }
 
 model Project {
   id Int @default(autoincrement()) @id
-  name String @unique
+  name String @unique @db.VarChar()
   
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
-  
-  descripton String
+  deletedAt DateTime? @db.Timestamp()
+  status String @db.VarChar()
+  descripton String @db.VarChar()
 
   projectSkils ProjectSkils[]
   users UserProject[]
@@ -107,11 +107,11 @@ model Project {
 
 model Skills {
   id Int @default(autoincrement()) @id
-  name String @unique
+  name String @unique @db.VarChar()
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
 
   projectSkils ProjectSkils[]
   userSkils UserSkills[]
@@ -119,61 +119,61 @@ model Skills {
 
 model ProjectSkils{
   project Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  projectId Int @db.Integer()
   skils Skills @relation(fields: [skilsId], references: [id])
-  skilsId Int
+  skilsId Int @db.Integer()
   @@id([projectId,skilsId])
 }
 
 model UserSkills{
   user User @relation(fields: [userId], references: [id])
-  userId Int
+  userId Int @db.Integer()
   skils Skills @relation(fields: [skilsId], references: [id])
-  skilsId Int
+  skilsId Int @db.Integer()
   @@id([userId,skilsId])
 }
 
 model UserProject{
   user User @relation(fields: [userId], references: [id])
-  userId Int
+  userId Int @db.Integer()
   project Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  projectId Int @db.Integer()
   @@id([userId,projectId])
 
 }
 model UserFavoritProject{
   user User @relation(fields: [userId], references: [id])
-  userId Int
+  userId Int @db.Integer()
   project Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  projectId Int @db.Integer()
   @@id([userId,projectId])
 }
 model Success{
   id Int @default(autoincrement()) @id
-  name String @unique
-  description String
+  name String @unique @db.VarChar()
+  description String @db.VarChar()
   
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
   
   user User @relation(fields: [userId],references: [id])
-  userId Int
+  userId Int @db.Integer()
 
   tags SuccessTags[]
 }
 
 model Tag{
   id Int @id @default(autoincrement())
-  name String @unique
-  description String
+  name String @unique @db.VarChar()
+  description String @db.VarChar()
   baseTag Tag? @relation("BaseTag", fields: [baseTagId], references: [id])
-  baseTagId Int?
+  baseTagId Int? @db.Integer()
   childTags Tag[] @relation("BaseTag")
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
   
   success SuccessTags[]
 
@@ -181,9 +181,9 @@ model Tag{
 
 model SuccessTags{
   success Success @relation(fields: [successId], references: [id])
-  successId Int
+  successId Int @db.Integer()
   tag Tag @relation(fields: [tagId], references: [id])
-  tagId Int
+  tagId Int @db.Integer()
   @@id([successId,tagId])
 
 }
