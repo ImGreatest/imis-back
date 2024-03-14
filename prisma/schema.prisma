@@ -24,8 +24,8 @@ model UserRole {
 }
 model Permission {
   id         Int     @unique @default(autoincrement())
-  role       UserRole    @relation(fields: [role_id], references: [id])
-  role_id    Int     @db.Integer()
+  role       UserRole    @relation(fields: [roleId], references: [id])
+  roleId    Int     @db.Integer()
   action     String  @db.VarChar()
   subject    String  @db.VarChar()
   inverted   Boolean @default(false)
@@ -43,8 +43,8 @@ model User {
   email String  @unique @db.VarChar()
   name  String @db.VarChar(100)
   surname String @db.VarChar(100)
-  role    UserRole @relation(fields: [role_id], references: [id])
-  role_id Int  @db.Integer()
+  role    UserRole @relation(fields: [roleId], references: [id])
+  roleId Int  @db.Integer()
   pass String @db.VarChar()
   course Int? @db.Integer()
   direction String? @db.VarChar(50)
