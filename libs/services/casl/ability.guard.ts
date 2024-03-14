@@ -1,5 +1,3 @@
-import * as Mustache from 'mustache';
-
 import { Reflector } from '@nestjs/core';
 import { PrismaService } from '../prisma/prisma.service';
 import { FastifyRequest } from 'fastify';
@@ -84,7 +82,6 @@ export class AbilitiesGuard implements CanActivate {
         roleId: currentUser.role,
       },
     });
-    console.log(currentUser);
     const parsedUserPermissions = this.parseCondition(
       userPermissions,
       currentUser,
@@ -92,10 +89,17 @@ export class AbilitiesGuard implements CanActivate {
 
     try {
       const ability = this.createAbility(Object(parsedUserPermissions));
-
       for await (const rule of rules) {
         let sub = {};
-        if (size(rule?.conditions)) {
+        if (
+          size(
+            parsedUserPermissions.find(
+              (permission) =>
+                permission.action === rule.action &&
+                permission.subject === rule.subject,
+            ).conditions,
+          )
+        ) {
           const subId = +request.params['id'];
           sub = await this.getSubjectById(subId, rule.subject);
         }
@@ -122,11 +126,7 @@ export class AbilitiesGuard implements CanActivate {
 
         for (const conditionKey of conditionsToParse) {
           if (permission.conditions[conditionKey]) {
-            const parsedValue = Mustache.render(
-              permission.conditions[conditionKey],
-              currentUser,
-            );
-            cond[conditionKey] = +parsedValue; // Convert parsed value to number
+            cond[conditionKey] = +currentUser.role; // Convert parsed value to number
             break; // Stop iteration if a condition is found
           }
         }
