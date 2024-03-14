@@ -55,6 +55,7 @@ model User {
 
   userSkils UserSkills[]
   projects UserProject[]
+  createdProjects Project[]
   success Success[]
   favoritProject UserFavoritProject[]
   company Company?
@@ -98,7 +99,8 @@ model Project {
   deletedAt DateTime? @db.Timestamp()
   status String @db.VarChar()
   descripton String @db.VarChar()
-
+  creater User @relation(fields: [createrId],references: [id])
+  createrId Int @db.Integer
   projectSkils ProjectSkils[]
   users UserProject[]
   usersWithFavor UserFavoritProject[]
