@@ -12,6 +12,9 @@ import { IsignUp } from '../interface/signUp';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class signUpDto implements IsignUp {
+  @IsNotEmpty({ message: 'roleId is required' })
+  @ApiProperty({ example: 1 })
+  roleId: number;
   @IsEmail({}, { message: 'Please enter a valid email address' })
   @IsNotEmpty({ message: 'Email is required' })
   @ApiProperty({ example: 'examleple@mail.ru' })

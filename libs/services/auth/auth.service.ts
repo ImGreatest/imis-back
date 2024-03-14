@@ -26,7 +26,7 @@ export class AuthService {
       sub: user.id,
       username: user.name,
       userSurname: user.surname,
-      role: user.role,
+      role: user.roleId,
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
@@ -46,7 +46,7 @@ export class AuthService {
       sub: createdUser.id,
       username: createdUser.name,
       userSurname: createdUser.surname,
-      role: createdUser.role,
+      role: createdUser.roleId,
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
