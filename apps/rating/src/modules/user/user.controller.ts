@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { Public } from 'libs/decorators/public.decorator';
+// import { Public } from 'libs/decorators/public.decorator';
 import { checkAbilites } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
