@@ -60,8 +60,19 @@ model User {
   favoritProject UserFavoritProject[]
   company Company?
   themes Theme[]
+
+  sendedNotifications Notifacation[] @relation("sender")
+  getNotifications Notifacation[] @relation("recipient")
 }
 
+model Notifacation{
+  sender User @relation(fields: [senderId], references: [id], name: "sender")
+  senderId Int @db.Integer()
+  recipient User @relation(fields: [recipientId], references: [id], name: "recipient")
+  recipientId Int @db.Integer()
+  @@id([senderId,recipientId])
+    
+}
 model Company {
   id    Int     @default(autoincrement()) @id
   name String @unique @db.VarChar()
