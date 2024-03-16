@@ -60,7 +60,8 @@ model User {
   favoritProject UserFavoritProject[]
   company Company?
   themes Theme[]
-
+  ratings Rating[]
+  score Score[]
   sendedNotifications Notifacation[] @relation("sender")
   getNotifications Notifacation[] @relation("recipient")
 }
@@ -72,6 +73,33 @@ model Notifacation{
   recipientId Int @db.Integer()
   @@id([senderId,recipientId])
     
+}
+model Rating{
+  id    Int     @default(autoincrement()) @id
+  name String @db.VarChar()
+  creater User @relation(fields: [createrId], references: [id])
+  createrId Int @db.Integer()
+  score Score[]
+  ratingScope RatingScope[]
+  
+}
+model RatingScope{
+  rating Rating @relation(fields: [ratingId], references: [id])
+  ratingId Int @db.Integer()
+  tag Tag @relation(fields: [tagId], references: [id])
+  tagId Int @db.Integer()
+  ratingScore Int @db.Integer
+  @@id([ratingId,tagId])
+
+}
+model Score{
+  rating Rating @relation(fields: [ratingId], references: [id])
+  ratingId Int @db.Integer()
+  student User @relation(fields: [studentId],references: [id])
+  studentId Int @db.Integer
+  ratingScore Int @db.Integer
+  @@id([ratingId,studentId])
+
 }
 model Company {
   id    Int     @default(autoincrement()) @id
@@ -189,6 +217,8 @@ model Tag{
   deletedAt DateTime? @db.Timestamp()
   
   success SuccessTags[]
+
+  ratingScope RatingScope[]
 
 }
 
