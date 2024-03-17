@@ -28,8 +28,8 @@ export class TagController {
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreateTagDto })
-  async createRating(success: ReqCreateTagDto) {
-    return this.tagService.create(success);
+  async create(tag: ReqCreateTagDto) {
+    return this.tagService.create(tag);
   }
 
   @checkAbilities({
