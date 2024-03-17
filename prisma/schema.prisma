@@ -12,7 +12,7 @@ datasource db {
 
 model UserRole {
   id         Int       @unique @default(autoincrement())
-  name       String    @db.VarChar()
+  name       String   @unique @db.VarChar()
   created_at DateTime  @default(now())
   updated_at DateTime? @updatedAt()
   deleted_at DateTime? @db.Timestamp()

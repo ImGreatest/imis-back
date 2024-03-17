@@ -12,7 +12,7 @@ import { RatingControllerService } from './rating.controller.service';
 import { ReqCreateRatingDto } from './dto/create.rating';
 import { ReqUpdateRatingDto } from './dto/update.rating';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { checkAbilites } from 'libs/decorators/abilities.decorator';
+import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 
 @Controller('rating')
@@ -21,18 +21,18 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 export class RatingController {
   constructor(private ratingService: RatingControllerService) {}
 
-  @checkAbilites({
+  @checkAbilities({
     action: 'create',
     subject: 'Rating',
   })
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreateRatingDto })
-  async createRating(user: ReqCreateRatingDto) {
-    return this.ratingService.createRating(user);
+  async createRating(rating: ReqCreateRatingDto) {
+    return this.ratingService.createRating(rating);
   }
 
-  @checkAbilites({
+  @checkAbilities({
     action: 'read',
     subject: 'Rating',
   })
@@ -42,7 +42,7 @@ export class RatingController {
     return this.ratingService.getPage(limit, page);
   }
 
-  @checkAbilites({
+  @checkAbilities({
     action: 'read',
     subject: 'Rating',
   })
@@ -52,7 +52,7 @@ export class RatingController {
     return this.ratingService.getById(id);
   }
 
-  @checkAbilites({
+  @checkAbilities({
     action: 'update',
     subject: 'Rating',
   })
@@ -62,7 +62,7 @@ export class RatingController {
   async updateRatingName(id: number, rating: ReqUpdateRatingDto) {
     return this.ratingService.updateRatingName(id, rating);
   }
-  @checkAbilites({
+  @checkAbilities({
     action: 'delete ',
     subject: 'Rating',
   })
