@@ -8,67 +8,67 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { RatingControllerService } from './rating.controller.service';
-import { ReqCreateRatingDto } from './dto/create.rating';
-import { ReqUpdateRatingDto } from './dto/update.rating';
+import { SuccessControllerService } from './success.controller.service';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
+import { ReqCreateSuccessDto } from './dto/create.success';
+import { ReqUpdateSuccessDto } from './dto/update.success';
 
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')
-export class RatingController {
-  constructor(private ratingService: RatingControllerService) {}
+export class SuccessController {
+  constructor(private successService: SuccessControllerService) {}
 
   @checkAbilities({
     action: 'create',
-    subject: 'Rating',
+    subject: 'Success',
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  @ApiBody({ type: ReqCreateRatingDto })
-  async createRating(rating: ReqCreateRatingDto) {
-    return this.ratingService.createRating(rating);
+  @ApiBody({ type: ReqCreateSuccessDto })
+  async createRating(success: ReqCreateSuccessDto) {
+    return this.successService.create(success);
   }
 
   @checkAbilities({
     action: 'read',
-    subject: 'Rating',
+    subject: 'Success',
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
   async getPage(@Query('limit') limit: number, @Param('page') page: number) {
-    return this.ratingService.getPage(limit, page);
+    return this.successService.getPage(limit, page);
   }
 
   @checkAbilities({
     action: 'read',
-    subject: 'Rating',
+    subject: 'Success',
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
   async getById(@Param('id') id: number) {
-    return this.ratingService.getById(id);
+    return this.successService.getById(id);
   }
 
   @checkAbilities({
     action: 'update',
-    subject: 'Rating',
+    subject: 'Success',
   })
   @UseGuards(AbilitiesGuard)
   @Put()
-  @ApiBody({ type: ReqUpdateRatingDto })
-  async updateRatingName(id: number, rating: ReqUpdateRatingDto) {
-    return this.ratingService.updateRatingName(id, rating);
+  @ApiBody({ type: ReqUpdateSuccessDto })
+  async update(id: number, success: ReqUpdateSuccessDto) {
+    return this.successService.update(id, success);
   }
   @checkAbilities({
     action: 'delete ',
-    subject: 'Rating',
+    subject: 'Success',
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async deleteRating(@Param('id') id: number) {
-    return this.ratingService.deleteRating(id);
+  async delete(@Param('id') id: number) {
+    return this.successService.delete(id);
   }
 }

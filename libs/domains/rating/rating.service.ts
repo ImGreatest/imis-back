@@ -6,9 +6,9 @@ import { IUpdateRating } from './interface/update.rating';
 export class RatingService {
   constructor(private prisma: PrismaService) {}
 
-  async createRating(user: ICreateRating) {
+  async createRating(rating: ICreateRating) {
     return this.prisma.rating.create({
-      data: user,
+      data: rating,
     });
   }
   async getPage(limit: number, page: number) {
