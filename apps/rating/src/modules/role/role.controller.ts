@@ -54,7 +54,7 @@ export class RoleController {
 
   @checkAbilities({
     action: 'update',
-    subject: 'Tag',
+    subject: 'Role',
   })
   @UseGuards(AbilitiesGuard)
   @Put()

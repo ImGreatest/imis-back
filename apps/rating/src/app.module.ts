@@ -8,6 +8,7 @@ import { RatingControllerModule } from './modules/rating/rating.controller.modul
 import { SuccessControllerModule } from './modules/success/success.controller.module';
 import { TagControllerModule } from './modules/tag/tag.controller.module';
 import { RoleControllerModule } from './modules/role/role.controller.module';
+import { PermissionControllerModule } from './modules/permission/permission.controller.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RoleControllerModule } from './modules/role/role.controller.module';
     SuccessControllerModule,
     TagControllerModule,
     RoleControllerModule,
+    PermissionControllerModule,
   ],
   providers: [
     {
