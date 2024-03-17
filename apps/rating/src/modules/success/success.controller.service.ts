@@ -15,8 +15,8 @@ export class SuccessControllerService {
   async getById(id: number) {
     return this.successService.getById(id);
   }
-  async update(id: number, rating: IUpdateSuccess) {
-    return this.successService.update(id, rating);
+  async update(id: number, success: IUpdateSuccess) {
+    return this.successService.update(id, success);
   }
 
   async delete(id: number) {

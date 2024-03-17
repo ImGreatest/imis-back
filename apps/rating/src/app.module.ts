@@ -6,6 +6,7 @@ import { AuthModule } from 'libs/services/auth/auth.module';
 import { RolesGuard } from 'libs/services/auth/roles.guard';
 import { RatingControllerModule } from './modules/rating/rating.controller.module';
 import { SuccessControllerModule } from './modules/success/success.controller.module';
+import { TagControllerModule } from './modules/tag/tag.controller.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SuccessControllerModule } from './modules/success/success.controller.mo
     AuthModule,
     RatingControllerModule,
     SuccessControllerModule,
+    TagControllerModule,
   ],
   providers: [
     {

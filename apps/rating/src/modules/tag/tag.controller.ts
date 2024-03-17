@@ -8,67 +8,67 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { SuccessControllerService } from './success.controller.service';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
-import { ReqCreateSuccessDto } from './dto/create.success';
-import { ReqUpdateSuccessDto } from './dto/update.success';
+import { TagControllerService } from './tag.controller.service';
+import { ReqCreateTagDto } from './dto/create.tag';
+import { ReqUpdateTagDto } from './dto/update.tag';
 
-@Controller('success')
+@Controller('tag')
 @ApiBearerAuth()
-@ApiTags('success')
-export class SuccessController {
-  constructor(private successService: SuccessControllerService) {}
+@ApiTags('tag')
+export class TagController {
+  constructor(private tagService: TagControllerService) {}
 
   @checkAbilities({
     action: 'create',
-    subject: 'Success',
+    subject: 'Tag',
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  @ApiBody({ type: ReqCreateSuccessDto })
-  async createRating(success: ReqCreateSuccessDto) {
-    return this.successService.create(success);
+  @ApiBody({ type: ReqCreateTagDto })
+  async createRating(success: ReqCreateTagDto) {
+    return this.tagService.create(success);
   }
 
   @checkAbilities({
     action: 'read',
-    subject: 'Success',
+    subject: 'Tag',
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
   async getPage(@Query('limit') limit: number, @Param('page') page: number) {
-    return this.successService.getPage(limit, page);
+    return this.tagService.getPage(limit, page);
   }
 
   @checkAbilities({
     action: 'read',
-    subject: 'Success',
+    subject: 'Tag',
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
   async getById(@Param('id') id: number) {
-    return this.successService.getById(id);
+    return this.tagService.getById(id);
   }
 
   @checkAbilities({
     action: 'update',
-    subject: 'Success',
+    subject: 'Tag',
   })
   @UseGuards(AbilitiesGuard)
   @Put()
-  @ApiBody({ type: ReqUpdateSuccessDto })
-  async update(id: number, success: ReqUpdateSuccessDto) {
-    return this.successService.update(id, success);
+  @ApiBody({ type: ReqUpdateTagDto })
+  async update(id: number, tag: ReqUpdateTagDto) {
+    return this.tagService.update(id, tag);
   }
   @checkAbilities({
     action: 'delete ',
-    subject: 'Success',
+    subject: 'Tag',
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
   async delete(@Param('id') id: number) {
-    return this.successService.delete(id);
+    return this.tagService.delete(id);
   }
 }
