@@ -14,6 +14,7 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { RoleControllerService } from './role.controller.service';
 import { ReqCreateRoleDto } from './dto/create.role';
 import { ReqUpdateRoleDto } from './dto/update.role';
+import { UpdatePermissionDto } from './dto/update.permissions';
 
 @Controller('role')
 @ApiBearerAuth()
@@ -70,5 +71,19 @@ export class RoleController {
   @Delete(':id')
   async delete(@Param('id') id: number) {
     return this.roleService.delete(id);
+  }
+
+  @checkAbilities({
+    action: 'update',
+    subject: 'Permission',
+  })
+  @UseGuards(AbilitiesGuard)
+  @Put('/delete-permission')
+  @ApiBody({ type: UpdatePermissionDto })
+  async createDeletePermissions(
+    roleId: number,
+    newPermission: UpdatePermissionDto[],
+  ) {
+    return this.roleService.createDeletePermissions(roleId, newPermission);
   }
 }
