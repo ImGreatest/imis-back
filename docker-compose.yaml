@@ -3,7 +3,7 @@ services:
   migrations:
     build: .
     env_file:
-      - .env.example
+      - .env
       - .env
     command: yarn prisma migrate deploy
 
@@ -11,7 +11,7 @@ services:
     build: .
     restart: always
     env_file:
-      - .env.example
+      - .env
       - .env
     ports:
       - "$PORT_ADMIN:$PORT_ADMIN"

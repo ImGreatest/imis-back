@@ -1,15 +1,41 @@
-import { UserRole } from 'libs/enums/role';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
+
+
+@Entity()
 export class User {
-  id: number;
-  email: string;
-  name: string;
-  surname: string;
-  role: UserRole;
-  pass: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column({ unique: true, nullable: true })
+  email!: string;
+
+  @Column({ default: 'name' })
+  name!: string;
+
+  @Column({ default: '' })
+  surname!: string;
+
+  @Column()
+  roleId!: number;
+
+  @Column()
+  pass!: string;
+
+  @Column()
   course?: number;
+
+  @Column()
   direction?: string;
+
+  @Column()
   group?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date;
+
+  @CreateDateColumn()
+  createdAt!: Date;
+
+  @UpdateDateColumn()
+  updatedAt!: Date;
+
+  @DeleteDateColumn()
+  deletedAt!: Date;
 }
