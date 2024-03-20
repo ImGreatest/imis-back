@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -28,7 +30,7 @@ export class RatingController {
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreateRatingDto })
-  async createRating(rating: ReqCreateRatingDto) {
+  async createRating(@Body() rating: ReqCreateRatingDto) {
     return this.ratingService.createRating(rating);
   }
 
@@ -38,7 +40,10 @@ export class RatingController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
+  async getPage(
+    @Query('limit', ParseIntPipe) limit: number,
+    @Param('page', ParseIntPipe) page: number,
+  ) {
     return this.ratingService.getPage(limit, page);
   }
 
@@ -48,7 +53,7 @@ export class RatingController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     return this.ratingService.getById(id);
   }
 
@@ -57,9 +62,12 @@ export class RatingController {
     subject: 'Rating',
   })
   @UseGuards(AbilitiesGuard)
-  @Put()
+  @Put(':id')
   @ApiBody({ type: ReqUpdateRatingDto })
-  async updateRatingName(id: number, rating: ReqUpdateRatingDto) {
+  async updateRatingName(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() rating: ReqUpdateRatingDto,
+  ) {
     return this.ratingService.updateRatingName(id, rating);
   }
   @checkAbilities({
@@ -68,7 +76,7 @@ export class RatingController {
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async deleteRating(@Param('id') id: number) {
+  async deleteRating(@Param('id', ParseIntPipe) id: number) {
     return this.ratingService.deleteRating(id);
   }
 }

@@ -22,4 +22,7 @@ export class SuccessControllerService {
   async delete(id: number) {
     return this.successService.delete(id);
   }
+  async deleteAddTags(successId: number, tagsIds: number[]) {
+    return this.successService.deleteAddTags(successId, tagsIds);
+  }
 }

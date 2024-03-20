@@ -17,7 +17,9 @@ export class AuthService {
 
   async signIn(mail: string, pass: string): Promise<{ access_token: string }> {
     const user = await this.usersService.findOneByEmail(mail);
-    console.log(user);
+    if (!user) {
+      throw new UnauthorizedException("User doesn't exist");
+    }
     const isMatch = await bcrypt.compare(user?.pass, pass);
     if (isMatch) {
       throw new UnauthorizedException();
