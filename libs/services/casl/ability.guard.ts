@@ -91,15 +91,12 @@ export class AbilitiesGuard implements CanActivate {
       const ability = this.createAbility(Object(parsedUserPermissions));
       for await (const rule of rules) {
         let sub = {};
-        if (
-          size(
-            parsedUserPermissions.find(
-              (permission) =>
-                permission.action === rule.action &&
-                permission.subject === rule.subject,
-            ).conditions,
-          )
-        ) {
+        const thisPermissions = parsedUserPermissions.find(
+          (permission) =>
+            permission.action === rule.action &&
+            permission.subject === rule.subject,
+        );
+        if (thisPermissions && size(thisPermissions.conditions)) {
           const subId = +request.params['id'];
           sub = await this.getSubjectById(subId, rule.subject);
         }

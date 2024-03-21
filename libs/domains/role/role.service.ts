@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRole } from './interface/create.role';
 import { IUpdateRole } from './interface/update.role';
+import { IUpdatePermission } from './interface/update.permissions';
 @Injectable()
 export class RoleService {
   constructor(private prisma: PrismaService) {}
@@ -33,6 +34,20 @@ export class RoleService {
   async delete(id: number) {
     return this.prisma.userRole.delete({
       where: { id: id },
+    });
+  }
+
+  async createDeletePermissions(
+    roleId: number,
+    newPermission: IUpdatePermission[],
+  ) {
+    await this.prisma.permission.deleteMany({
+      where: {
+        roleId: roleId,
+      },
+    });
+    return this.prisma.permission.createMany({
+      data: newPermission.map((perm) => ({ ...perm, roleId: roleId })),
     });
   }
 }

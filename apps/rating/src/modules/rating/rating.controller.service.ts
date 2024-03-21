@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateRating } from 'libs/domains/rating/interface/create.rating';
+import { IScopeRating } from 'libs/domains/rating/interface/scope.rating';
 import { IUpdateRating } from 'libs/domains/rating/interface/update.rating';
 import { RatingService } from 'libs/domains/rating/rating.service';
 
@@ -21,5 +22,11 @@ export class RatingControllerService {
 
   async deleteRating(id: number) {
     return this.ratingService.deleteRating(id);
+  }
+  async createDeleteRatigsScope(ratingId: number, newScope: IScopeRating[]) {
+    return this.ratingService.createDeleteRatigsScope(ratingId, newScope);
+  }
+  async getRatingScore(id: number) {
+    return this.ratingService.getRatingScore(id);
   }
 }

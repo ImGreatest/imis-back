@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRating } from './interface/create.rating';
 import { IUpdateRating } from './interface/update.rating';
+import { IScopeRating } from './interface/scope.rating';
 @Injectable()
 export class RatingService {
   constructor(private prisma: PrismaService) {}
@@ -33,6 +34,21 @@ export class RatingService {
   async deleteRating(id: number) {
     return this.prisma.rating.delete({
       where: { id: id },
+    });
+  }
+  async createDeleteRatigsScope(ratingId: number, newScope: IScopeRating[]) {
+    await this.prisma.ratingScope.deleteMany({
+      where: {
+        ratingId: ratingId,
+      },
+    });
+    this.prisma.ratingScope.createMany({
+      data: newScope.map((scope) => ({ ...scope, ratingId: ratingId })),
+    });
+  }
+  async getRatingScore(id: number) {
+    return this.prisma.score.findMany({
+      where: { ratingId: id },
     });
   }
 }

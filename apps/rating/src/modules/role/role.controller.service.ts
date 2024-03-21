@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateRole } from 'libs/domains/role/interface/create.role';
+import { IUpdatePermission } from 'libs/domains/role/interface/update.permissions';
 import { IUpdateRole } from 'libs/domains/role/interface/update.role';
 import { RoleService } from 'libs/domains/role/role.service';
 
@@ -21,5 +22,11 @@ export class RoleControllerService {
 
   async delete(id: number) {
     return this.roleService.delete(id);
+  }
+  async createDeletePermissions(
+    roleId: number,
+    newPermission: IUpdatePermission[],
+  ) {
+    return this.roleService.createDeletePermissions(roleId, newPermission);
   }
 }
