@@ -46,7 +46,7 @@ export class RoleService {
         roleId: roleId,
       },
     });
-    this.prisma.permission.createMany({
+    return this.prisma.permission.createMany({
       data: newPermission.map((perm) => ({ ...perm, roleId: roleId })),
     });
   }

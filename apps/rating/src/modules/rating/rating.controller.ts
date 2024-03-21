@@ -16,6 +16,8 @@ import { ReqUpdateRatingDto } from './dto/update.rating';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
+import { IScopeRating } from 'libs/domains/rating/interface/scope.rating';
+import { Public } from 'libs/decorators/public.decorator';
 
 @Controller('rating')
 @ApiBearerAuth()
@@ -78,5 +80,24 @@ export class RatingController {
   @Delete(':id')
   async deleteRating(@Param('id', ParseIntPipe) id: number) {
     return this.ratingService.deleteRating(id);
+  }
+  @checkAbilities({
+    action: 'update',
+    subject: 'Rating',
+  })
+  @UseGuards(AbilitiesGuard)
+  @Put(':id/scope')
+  @ApiBody({ type: Array<IScopeRating> })
+  async createDeleteRatigsScope(
+    @Param('id', ParseIntPipe) ratingId: number,
+    @Body() newScope: IScopeRating[],
+  ) {
+    return this.ratingService.createDeleteRatigsScope(ratingId, newScope);
+  }
+
+  @Public()
+  @Get(':id/score')
+  async getRatingScore(@Param('id', ParseIntPipe) ratingId: number) {
+    return this.ratingService.getRatingScore(ratingId);
   }
 }
