@@ -100,4 +100,13 @@ export class RatingController {
   async getRatingScore(@Param('id', ParseIntPipe) ratingId: number) {
     return this.ratingService.getRatingScore(ratingId);
   }
+  @checkAbilities({
+    action: 'update',
+    subject: 'Rating',
+  })
+  @UseGuards(AbilitiesGuard)
+  @Get(':id/update')
+  async updateRatingScore(@Param('id', ParseIntPipe) id: number) {
+    return this.ratingService.updateRatingScore(id);
+  }
 }
