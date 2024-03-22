@@ -51,4 +51,40 @@ export class RatingService {
       where: { ratingId: id },
     });
   }
+  async updateRatingScore(id: number) {
+    await this.prisma.score.deleteMany({
+      where: { ratingId: id },
+    });
+    const students = await this.prisma.user.findMany({
+      where: { role: { name: 'student' } },
+    });
+    const success = await this.prisma.success.findMany({
+      where: { userId: { in: students.map((student) => student.id) } },
+      include: {
+        tags: { include: { tag: { include: { ratingScope: true } } } },
+      },
+    });
+    students.forEach((student) => {
+      const studentSuccess = success.filter(
+        (success) => success.userId === student.id,
+      );
+      const sum = studentSuccess.map((success) => {
+        return success.tags
+          .map(
+            (tag) =>
+              tag.tag.ratingScope.find((scope) => scope.ratingId === id)
+                .ratingScore,
+          )
+          .reduce((acc, cur) => acc + cur, 0);
+      });
+
+      this.prisma.score.create({
+        data: {
+          studentId: student.id,
+          ratingId: id,
+          ratingScore: sum.reduce((acc, cur) => acc + cur, 0),
+        },
+      });
+    });
+  }
 }

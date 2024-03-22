@@ -29,4 +29,7 @@ export class RatingControllerService {
   async getRatingScore(id: number) {
     return this.ratingService.getRatingScore(id);
   }
+  async updateRatingScore(id: number) {
+    return this.ratingService.updateRatingScore(id);
+  }
 }
