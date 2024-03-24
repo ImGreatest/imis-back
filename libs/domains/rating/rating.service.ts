@@ -3,14 +3,29 @@ import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRating } from './interface/create.rating';
 import { IUpdateRating } from './interface/update.rating';
 import { IScopeRating } from './interface/scope.rating';
+import { CronService } from 'libs/services/cron/cron.service';
 @Injectable()
 export class RatingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cronService: CronService,
+  ) {}
 
-  async createRating(rating: ICreateRating) {
-    return this.prisma.rating.create({
-      data: rating,
+  async createRating(createrId: number, rating: ICreateRating) {
+    const scope = rating.scope;
+    delete rating.scope;
+    const createdRating = await this.prisma.rating.create({
+      data: { ...rating, createrId: createrId },
     });
+    await this.createDeleteRatigsScope(createdRating.id, scope);
+    if (rating.hourlyUpdate) {
+      this.cronService.addInterval(
+        `rating-${createdRating.id}`,
+        1000 * 60 * 60 * rating.hourlyUpdate,
+        () => this.updateRatingScore(createdRating.id),
+      );
+    }
+    return createdRating;
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;
@@ -25,6 +40,19 @@ export class RatingService {
     });
   }
   async updateRatingName(id: number, rating: IUpdateRating) {
+    const scope = rating.scope;
+    delete rating.scope;
+    if (scope) {
+      await this.createDeleteRatigsScope(id, scope);
+    }
+    this.cronService.deleteInterval(`rating-${id}`);
+    if (rating.hourlyUpdate) {
+      this.cronService.addInterval(
+        `rating-${id}`,
+        1000 * 60 * 60 * rating.hourlyUpdate,
+        () => this.updateRatingScore(id),
+      );
+    }
     return this.prisma.rating.update({
       where: { id: id },
       data: rating,
@@ -32,6 +60,7 @@ export class RatingService {
   }
 
   async deleteRating(id: number) {
+    this.cronService.deleteInterval(`rating-${id}`);
     return this.prisma.rating.delete({
       where: { id: id },
     });
@@ -68,7 +97,7 @@ export class RatingService {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
       );
-      const sum = studentSuccess.map((success) => {
+      const sum = studentSuccess.flatMap((success) => {
         return success.tags
           .map(
             (tag) =>

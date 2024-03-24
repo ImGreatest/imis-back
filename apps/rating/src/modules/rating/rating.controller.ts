@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { RatingControllerService } from './rating.controller.service';
@@ -18,12 +19,15 @@ import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { IScopeRating } from 'libs/domains/rating/interface/scope.rating';
 import { Public } from 'libs/decorators/public.decorator';
-
+import { JwtService } from '@nestjs/jwt';
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')
 export class RatingController {
-  constructor(private ratingService: RatingControllerService) {}
+  constructor(
+    private ratingService: RatingControllerService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @checkAbilities({
     action: 'create',
@@ -32,8 +36,11 @@ export class RatingController {
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreateRatingDto })
-  async createRating(@Body() rating: ReqCreateRatingDto) {
-    return this.ratingService.createRating(rating);
+  async createRating(@Body() rating: ReqCreateRatingDto, @Req() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const payload = this.jwtService.decode(token);
+    const userId = payload['userId'];
+    return this.ratingService.createRating(userId, rating);
   }
 
   @checkAbilities({
