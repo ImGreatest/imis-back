@@ -46,6 +46,7 @@ export const subjects = [
   'Skills',
   'Success',
   'Tag',
+  'Rating',
   'all',
 ] as const;
 

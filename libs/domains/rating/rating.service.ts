@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRating } from './interface/create.rating';
 import { IUpdateRating } from './interface/update.rating';
@@ -17,11 +17,12 @@ export class RatingService {
     const createdRating = await this.prisma.rating.create({
       data: { ...rating, createrId: createrId },
     });
+
     await this.createDeleteRatigsScope(createdRating.id, scope);
-    if (rating.hourlyUpdate) {
+    if (rating.minuteUpdate) {
       this.cronService.addInterval(
         `rating-${createdRating.id}`,
-        1000 * 60 * 60 * rating.hourlyUpdate,
+        1000 * 60 * rating.minuteUpdate,
         () => this.updateRatingScore(createdRating.id),
       );
     }
@@ -46,10 +47,10 @@ export class RatingService {
       await this.createDeleteRatigsScope(id, scope);
     }
     this.cronService.deleteInterval(`rating-${id}`);
-    if (rating.hourlyUpdate) {
+    if (rating.minuteUpdate) {
       this.cronService.addInterval(
         `rating-${id}`,
-        1000 * 60 * 60 * rating.hourlyUpdate,
+        1000 * 60 * rating.minuteUpdate,
         () => this.updateRatingScore(id),
       );
     }
@@ -60,7 +61,16 @@ export class RatingService {
   }
 
   async deleteRating(id: number) {
-    this.cronService.deleteInterval(`rating-${id}`);
+    try {
+      this.cronService.deleteInterval(`rating-${id}`);
+    } catch {}
+    const raiting = await this.prisma.rating.findUnique({
+      where: { id: id },
+    });
+    if (!raiting) {
+      throw new NotFoundException(`Rating with ID ${id} not found`);
+    }
+
     return this.prisma.rating.delete({
       where: { id: id },
     });
@@ -71,7 +81,7 @@ export class RatingService {
         ratingId: ratingId,
       },
     });
-    this.prisma.ratingScope.createMany({
+    await this.prisma.ratingScope.createMany({
       data: newScope.map((scope) => ({ ...scope, ratingId: ratingId })),
     });
   }
@@ -93,21 +103,22 @@ export class RatingService {
         tags: { include: { tag: { include: { ratingScope: true } } } },
       },
     });
-    students.forEach((student) => {
+    console.log(success);
+    students.forEach(async (student) => {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
       );
       const sum = studentSuccess.flatMap((success) => {
         return success.tags
-          .map(
+          .flatMap(
             (tag) =>
               tag.tag.ratingScope.find((scope) => scope.ratingId === id)
-                .ratingScore,
+                ?.ratingScore,
           )
           .reduce((acc, cur) => acc + cur, 0);
       });
 
-      this.prisma.score.create({
+      await this.prisma.score.create({
         data: {
           studentId: student.id,
           ratingId: id,

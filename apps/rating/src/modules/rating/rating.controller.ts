@@ -39,7 +39,7 @@ export class RatingController {
   async createRating(@Body() rating: ReqCreateRatingDto, @Req() req) {
     const token = req.headers.authorization.split(' ')[1];
     const payload = this.jwtService.decode(token);
-    const userId = payload['userId'];
+    const userId = payload['sub'];
     return this.ratingService.createRating(userId, rating);
   }
 
@@ -80,7 +80,7 @@ export class RatingController {
     return this.ratingService.updateRatingName(id, rating);
   }
   @checkAbilities({
-    action: 'delete ',
+    action: 'delete',
     subject: 'Rating',
   })
   @UseGuards(AbilitiesGuard)
@@ -94,7 +94,9 @@ export class RatingController {
   })
   @UseGuards(AbilitiesGuard)
   @Put(':id/scope')
-  @ApiBody({ type: Array<IScopeRating> })
+  @ApiBody({
+    type: Array<IScopeRating>,
+  })
   async createDeleteRatigsScope(
     @Param('id', ParseIntPipe) ratingId: number,
     @Body() newScope: IScopeRating[],

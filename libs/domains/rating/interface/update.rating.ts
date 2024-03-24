@@ -2,6 +2,6 @@ import { IScopeRating } from './scope.rating';
 
 export interface IUpdateRating {
   name?: string;
-  hourlyUpdate?: number;
+  minuteUpdate?: number;
   scope?: IScopeRating[];
 }

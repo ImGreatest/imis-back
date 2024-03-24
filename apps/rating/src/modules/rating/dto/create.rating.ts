@@ -11,7 +11,7 @@ export class ReqCreateRatingDto implements ICreateRating {
   scope: IScopeRating[];
   @ApiProperty()
   @IsNumber()
-  hourlyUpdate: number;
+  minuteUpdate: number;
   @ApiProperty()
   @IsString()
   name: string;
