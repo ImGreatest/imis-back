@@ -7,8 +7,15 @@ export class SuccessService {
   constructor(private prisma: PrismaService) {}
 
   async create(success: ICreateSuccess) {
+    const tags = success.tags;
+    delete success.tags;
     return this.prisma.success.create({
-      data: success,
+      data: {
+        userId: success.userId,
+        name: success.name,
+        description: success.description,
+        tags: { create: tags.map((tag) => ({ tagId: tag })) },
+      },
     });
   }
   async getPage(limit: number, page: number) {

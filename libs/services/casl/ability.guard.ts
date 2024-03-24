@@ -46,6 +46,7 @@ export const subjects = [
   'Skills',
   'Success',
   'Tag',
+  'Rating',
   'all',
 ] as const;
 
@@ -80,6 +81,7 @@ export class AbilitiesGuard implements CanActivate {
     const userPermissions = await this.prisma.permission.findMany({
       where: {
         roleId: currentUser.role,
+        deleted_at: null,
       },
     });
     const parsedUserPermissions = this.parseCondition(

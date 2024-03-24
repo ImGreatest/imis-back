@@ -1,16 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRating } from './interface/create.rating';
 import { IUpdateRating } from './interface/update.rating';
 import { IScopeRating } from './interface/scope.rating';
+import { CronService } from 'libs/services/cron/cron.service';
 @Injectable()
 export class RatingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private cronService: CronService,
+  ) {}
 
-  async createRating(rating: ICreateRating) {
-    return this.prisma.rating.create({
-      data: rating,
+  async createRating(createrId: number, rating: ICreateRating) {
+    const scope = rating.scope;
+    delete rating.scope;
+    const createdRating = await this.prisma.rating.create({
+      data: { ...rating, createrId: createrId },
     });
+
+    await this.createDeleteRatigsScope(createdRating.id, scope);
+    if (rating.minuteUpdate) {
+      this.cronService.addInterval(
+        `rating-${createdRating.id}`,
+        1000 * 60 * rating.minuteUpdate,
+        () => this.updateRatingScore(createdRating.id),
+      );
+    }
+    return createdRating;
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;
@@ -25,6 +41,19 @@ export class RatingService {
     });
   }
   async updateRatingName(id: number, rating: IUpdateRating) {
+    const scope = rating.scope;
+    delete rating.scope;
+    if (scope) {
+      await this.createDeleteRatigsScope(id, scope);
+    }
+    this.cronService.deleteInterval(`rating-${id}`);
+    if (rating.minuteUpdate) {
+      this.cronService.addInterval(
+        `rating-${id}`,
+        1000 * 60 * rating.minuteUpdate,
+        () => this.updateRatingScore(id),
+      );
+    }
     return this.prisma.rating.update({
       where: { id: id },
       data: rating,
@@ -32,6 +61,16 @@ export class RatingService {
   }
 
   async deleteRating(id: number) {
+    try {
+      this.cronService.deleteInterval(`rating-${id}`);
+    } catch {}
+    const raiting = await this.prisma.rating.findUnique({
+      where: { id: id },
+    });
+    if (!raiting) {
+      throw new NotFoundException(`Rating with ID ${id} not found`);
+    }
+
     return this.prisma.rating.delete({
       where: { id: id },
     });
@@ -42,7 +81,7 @@ export class RatingService {
         ratingId: ratingId,
       },
     });
-    this.prisma.ratingScope.createMany({
+    await this.prisma.ratingScope.createMany({
       data: newScope.map((scope) => ({ ...scope, ratingId: ratingId })),
     });
   }
@@ -64,21 +103,22 @@ export class RatingService {
         tags: { include: { tag: { include: { ratingScope: true } } } },
       },
     });
-    students.forEach((student) => {
+    console.log(success);
+    students.forEach(async (student) => {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
       );
-      const sum = studentSuccess.map((success) => {
+      const sum = studentSuccess.flatMap((success) => {
         return success.tags
-          .map(
+          .flatMap(
             (tag) =>
               tag.tag.ratingScope.find((scope) => scope.ratingId === id)
-                .ratingScore,
+                ?.ratingScore,
           )
           .reduce((acc, cur) => acc + cur, 0);
       });
 
-      this.prisma.score.create({
+      await this.prisma.score.create({
         data: {
           studentId: student.id,
           ratingId: id,

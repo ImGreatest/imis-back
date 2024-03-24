@@ -9,10 +9,12 @@ import { SuccessControllerModule } from './modules/success/success.controller.mo
 import { TagControllerModule } from './modules/tag/tag.controller.module';
 import { RoleControllerModule } from './modules/role/role.controller.module';
 import { PermissionControllerModule } from './modules/permission/permission.controller.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
     PrismaModule,
+    ScheduleModule.forRoot(),
     AuthModule,
     RatingControllerModule,
     SuccessControllerModule,

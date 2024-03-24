@@ -7,8 +7,8 @@ import { RatingService } from 'libs/domains/rating/rating.service';
 @Injectable()
 export class RatingControllerService {
   constructor(private ratingService: RatingService) {}
-  async createRating(user: ICreateRating) {
-    return this.ratingService.createRating(user);
+  async createRating(createrId: number, user: ICreateRating) {
+    return this.ratingService.createRating(createrId, user);
   }
   async getPage(limit: number, page: number) {
     return this.ratingService.getPage(limit, page);

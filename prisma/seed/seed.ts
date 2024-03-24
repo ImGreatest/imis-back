@@ -183,6 +183,10 @@ export const permissions = [
   { id: 110, roleId: 7, action: 'update', subject: 'Tag' },
   { id: 111, roleId: 7, action: 'delete', subject: 'Tag' },
   { id: 112, roleId: 7, action: 'create', subject: 'Tag' },
+  { id: 113, roleId: 3, action: 'create', subject: 'Rating' },
+  { id: 114, roleId: 3, action: 'read', subject: 'Rating' },
+  { id: 115, roleId: 3, action: 'update', subject: 'Rating' },
+  { id: 116, roleId: 3, action: 'delete', subject: 'Rating' },
 ];
 
 export const users = [
