@@ -20,10 +20,20 @@ export class SuccessService {
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;
-    return this.prisma.success.findMany({
+    const pageCount = await this.prisma.success.count();
+    const success = await this.prisma.success.findMany({
       take: limit,
       skip: offset,
     });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: pageCount,
+        totalPages: Math.ceil(pageCount / limit),
+      },
+      content: success,
+    };
   }
   async getById(id: number) {
     return this.prisma.success.findUnique({

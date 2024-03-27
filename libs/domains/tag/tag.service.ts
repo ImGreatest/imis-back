@@ -13,10 +13,20 @@ export class TagService {
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;
-    return this.prisma.tag.findMany({
+    const pageCount = await this.prisma.tag.count();
+    const tags = await this.prisma.tag.findMany({
       take: limit,
       skip: offset,
     });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: pageCount,
+        totalPages: Math.ceil(pageCount / limit),
+      },
+      content: tags,
+    };
   }
   async getById(id: number) {
     return this.prisma.tag.findUnique({
