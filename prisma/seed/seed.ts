@@ -246,8 +246,72 @@ export const users = [
     pass: bcrypt.hashSync('somePass', config.HashSaltRound),
     email: 'rukovod@mail.com',
   },
+  {
+    id: 8,
+    name: 'Billian',
+    surname: 'David',
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student1@mail.com',
+  },
+  {
+    id: 9,
+    name: 'Billian',
+    surname: 'David',
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student2@mail.com',
+  },
+];
+const tags = [
+  {
+    id: 1,
+    name: 'tag1',
+    description: 'tag1 description',
+  },
+  {
+    id: 2,
+    name: 'tag2',
+    description: 'tag2 description',
+  },
 ];
 
+const rating = {
+  id: 1,
+  name: 'rating1',
+  minuteUpdate: 0,
+  createrId: 3,
+};
+
+const ratingScope = [
+  {
+    ratingId: 1,
+    tagId: 1,
+    ratingScore: 3,
+  },
+  {
+    ratingId: 1,
+    tagId: 2,
+    ratingScore: 3,
+  },
+];
+const ratingScore = [
+  {
+    ratingId: 1,
+    studentId: 1,
+    ratingScore: 3,
+  },
+  {
+    ratingId: 1,
+    studentId: 8,
+    ratingScore: 5,
+  },
+  {
+    ratingId: 1,
+    studentId: 9,
+    ratingScore: 7,
+  },
+];
 const prisma = new PrismaClient();
 
 async function main() {
@@ -283,8 +347,52 @@ async function main() {
       update: userAttrs,
     });
   }
-}
 
+  for await (const tag of tags) {
+    const tagAttrs = cloneDeep(tag);
+    await prisma.tag.upsert({
+      where: {
+        id: tag.id,
+      },
+      create: tagAttrs,
+      update: tagAttrs,
+    });
+  }
+
+  await prisma.rating.upsert({
+    where: {
+      id: rating.id,
+    },
+    create: rating,
+    update: rating,
+  });
+  for await (const scope of ratingScope) {
+    const scopeAttrs = cloneDeep(scope);
+    await prisma.ratingScope.upsert({
+      where: {
+        ratingId_tagId: {
+          ratingId: scope.ratingId,
+          tagId: scope.tagId,
+        },
+      },
+      create: scopeAttrs,
+      update: scopeAttrs,
+    });
+  }
+  for await (const score of ratingScore) {
+    const scoreAttrs = cloneDeep(score);
+    await prisma.score.upsert({
+      where: {
+        ratingId_studentId: {
+          ratingId: score.ratingId,
+          studentId: score.studentId,
+        },
+      },
+      create: scoreAttrs,
+      update: scoreAttrs,
+    });
+  }
+}
 main()
   .then(async () => {
     await prisma.$disconnect();
