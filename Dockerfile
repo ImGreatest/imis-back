@@ -7,4 +7,3 @@ COPY . .
 RUN yarn lint
 RUN yarn prisma generate
 RUN yarn run build
-CMD ["sh" "./launchBoth.sh"]
