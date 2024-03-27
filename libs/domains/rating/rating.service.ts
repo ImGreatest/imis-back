@@ -30,10 +30,20 @@ export class RatingService {
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;
-    return this.prisma.rating.findMany({
+    const pageCount = await this.prisma.rating.count();
+    const ratings = await this.prisma.rating.findMany({
       take: limit,
       skip: offset,
     });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: pageCount,
+        totalPages: Math.ceil(pageCount / limit),
+      },
+      content: ratings,
+    };
   }
   async getById(id: number) {
     return this.prisma.rating.findUnique({

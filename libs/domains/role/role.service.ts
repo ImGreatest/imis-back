@@ -14,10 +14,20 @@ export class RoleService {
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;
-    return this.prisma.userRole.findMany({
+    const pageCount = await this.prisma.userRole.count();
+    const roles = await this.prisma.userRole.findMany({
       take: limit,
       skip: offset,
     });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: pageCount,
+        totalPages: Math.ceil(pageCount / limit),
+      },
+      content: roles,
+    };
   }
   async getById(id: number) {
     return this.prisma.userRole.findUnique({
