@@ -98,6 +98,7 @@ export class RatingService {
   async getRatingScore(id: number) {
     return this.prisma.score.findMany({
       where: { ratingId: id },
+      include: { student: true },
     });
   }
   async updateRatingScore(id: number) {
