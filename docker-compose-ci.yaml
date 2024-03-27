@@ -4,7 +4,9 @@ services:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: npx prisma migrate deploy 
+    commands: 
+      - npx prisma migrate deploy 
+      - yarn seed  
 
 
   app-cabinet:

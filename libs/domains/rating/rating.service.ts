@@ -95,10 +95,47 @@ export class RatingService {
       data: newScope.map((scope) => ({ ...scope, ratingId: ratingId })),
     });
   }
-  async getRatingScore(id: number) {
-    return this.prisma.score.findMany({
+  async getRatingScore(
+    id: number,
+    page: number,
+    limit: number,
+    column: string,
+    sortDirection: 'asc' | 'desc',
+  ) {
+    const orderProps =
+      column === 'ratingScore'
+        ? { [column]: sortDirection }
+        : { student: { [column]: sortDirection } };
+    const scoresCount = await this.prisma.score.count({
       where: { ratingId: id },
     });
+    const scores = await this.prisma.score.findMany({
+      where: { ratingId: id },
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+            group: true,
+            direction: true,
+            course: true,
+          },
+        },
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+      orderBy: orderProps,
+    });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: scoresCount,
+        totalPages: Math.ceil(scoresCount / limit),
+      },
+      rows: scores,
+    };
   }
   async updateRatingScore(id: number) {
     await this.prisma.score.deleteMany({

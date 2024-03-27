@@ -17,9 +17,10 @@ import { ReqUpdateRatingDto } from './dto/update.rating';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
-import { IScopeRating } from 'libs/domains/rating/interface/scope.rating';
 import { Public } from 'libs/decorators/public.decorator';
 import { JwtService } from '@nestjs/jwt';
+import { ReqUpdateScopeDto } from './dto/update.scope';
+import { ReqGetScoreDto } from './dto/get.score';
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')
@@ -95,19 +96,31 @@ export class RatingController {
   @UseGuards(AbilitiesGuard)
   @Put(':id/scope')
   @ApiBody({
-    type: Array<IScopeRating>,
+    type: ReqUpdateScopeDto,
   })
   async createDeleteRatigsScope(
     @Param('id', ParseIntPipe) ratingId: number,
-    @Body() newScope: IScopeRating[],
+    @Body() newScope: ReqUpdateScopeDto,
   ) {
-    return this.ratingService.createDeleteRatigsScope(ratingId, newScope);
+    return this.ratingService.createDeleteRatigsScope(ratingId, newScope.scope);
   }
 
   @Public()
-  @Get(':id/score')
-  async getRatingScore(@Param('id', ParseIntPipe) ratingId: number) {
-    return this.ratingService.getRatingScore(ratingId);
+  @Put(':id/score')
+  @ApiBody({
+    type: ReqGetScoreDto,
+  })
+  async getRatingScore(
+    @Param('id', ParseIntPipe) ratingId: number,
+    @Body() getData: ReqGetScoreDto,
+  ) {
+    return this.ratingService.getRatingScore(
+      ratingId,
+      getData.page,
+      getData.pageSize,
+      getData.column,
+      getData.sortDirection,
+    );
   }
   @checkAbilities({
     action: 'update',

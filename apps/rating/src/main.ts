@@ -8,6 +8,7 @@ import { winstonModuleOptions } from '../../../logger/logger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: WinstonModule.createLogger(winstonModuleOptions('rating')),
+    cors: true,
   });
 
   app.setGlobalPrefix('api');
