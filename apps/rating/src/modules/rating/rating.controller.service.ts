@@ -26,8 +26,20 @@ export class RatingControllerService {
   async createDeleteRatigsScope(ratingId: number, newScope: IScopeRating[]) {
     return this.ratingService.createDeleteRatigsScope(ratingId, newScope);
   }
-  async getRatingScore(id: number) {
-    return this.ratingService.getRatingScore(id);
+  async getRatingScore(
+    id: number,
+    page: number,
+    limit: number,
+    column: string = 'ratingScore',
+    sortDirection: 'asc' | 'desc' = 'desc',
+  ) {
+    return this.ratingService.getRatingScore(
+      id,
+      page,
+      limit,
+      column,
+      sortDirection,
+    );
   }
   async updateRatingScore(id: number) {
     return this.ratingService.updateRatingScore(id);

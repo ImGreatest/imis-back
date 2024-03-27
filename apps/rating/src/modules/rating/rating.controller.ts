@@ -20,6 +20,7 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { Public } from 'libs/decorators/public.decorator';
 import { JwtService } from '@nestjs/jwt';
 import { ReqUpdateScopeDto } from './dto/update.scope';
+import { ReqGetScoreDto } from './dto/get.score';
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')
@@ -105,9 +106,22 @@ export class RatingController {
   }
 
   @Public()
-  @Get(':id/score')
-  async getRatingScore(@Param('id', ParseIntPipe) ratingId: number) {
-    return this.ratingService.getRatingScore(ratingId);
+  @Put(':id/score')
+  @ApiBody({
+    type: ReqGetScoreDto,
+  })
+  async getRatingScore(
+    @Param('id', ParseIntPipe) ratingId: number,
+    @Body() getData: ReqGetScoreDto,
+  ) {
+    console.log(getData);
+    return this.ratingService.getRatingScore(
+      ratingId,
+      getData.page,
+      getData.pageSize,
+      getData.column,
+      getData.sortDirection,
+    );
   }
   @checkAbilities({
     action: 'update',
