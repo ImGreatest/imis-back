@@ -114,7 +114,6 @@ export class RatingController {
     @Param('id', ParseIntPipe) ratingId: number,
     @Body() getData: ReqGetScoreDto,
   ) {
-    console.log(getData);
     return this.ratingService.getRatingScore(
       ratingId,
       getData.page,
