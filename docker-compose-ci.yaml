@@ -4,9 +4,13 @@ services:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    commands: 
-      - npx prisma migrate deploy 
-      - yarn seed  
+    command: npx prisma migrate deploy 
+
+  seed:
+    image: $DOCKER_TAG
+    env_file:
+      - $ENV
+    command: yarn seed 
 
 
   app-cabinet:
@@ -21,6 +25,8 @@ services:
     depends_on:
       migrations:
         condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
 
   app-rating:
     image: $DOCKER_TAG
@@ -34,6 +40,9 @@ services:
     depends_on:
       migrations:
         condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+
   app-employer:
     image: $DOCKER_TAG
     container_name: SH-b-employer-$CI_COMMIT_BRANCH
@@ -45,6 +54,8 @@ services:
     command: node ./dist/apps/employer/src/main.js
     depends_on:
       migrations:
+        condition: service_completed_successfully
+      seed:
         condition: service_completed_successfully
         
   app-mobile:
@@ -58,4 +69,6 @@ services:
     command: node ./dist/apps/mobile/src/main.js
     depends_on:
       migrations:
+        condition: service_completed_successfully
+      seed:
         condition: service_completed_successfully
