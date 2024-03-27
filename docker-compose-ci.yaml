@@ -50,7 +50,7 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$EMPLOYERPORT:3001"
+      - "$EMPLOYERPORT:3002"
     command: node ./dist/apps/employer/src/main.js
     depends_on:
       migrations:
@@ -65,7 +65,7 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$MOBILEPORT:3001"
+      - "$MOBILEPORT:3003"
     command: node ./dist/apps/mobile/src/main.js
     depends_on:
       migrations:
