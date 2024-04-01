@@ -5,6 +5,6 @@ export interface ICreateUser {
   roleId: number;
   pass: string;
   course?: number;
-  direction?: string;
-  group?: string;
+  directionId?: number;
+  groupId?: number;
 }

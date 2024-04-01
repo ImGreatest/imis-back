@@ -118,6 +118,7 @@ export class RatingController {
       ratingId,
       getData.page,
       getData.pageSize,
+      getData.filters,
       getData.column,
       getData.sortDirection,
     );

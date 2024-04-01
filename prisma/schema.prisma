@@ -38,6 +38,17 @@ model Permission {
 
   @@map("permissions")
 }
+model Group{
+  id    Int     @default(autoincrement()) @id
+  name String @unique @db.VarChar(50)
+  students User[]
+}
+
+model Direction{
+  id    Int     @default(autoincrement()) @id
+  name String @unique @db.VarChar(50)
+  students User[]
+}
 model User {
   id    Int     @default(autoincrement()) @id
   email String  @unique @db.VarChar()
@@ -47,8 +58,10 @@ model User {
   roleId Int  @db.Integer()
   pass String @db.VarChar()
   course Int? @db.Integer()
-  direction String? @db.VarChar(50)
-  group String? @db.VarChar(50)
+  direction    Direction? @relation(fields: [directionId], references: [id])
+  directionId Int? @db.Integer()
+  group    Group? @relation(fields: [groupId], references: [id])
+  groupId Int? @db.Integer()
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime? @db.Timestamp()

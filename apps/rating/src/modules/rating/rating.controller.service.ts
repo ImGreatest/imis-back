@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateRating } from 'libs/domains/rating/interface/create.rating';
+import { IFilter } from 'libs/domains/rating/interface/filter.rating';
 import { IScopeRating } from 'libs/domains/rating/interface/scope.rating';
 import { IUpdateRating } from 'libs/domains/rating/interface/update.rating';
 import { RatingService } from 'libs/domains/rating/rating.service';
@@ -30,11 +31,13 @@ export class RatingControllerService {
     id: number,
     page: number,
     limit: number,
+    filters: IFilter[],
     column: string = 'ratingScore',
     sortDirection: 'asc' | 'desc' = 'desc',
   ) {
     return this.ratingService.getRatingScore(
       id,
+      filters,
       page,
       limit,
       column,

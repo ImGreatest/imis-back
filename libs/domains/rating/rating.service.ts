@@ -4,6 +4,7 @@ import { ICreateRating } from './interface/create.rating';
 import { IUpdateRating } from './interface/update.rating';
 import { IScopeRating } from './interface/scope.rating';
 import { CronService } from 'libs/services/cron/cron.service';
+import { IFilter } from './interface/filter.rating';
 @Injectable()
 export class RatingService {
   constructor(
@@ -97,29 +98,36 @@ export class RatingService {
   }
   async getRatingScore(
     id: number,
+    filters: IFilter[] = [],
     page: number,
     limit: number,
     column: string,
     sortDirection: 'asc' | 'desc',
   ) {
+    let whereOptions = { ratingId: id };
+    filters.forEach((filter) => {
+      whereOptions = { ...whereOptions, [filter.column]: filter.value };
+    });
     const orderProps =
       column === 'ratingScore'
         ? { [column]: sortDirection }
-        : { student: { [column]: sortDirection } };
+        : column === 'group'
+          ? { student: { group: { name: sortDirection } } }
+          : { student: { [column]: sortDirection } };
     const scoresCount = await this.prisma.score.count({
       where: { ratingId: id },
     });
     const scores = await this.prisma.score.findMany({
-      where: { ratingId: id },
+      where: whereOptions,
       include: {
         student: {
           select: {
             id: true,
             name: true,
             surname: true,
+            course: true,
             group: true,
             direction: true,
-            course: true,
           },
         },
       },
@@ -127,12 +135,19 @@ export class RatingService {
       skip: (page - 1) * limit,
       orderBy: orderProps,
     });
+    whereOptions = { ratingId: id };
+    const minMaxScores = await this.prisma.score.aggregate({
+      _min: { ratingScore: true },
+      _max: { ratingScore: true },
+    });
     return {
       info: {
         page: page,
         pageSize: limit,
         totalCount: scoresCount,
         totalPages: Math.ceil(scoresCount / limit),
+        minScores: minMaxScores._min.ratingScore,
+        maxScores: minMaxScores._max.ratingScore,
       },
       rows: scores,
     };
@@ -150,7 +165,6 @@ export class RatingService {
         tags: { include: { tag: { include: { ratingScope: true } } } },
       },
     });
-    console.log(success);
     students.forEach(async (student) => {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
