@@ -162,23 +162,60 @@ export class RatingService {
     const success = await this.prisma.success.findMany({
       where: { userId: { in: students.map((student) => student.id) } },
       include: {
-        tags: { include: { tag: { include: { ratingScope: true } } } },
+        tags: {
+          include: {
+            tag: {
+              include: {
+                ratingScope: true,
+              },
+            },
+          },
+        },
       },
     });
+    const ratingScope = {};
+    // const some = await this.prisma.$queryRawUnsafe(
+    //   'WITH RECURSIVE LastTag AS (        SELECT t.id, t."baseTagId", rs."ratingScore"        FROM "Tag" t        JOIN "RatingScope" rs ON t.id = rs."tagId"        WHERE t.id NOT IN (SELECT "baseTagId" FROM "Tag")        UNION ALL        SELECT t.id, t."baseTagId", rs."ratingScore"        FROM "Tag" t        JOIN "RatingScope" rs ON t.id = rs."tagId"        JOIN LastTag lt ON t."baseTagId" = lt.id    )    SELECT *    FROM LastTag;',
+    // );
+
     students.forEach(async (student) => {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
       );
-      const sum = studentSuccess.flatMap((success) => {
-        return success.tags
-          .flatMap(
-            (tag) =>
-              tag.tag.ratingScope.find((scope) => scope.ratingId === id)
-                ?.ratingScore,
-          )
-          .reduce((acc, cur) => acc + cur, 0);
-      });
-
+      const sum = await Promise.all(
+        studentSuccess.flatMap(async (success) => {
+          const tagRatings = await Promise.all(
+            success.tags.map(async (tag) => {
+              if (ratingScope[tag.tag.id]) {
+                return ratingScope[tag.tag.id];
+              }
+              if (!tag.tag.baseTagId) {
+                ratingScope[tag.tag.id] = tag.tag.ratingScope.find(
+                  (scope) => scope.ratingId === id,
+                ).ratingScore;
+                return ratingScope[tag.tag.id];
+              }
+              let curId = tag.tag.baseTagId;
+              let curSum = tag.tag.ratingScope.find(
+                (scope) => scope.ratingId === id,
+              ).ratingScore;
+              while (curId) {
+                const currentTag = await this.prisma.tag.findFirstOrThrow({
+                  where: { id: curId },
+                  include: { ratingScope: true },
+                });
+                curSum *= currentTag.ratingScope.find(
+                  (scope) => scope.ratingId === id,
+                ).ratingScore;
+                curId = currentTag.baseTagId;
+              }
+              ratingScope[tag.tag.id] = curSum;
+              return curSum;
+            }),
+          );
+          return tagRatings.reduce((acc, cur) => acc + cur, 0);
+        }),
+      );
       await this.prisma.score.create({
         data: {
           studentId: student.id,
