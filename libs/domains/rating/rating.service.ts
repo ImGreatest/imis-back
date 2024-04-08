@@ -174,11 +174,8 @@ export class RatingService {
       },
     });
     const ratingScope = {};
-    // const some = await this.prisma.$queryRawUnsafe(
-    //   'WITH RECURSIVE LastTag AS (        SELECT t.id, t."baseTagId", rs."ratingScore"        FROM "Tag" t        JOIN "RatingScope" rs ON t.id = rs."tagId"        WHERE t.id NOT IN (SELECT "baseTagId" FROM "Tag")        UNION ALL        SELECT t.id, t."baseTagId", rs."ratingScore"        FROM "Tag" t        JOIN "RatingScope" rs ON t.id = rs."tagId"        JOIN LastTag lt ON t."baseTagId" = lt.id    )    SELECT *    FROM LastTag;',
-    // );
 
-    students.forEach(async (student) => {
+    const scorePromises = students.map(async (student) => {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
       );
@@ -216,13 +213,16 @@ export class RatingService {
           return tagRatings.reduce((acc, cur) => acc + cur, 0);
         }),
       );
-      await this.prisma.score.create({
+      const totalSum = sum.reduce((acc, cur) => acc + cur, 0);
+      return this.prisma.score.create({
         data: {
           studentId: student.id,
           ratingId: id,
-          ratingScore: sum.reduce((acc, cur) => acc + cur, 0),
+          ratingScore: totalSum,
         },
       });
     });
+
+    await Promise.all(scorePromises);
   }
 }
