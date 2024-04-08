@@ -152,6 +152,20 @@ export class RatingService {
       rows: scores,
     };
   }
+  async setIntervalsRating() {
+    const ratings = await this.prisma.rating.findMany({
+      where: { minuteUpdate: { gt: 0 } },
+    });
+    ratings.forEach((rating) => {
+      if (rating.minuteUpdate) {
+        this.cronService.addInterval(
+          `rating-${rating.id}`,
+          1000 * 60 * rating.minuteUpdate,
+          () => this.updateRatingScore(rating.id),
+        );
+      }
+    });
+  }
   async updateRatingScore(id: number) {
     await this.prisma.score.deleteMany({
       where: { ratingId: id },
