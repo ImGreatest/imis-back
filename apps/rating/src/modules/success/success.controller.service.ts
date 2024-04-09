@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ICreateSuccess } from 'libs/domains/success/interface/create.success';
-import { IUpdateSuccess } from 'libs/domains/success/interface/update.success';
+import { ICreateSuccess } from 'libs/domains/success/interface/create.success.interface';
+import { IUpdateSuccess } from 'libs/domains/success/interface/update.success.interface';
 import { SuccessService } from 'libs/domains/success/success.service';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
-import { IUpdatePermission } from 'libs/domains/permission/interface/update.permission';
+import { IUpdatePermission } from 'libs/domains/permission/interface/update.permission.interface';
 
 export class ReqUpdatePermissionDto implements IUpdatePermission {
   @ApiProperty()

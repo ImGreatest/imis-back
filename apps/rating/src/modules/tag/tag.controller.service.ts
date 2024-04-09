@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ICreateTag } from 'libs/domains/tag/interface/create.tag';
-import { IUpdateTag } from 'libs/domains/tag/interface/update.tag';
+import { ICreateTag } from 'libs/domains/tag/interface/create.tag.interface';
+import { IUpdateTag } from 'libs/domains/tag/interface/update.tag.interface';
 import { TagService } from 'libs/domains/tag/tag.service';
 
 @Injectable()

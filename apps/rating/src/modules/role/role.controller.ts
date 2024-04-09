@@ -4,19 +4,18 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { RoleControllerService } from './role.controller.service';
-import { ReqCreateRoleDto } from './dto/create.role';
-import { ReqUpdateRoleDto } from './dto/update.role';
-import { UpdatePermissionDto } from './dto/update.permissions';
+import { ReqCreateRoleDto } from './dto/req.create.role.dto';
+import { ReqUpdateRoleDto } from './dto/req.update.role.dto';
+import { UpdatePermissionDto } from './dto/req.update.permissions.dto';
 
 @Controller('role')
 @ApiBearerAuth()
@@ -30,7 +29,6 @@ export class RoleController {
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  @ApiBody({ type: ReqCreateRoleDto })
   async create(@Body() role: ReqCreateRoleDto) {
     return this.roleService.create(role);
   }
@@ -41,10 +39,7 @@ export class RoleController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(
-    @Query('limit', ParseIntPipe) limit: number,
-    @Param('page', ParseIntPipe) page: number,
-  ) {
+  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
     return this.roleService.getPage(limit, page);
   }
 
@@ -54,7 +49,7 @@ export class RoleController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(@Param('id') id: number) {
     return this.roleService.getById(id);
   }
 
@@ -64,11 +59,7 @@ export class RoleController {
   })
   @UseGuards(AbilitiesGuard)
   @Put(':id')
-  @ApiBody({ type: ReqUpdateRoleDto })
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() role: ReqUpdateRoleDto,
-  ) {
+  async update(@Param('id') id: number, @Body() role: ReqUpdateRoleDto) {
     return this.roleService.update(id, role);
   }
   @checkAbilities({
@@ -77,7 +68,7 @@ export class RoleController {
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id') id: number) {
     return this.roleService.delete(id);
   }
 
@@ -87,9 +78,8 @@ export class RoleController {
   })
   @UseGuards(AbilitiesGuard)
   @Put('/permission/:id')
-  @ApiBody({ type: UpdatePermissionDto })
   async createDeletePermissions(
-    @Param('id', ParseIntPipe) roleId: number,
+    @Param('id') roleId: number,
     @Body() newPermission: UpdatePermissionDto[],
   ) {
     return this.roleService.createDeletePermissions(roleId, newPermission);

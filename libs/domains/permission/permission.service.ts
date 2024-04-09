@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreatePermission } from './interface/create.permission';
-import { IUpdatePermission } from './interface/update.permission';
+import { ICreatePermission } from './interface/create.permission.interface';
+import { IUpdatePermission } from './interface/update.permission.interface';
 @Injectable()
 export class PermissionService {
   constructor(private prisma: PrismaService) {}

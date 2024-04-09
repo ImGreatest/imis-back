@@ -4,18 +4,17 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { TagControllerService } from './tag.controller.service';
-import { ReqCreateTagDto } from './dto/create.tag';
-import { ReqUpdateTagDto } from './dto/update.tag';
+import { ReqCreateTagDto } from './dto/req.create.tag.dto';
+import { ReqUpdateTagDto } from './dto/req.update.tag.dto';
 
 @Controller('tag')
 @ApiBearerAuth()
@@ -29,7 +28,6 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  @ApiBody({ type: ReqCreateTagDto })
   async create(@Body() tag: ReqCreateTagDto) {
     return this.tagService.create(tag);
   }
@@ -40,10 +38,7 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(
-    @Query('limit', ParseIntPipe) limit: number,
-    @Param('page', ParseIntPipe) page: number,
-  ) {
+  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
     return this.tagService.getPage(limit, page);
   }
 
@@ -53,7 +48,7 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(@Param('id') id: number) {
     return this.tagService.getById(id);
   }
 
@@ -63,11 +58,7 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Put(':id')
-  @ApiBody({ type: ReqUpdateTagDto })
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() tag: ReqUpdateTagDto,
-  ) {
+  async update(@Param('id') id: number, @Body() tag: ReqUpdateTagDto) {
     return this.tagService.update(id, tag);
   }
   @checkAbilities({
@@ -76,7 +67,7 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id') id: number) {
     return this.tagService.delete(id);
   }
 }

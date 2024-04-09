@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ICreatePermission } from 'libs/domains/permission/interface/create.permission';
-import { IUpdatePermission } from 'libs/domains/permission/interface/update.permission';
+import { ICreatePermission } from 'libs/domains/permission/interface/create.permission.interface';
+import { IUpdatePermission } from 'libs/domains/permission/interface/update.permission.interface';
 import { PermissionService } from 'libs/domains/permission/permission.service';
 
 @Injectable()

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreateUser } from './interface/create.user';
-import { IUpdateUser } from './interface/update.user';
+import { ICreateUser } from './interface/create.user.interface';
+import { IUpdateUser } from './interface/update.user.interface';
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
