@@ -46,6 +46,7 @@ export const subjects = [
   'Skills',
   'Success',
   'Tag',
+  'Rating',
   'all',
 ] as const;
 
@@ -80,6 +81,7 @@ export class AbilitiesGuard implements CanActivate {
     const userPermissions = await this.prisma.permission.findMany({
       where: {
         roleId: currentUser.role,
+        deleted_at: null,
       },
     });
     const parsedUserPermissions = this.parseCondition(
@@ -91,15 +93,12 @@ export class AbilitiesGuard implements CanActivate {
       const ability = this.createAbility(Object(parsedUserPermissions));
       for await (const rule of rules) {
         let sub = {};
-        if (
-          size(
-            parsedUserPermissions.find(
-              (permission) =>
-                permission.action === rule.action &&
-                permission.subject === rule.subject,
-            ).conditions,
-          )
-        ) {
+        const thisPermissions = parsedUserPermissions.find(
+          (permission) =>
+            permission.action === rule.action &&
+            permission.subject === rule.subject,
+        );
+        if (thisPermissions && size(thisPermissions.conditions)) {
           const subId = +request.params['id'];
           sub = await this.getSubjectById(subId, rule.subject);
         }

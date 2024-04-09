@@ -1,11 +1,14 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { RatingControllerService } from './rating.controller.service';
@@ -14,12 +17,18 @@ import { ReqUpdateRatingDto } from './dto/update.rating';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
-
+import { Public } from 'libs/decorators/public.decorator';
+import { JwtService } from '@nestjs/jwt';
+import { ReqUpdateScopeDto } from './dto/update.scope';
+import { ReqGetScoreDto } from './dto/get.score';
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')
 export class RatingController {
-  constructor(private ratingService: RatingControllerService) {}
+  constructor(
+    private ratingService: RatingControllerService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   @checkAbilities({
     action: 'create',
@@ -28,8 +37,11 @@ export class RatingController {
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreateRatingDto })
-  async createRating(rating: ReqCreateRatingDto) {
-    return this.ratingService.createRating(rating);
+  async createRating(@Body() rating: ReqCreateRatingDto, @Req() req) {
+    const token = req.headers.authorization.split(' ')[1];
+    const payload = this.jwtService.decode(token);
+    const userId = payload['sub'];
+    return this.ratingService.createRating(userId, rating);
   }
 
   @checkAbilities({
@@ -38,7 +50,10 @@ export class RatingController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
+  async getPage(
+    @Query('limit', ParseIntPipe) limit: number,
+    @Param('page', ParseIntPipe) page: number,
+  ) {
     return this.ratingService.getPage(limit, page);
   }
 
@@ -48,7 +63,7 @@ export class RatingController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     return this.ratingService.getById(id);
   }
 
@@ -57,18 +72,64 @@ export class RatingController {
     subject: 'Rating',
   })
   @UseGuards(AbilitiesGuard)
-  @Put()
+  @Put(':id')
   @ApiBody({ type: ReqUpdateRatingDto })
-  async updateRatingName(id: number, rating: ReqUpdateRatingDto) {
+  async updateRatingName(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() rating: ReqUpdateRatingDto,
+  ) {
     return this.ratingService.updateRatingName(id, rating);
   }
   @checkAbilities({
-    action: 'delete ',
+    action: 'delete',
     subject: 'Rating',
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async deleteRating(@Param('id') id: number) {
+  async deleteRating(@Param('id', ParseIntPipe) id: number) {
     return this.ratingService.deleteRating(id);
+  }
+  @checkAbilities({
+    action: 'update',
+    subject: 'Rating',
+  })
+  @UseGuards(AbilitiesGuard)
+  @Put(':id/scope')
+  @ApiBody({
+    type: ReqUpdateScopeDto,
+  })
+  async createDeleteRatigsScope(
+    @Param('id', ParseIntPipe) ratingId: number,
+    @Body() newScope: ReqUpdateScopeDto,
+  ) {
+    return this.ratingService.createDeleteRatigsScope(ratingId, newScope.scope);
+  }
+
+  @Public()
+  @Put(':id/score')
+  @ApiBody({
+    type: ReqGetScoreDto,
+  })
+  async getRatingScore(
+    @Param('id', ParseIntPipe) ratingId: number,
+    @Body() getData: ReqGetScoreDto,
+  ) {
+    return this.ratingService.getRatingScore(
+      ratingId,
+      getData.page,
+      getData.pageSize,
+      getData.filters,
+      getData.column,
+      getData.sortDirection,
+    );
+  }
+  @checkAbilities({
+    action: 'update',
+    subject: 'Rating',
+  })
+  @UseGuards(AbilitiesGuard)
+  @Get(':id/update')
+  async updateRatingScore(@Param('id', ParseIntPipe) id: number) {
+    return this.ratingService.updateRatingScore(id);
   }
 }

@@ -1,10 +1,9 @@
-import { UserRole } from 'libs/enums/role';
 export class User {
   id: number;
   email: string;
   name: string;
   surname: string;
-  role: UserRole;
+  roleId: number;
   pass: string;
   course?: number;
   direction?: string;

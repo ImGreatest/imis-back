@@ -13,10 +13,20 @@ export class PermissionService {
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;
-    return this.prisma.permission.findMany({
+    const pageCount = await this.prisma.permission.count();
+    const perms = await this.prisma.permission.findMany({
       take: limit,
       skip: offset,
     });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: pageCount,
+        totalPages: Math.ceil(pageCount / limit),
+      },
+      content: perms,
+    };
   }
   async getById(id: number) {
     return this.prisma.permission.findUnique({

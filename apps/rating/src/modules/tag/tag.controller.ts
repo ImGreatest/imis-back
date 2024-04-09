@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -28,7 +30,7 @@ export class TagController {
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreateTagDto })
-  async create(tag: ReqCreateTagDto) {
+  async create(@Body() tag: ReqCreateTagDto) {
     return this.tagService.create(tag);
   }
 
@@ -38,7 +40,10 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
+  async getPage(
+    @Query('limit', ParseIntPipe) limit: number,
+    @Param('page', ParseIntPipe) page: number,
+  ) {
     return this.tagService.getPage(limit, page);
   }
 
@@ -48,7 +53,7 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     return this.tagService.getById(id);
   }
 
@@ -57,9 +62,12 @@ export class TagController {
     subject: 'Tag',
   })
   @UseGuards(AbilitiesGuard)
-  @Put()
+  @Put(':id')
   @ApiBody({ type: ReqUpdateTagDto })
-  async update(id: number, tag: ReqUpdateTagDto) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() tag: ReqUpdateTagDto,
+  ) {
     return this.tagService.update(id, tag);
   }
   @checkAbilities({
@@ -68,7 +76,7 @@ export class TagController {
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return this.tagService.delete(id);
   }
 }

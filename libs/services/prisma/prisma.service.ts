@@ -16,13 +16,13 @@ export class PrismaService
   }
 
   private readonly argsToFind = (requestData) => ({
-    User: { where: { email: requestData.args.data.email } },
-    Company: { where: { name: requestData.args.data.name } },
-    Theme: { where: { name: requestData.args.data.name } },
-    Project: { where: { name: requestData.args.data.name } },
-    Skills: { where: { name: requestData.args.data.name } },
-    Success: { where: { name: requestData.args.data.name } },
-    Tag: { where: { name: requestData.args.data.name } },
+    User: { where: { email: requestData.args.data?.email } },
+    Company: { where: { name: requestData.args.data?.name } },
+    Theme: { where: { name: requestData.args.data?.name } },
+    Project: { where: { name: requestData.args.data?.name } },
+    Skills: { where: { name: requestData.args.data?.name } },
+    Success: { where: { name: requestData.args.data?.name } },
+    Tag: { where: { name: requestData.args.data?.name } },
   });
 
   private SoftDeleteMiddleware: Prisma.Middleware = async (params, next) => {

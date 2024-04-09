@@ -1,4 +1,7 @@
+import { IScopeRating } from './scope.rating';
+
 export interface ICreateRating {
   name: string;
-  createrId: number;
+  minuteUpdate: number;
+  scope: IScopeRating[];
 }

@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -28,7 +30,7 @@ export class SuccessController {
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreateSuccessDto })
-  async create(success: ReqCreateSuccessDto) {
+  async create(@Body() success: ReqCreateSuccessDto) {
     return this.successService.create(success);
   }
 
@@ -38,7 +40,10 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
+  async getPage(
+    @Query('limit', ParseIntPipe) limit: number,
+    @Param('page', ParseIntPipe) page: number,
+  ) {
     return this.successService.getPage(limit, page);
   }
 
@@ -48,7 +53,7 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     return this.successService.getById(id);
   }
 
@@ -57,18 +62,34 @@ export class SuccessController {
     subject: 'Success',
   })
   @UseGuards(AbilitiesGuard)
-  @Put()
+  @Put(':id')
   @ApiBody({ type: ReqUpdateSuccessDto })
-  async update(id: number, success: ReqUpdateSuccessDto) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    success: ReqUpdateSuccessDto,
+  ) {
     return this.successService.update(id, success);
   }
   @checkAbilities({
-    action: 'delete ',
+    action: 'delete',
     subject: 'Success',
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return this.successService.delete(id);
+  }
+  @checkAbilities({
+    action: 'update',
+    subject: 'Success',
+  })
+  @UseGuards(AbilitiesGuard)
+  @Post('tags/:id')
+  @ApiBody({ type: [Number] })
+  async deleteAddTags(
+    @Param('id', ParseIntPipe) successId: number,
+    @Body() tagsIds: number[],
+  ) {
+    return this.successService.deleteAddTags(successId, tagsIds);
   }
 }

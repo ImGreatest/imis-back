@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -28,7 +30,7 @@ export class PermissionController {
   @UseGuards(AbilitiesGuard)
   @Post()
   @ApiBody({ type: ReqCreatePermissionDto })
-  async create(permission: ReqCreatePermissionDto) {
+  async create(@Body() permission: ReqCreatePermissionDto) {
     return this.permissionService.create(permission);
   }
 
@@ -38,7 +40,10 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
+  async getPage(
+    @Query('limit', ParseIntPipe) limit: number,
+    @Param('page', ParseIntPipe) page: number,
+  ) {
     return this.permissionService.getPage(limit, page);
   }
 
@@ -48,7 +53,7 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id') id: number) {
+  async getById(@Param('id', ParseIntPipe) id: number) {
     return this.permissionService.getById(id);
   }
 
@@ -57,9 +62,12 @@ export class PermissionController {
     subject: 'Permission',
   })
   @UseGuards(AbilitiesGuard)
-  @Put()
+  @Put(':id')
   @ApiBody({ type: ReqUpdatePermissionDto })
-  async update(id: number, permission: ReqUpdatePermissionDto) {
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() permission: ReqUpdatePermissionDto,
+  ) {
     return this.permissionService.update(id, permission);
   }
   @checkAbilities({
@@ -68,7 +76,7 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id', ParseIntPipe) id: number) {
     return this.permissionService.delete(id);
   }
 }

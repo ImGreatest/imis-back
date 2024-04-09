@@ -38,6 +38,17 @@ model Permission {
 
   @@map("permissions")
 }
+model Group{
+  id    Int     @default(autoincrement()) @id
+  name String @unique @db.VarChar(50)
+  students User[]
+}
+
+model Direction{
+  id    Int     @default(autoincrement()) @id
+  name String @unique @db.VarChar(50)
+  students User[]
+}
 model User {
   id    Int     @default(autoincrement()) @id
   email String  @unique @db.VarChar()
@@ -47,8 +58,10 @@ model User {
   roleId Int  @db.Integer()
   pass String @db.VarChar()
   course Int? @db.Integer()
-  direction String? @db.VarChar(50)
-  group String? @db.VarChar(50)
+  direction    Direction? @relation(fields: [directionId], references: [id])
+  directionId Int? @db.Integer()
+  group    Group? @relation(fields: [groupId], references: [id])
+  groupId Int? @db.Integer()
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime? @db.Timestamp()
@@ -77,6 +90,7 @@ model Notifacation{
 model Rating{
   id    Int     @default(autoincrement()) @id
   name String @db.VarChar()
+  minuteUpdate Int @db.Integer() @default(0)
   creater User @relation(fields: [createrId], references: [id])
   createrId Int @db.Integer()
   score Score[]
@@ -84,7 +98,7 @@ model Rating{
   
 }
 model RatingScope{
-  rating Rating @relation(fields: [ratingId], references: [id])
+  rating Rating @relation(fields: [ratingId], references: [id], onDelete: Cascade)
   ratingId Int @db.Integer()
   tag Tag @relation(fields: [tagId], references: [id])
   tagId Int @db.Integer()
@@ -93,7 +107,7 @@ model RatingScope{
 
 }
 model Score{
-  rating Rating @relation(fields: [ratingId], references: [id])
+  rating Rating @relation(fields: [ratingId], references: [id], onDelete: Cascade)
   ratingId Int @db.Integer()
   student User @relation(fields: [studentId],references: [id])
   studentId Int @db.Integer

@@ -183,6 +183,35 @@ export const permissions = [
   { id: 110, roleId: 7, action: 'update', subject: 'Tag' },
   { id: 111, roleId: 7, action: 'delete', subject: 'Tag' },
   { id: 112, roleId: 7, action: 'create', subject: 'Tag' },
+  { id: 113, roleId: 3, action: 'create', subject: 'Rating' },
+  { id: 114, roleId: 3, action: 'read', subject: 'Rating' },
+  { id: 115, roleId: 3, action: 'update', subject: 'Rating' },
+  { id: 116, roleId: 3, action: 'delete', subject: 'Rating' },
+];
+const groups = [
+  {
+    id: 1,
+    name: '402-ИСПК',
+  },
+  {
+    id: 2,
+    name: '302-ИСПК',
+  },
+  {
+    id: 3,
+    name: '302-ФКК',
+  },
+];
+
+const directions = [
+  {
+    id: 1,
+    name: 'ИСПК',
+  },
+  {
+    id: 2,
+    name: 'ФКК',
+  },
 ];
 
 export const users = [
@@ -190,6 +219,8 @@ export const users = [
     id: 1,
     name: 'Billian',
     surname: 'David',
+    groupId: 1,
+    directionId: 1,
     roleId: 1,
     pass: bcrypt.hashSync('somePass', config.HashSaltRound),
     email: 'student@mail.com',
@@ -242,6 +273,225 @@ export const users = [
     pass: bcrypt.hashSync('somePass', config.HashSaltRound),
     email: 'rukovod@mail.com',
   },
+  {
+    id: 8,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 1,
+    directionId: 1,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student1@mail.com',
+  },
+  {
+    id: 9,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 2,
+    directionId: 1,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student2@mail.com',
+  },
+  {
+    id: 10,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 2,
+    directionId: 1,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student3@mail.com',
+  },
+  {
+    id: 11,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 3,
+    directionId: 2,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student4@mail.com',
+  },
+  {
+    id: 12,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 3,
+    directionId: 2,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student5@mail.com',
+  },
+  {
+    id: 13,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 3,
+    directionId: 2,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student6@mail.com',
+  },
+  {
+    id: 14,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 3,
+    directionId: 2,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student7@mail.com',
+  },
+  {
+    id: 15,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 3,
+    directionId: 2,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student8@mail.com',
+  },
+  {
+    id: 16,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 3,
+    directionId: 2,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student9@mail.com',
+  },
+  {
+    id: 17,
+    name: 'Billian',
+    groupId: 3,
+    directionId: 2,
+    surname: 'David',
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student10@mail.com',
+  },
+  {
+    id: 18,
+    name: 'Billian',
+    groupId: 3,
+    directionId: 2,
+    surname: 'David',
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student11@mail.com',
+  },
+  {
+    id: 19,
+    name: 'Billian',
+    surname: 'David',
+    groupId: 3,
+    directionId: 2,
+    roleId: 1,
+    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
+    email: 'student12@mail.com',
+  },
+];
+const tags = [
+  {
+    id: 1,
+    name: 'tag1',
+    description: 'tag1 description',
+  },
+  {
+    id: 2,
+    name: 'tag2',
+    description: 'tag2 description',
+  },
+];
+
+const rating = {
+  id: 1,
+  name: 'rating1',
+  minuteUpdate: 0,
+  createrId: 3,
+};
+
+const ratingScope = [
+  {
+    ratingId: 1,
+    tagId: 1,
+    ratingScore: 3,
+  },
+  {
+    ratingId: 1,
+    tagId: 2,
+    ratingScore: 3,
+  },
+];
+const ratingScore = [
+  {
+    ratingId: 1,
+    studentId: 1,
+    ratingScore: 3,
+  },
+  {
+    ratingId: 1,
+    studentId: 8,
+    ratingScore: 164,
+  },
+  {
+    ratingId: 1,
+    studentId: 9,
+    ratingScore: 143,
+  },
+  {
+    ratingId: 1,
+    studentId: 10,
+    ratingScore: 234,
+  },
+  {
+    ratingId: 1,
+    studentId: 11,
+    ratingScore: 123,
+  },
+  {
+    ratingId: 1,
+    studentId: 12,
+    ratingScore: 57,
+  },
+  {
+    ratingId: 1,
+    studentId: 13,
+    ratingScore: 76,
+  },
+  {
+    ratingId: 1,
+    studentId: 14,
+    ratingScore: 36,
+  },
+  {
+    ratingId: 1,
+    studentId: 15,
+    ratingScore: 25,
+  },
+  {
+    ratingId: 1,
+    studentId: 16,
+    ratingScore: 23,
+  },
+  {
+    ratingId: 1,
+    studentId: 17,
+    ratingScore: 2,
+  },
+  {
+    ratingId: 1,
+    studentId: 18,
+    ratingScore: 8,
+  },
+  {
+    ratingId: 1,
+    studentId: 19,
+    ratingScore: 10,
+  },
 ];
 
 const prisma = new PrismaClient();
@@ -268,7 +518,26 @@ async function main() {
       update: permissionAttrs,
     });
   }
-
+  for await (const group of groups) {
+    const groupAttrs = cloneDeep(group);
+    await prisma.group.upsert({
+      where: {
+        id: group.id,
+      },
+      create: groupAttrs,
+      update: groupAttrs,
+    });
+  }
+  for await (const direction of directions) {
+    const directionAttrs = cloneDeep(direction);
+    await prisma.direction.upsert({
+      where: {
+        id: direction.id,
+      },
+      create: directionAttrs,
+      update: directionAttrs,
+    });
+  }
   for await (const user of users) {
     const userAttrs = cloneDeep(user);
     await prisma.user.upsert({
@@ -279,8 +548,52 @@ async function main() {
       update: userAttrs,
     });
   }
-}
 
+  for await (const tag of tags) {
+    const tagAttrs = cloneDeep(tag);
+    await prisma.tag.upsert({
+      where: {
+        id: tag.id,
+      },
+      create: tagAttrs,
+      update: tagAttrs,
+    });
+  }
+
+  await prisma.rating.upsert({
+    where: {
+      id: rating.id,
+    },
+    create: rating,
+    update: rating,
+  });
+  for await (const scope of ratingScope) {
+    const scopeAttrs = cloneDeep(scope);
+    await prisma.ratingScope.upsert({
+      where: {
+        ratingId_tagId: {
+          ratingId: scope.ratingId,
+          tagId: scope.tagId,
+        },
+      },
+      create: scopeAttrs,
+      update: scopeAttrs,
+    });
+  }
+  for await (const score of ratingScore) {
+    const scoreAttrs = cloneDeep(score);
+    await prisma.score.upsert({
+      where: {
+        ratingId_studentId: {
+          ratingId: score.ratingId,
+          studentId: score.studentId,
+        },
+      },
+      create: scoreAttrs,
+      update: scoreAttrs,
+    });
+  }
+}
 main()
   .then(async () => {
     await prisma.$disconnect();

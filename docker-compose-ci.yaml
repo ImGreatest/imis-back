@@ -6,6 +6,12 @@ services:
       - $ENV
     command: npx prisma migrate deploy 
 
+  seed:
+    image: $DOCKER_TAG
+    env_file:
+      - $ENV
+    command: yarn seed 
+
 
   app-cabinet:
     image: $DOCKER_TAG
@@ -18,6 +24,8 @@ services:
     command: node ./dist/apps/cabinet/src/main.js
     depends_on:
       migrations:
+        condition: service_completed_successfully
+      seed:
         condition: service_completed_successfully
 
   app-rating:
@@ -32,6 +40,9 @@ services:
     depends_on:
       migrations:
         condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+
   app-employer:
     image: $DOCKER_TAG
     container_name: SH-b-employer-$CI_COMMIT_BRANCH
@@ -39,10 +50,12 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$EMPLOYERPORT:3001"
+      - "$EMPLOYERPORT:3002"
     command: node ./dist/apps/employer/src/main.js
     depends_on:
       migrations:
+        condition: service_completed_successfully
+      seed:
         condition: service_completed_successfully
         
   app-mobile:
@@ -52,8 +65,10 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$MOBILEPORT:3001"
+      - "$MOBILEPORT:3003"
     command: node ./dist/apps/mobile/src/main.js
     depends_on:
       migrations:
+        condition: service_completed_successfully
+      seed:
         condition: service_completed_successfully
