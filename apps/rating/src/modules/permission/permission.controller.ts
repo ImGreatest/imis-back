@@ -4,18 +4,17 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { PermissionControllerService } from './permission.controller.service';
-import { ReqCreatePermissionDto } from './dto/create.permission';
-import { ReqUpdatePermissionDto } from './dto/update.permission';
+import { ReqCreatePermissionDto } from './dto/req.create.permission.dto';
+import { ReqUpdatePermissionDto } from './dto/req.update.permission.dto';
 
 @Controller('permission')
 @ApiBearerAuth()
@@ -29,7 +28,6 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  @ApiBody({ type: ReqCreatePermissionDto })
   async create(@Body() permission: ReqCreatePermissionDto) {
     return this.permissionService.create(permission);
   }
@@ -40,10 +38,7 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(
-    @Query('limit', ParseIntPipe) limit: number,
-    @Param('page', ParseIntPipe) page: number,
-  ) {
+  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
     return this.permissionService.getPage(limit, page);
   }
 
@@ -53,7 +48,7 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(@Param('id') id: number) {
     return this.permissionService.getById(id);
   }
 
@@ -63,9 +58,8 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Put(':id')
-  @ApiBody({ type: ReqUpdatePermissionDto })
   async update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id') id: number,
     @Body() permission: ReqUpdatePermissionDto,
   ) {
     return this.permissionService.update(id, permission);
@@ -76,7 +70,7 @@ export class PermissionController {
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id') id: number) {
     return this.permissionService.delete(id);
   }
 }

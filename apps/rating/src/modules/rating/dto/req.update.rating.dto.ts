@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { IScopeRating } from 'libs/domains/rating/interface/scope.rating';
-import { IUpdateRating } from 'libs/domains/rating/interface/update.rating';
+import { IScopeRating } from 'libs/domains/rating/interface/scope.rating.interface';
+import { IUpdateRating } from 'libs/domains/rating/interface/update.rating.interface';
 
 export class ReqUpdateRatingDto implements IUpdateRating {
   @ApiProperty()

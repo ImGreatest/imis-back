@@ -1,4 +1,4 @@
-import { IScopeRating } from './scope.rating';
+import { IScopeRating } from './scope.rating.interface';
 
 export interface ICreateRating {
   name: string;

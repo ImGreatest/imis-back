@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { IUpdateSuccess } from 'libs/domains/success/interface/update.success';
+import { IUpdateSuccess } from 'libs/domains/success/interface/update.success.interface';
 
 export class ReqUpdateSuccessDto implements IUpdateSuccess {
   @ApiProperty()

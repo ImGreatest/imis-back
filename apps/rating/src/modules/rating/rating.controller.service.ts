@@ -1,8 +1,8 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import { ICreateRating } from 'libs/domains/rating/interface/create.rating';
-import { IFilter } from 'libs/domains/rating/interface/filter.rating';
-import { IScopeRating } from 'libs/domains/rating/interface/scope.rating';
-import { IUpdateRating } from 'libs/domains/rating/interface/update.rating';
+import { ICreateRating } from 'libs/domains/rating/interface/create.rating.interface';
+import { IFilter } from 'libs/domains/rating/interface/filter.rating.interface';
+import { IScopeRating } from 'libs/domains/rating/interface/scope.rating.interface';
+import { IUpdateRating } from 'libs/domains/rating/interface/update.rating.interface';
 import { RatingService } from 'libs/domains/rating/rating.service';
 
 @Injectable()

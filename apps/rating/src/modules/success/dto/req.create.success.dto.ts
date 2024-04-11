@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { ICreateTag } from 'libs/domains/tag/interface/create.tag';
+import { ICreateSuccess } from 'libs/domains/success/interface/create.success.interface';
 
-export class ReqCreateTagDto implements ICreateTag {
+export class ReqCreateSuccessDto implements ICreateSuccess {
+  @ApiProperty({ type: Array<number>, example: [1, 2, 3] })
+  tags: number[];
   @ApiProperty()
   @IsString()
   name: string;
@@ -13,5 +15,5 @@ export class ReqCreateTagDto implements ICreateTag {
 
   @ApiProperty()
   @IsNumber()
-  baseTagId?: number;
+  userId: number;
 }

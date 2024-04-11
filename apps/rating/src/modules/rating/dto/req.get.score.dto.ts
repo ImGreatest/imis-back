@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
-import { IFilter } from 'libs/domains/rating/interface/filter.rating';
+import { IFilter } from 'libs/domains/rating/interface/filter.rating.interface';
 
 export class ReqGetScoreDto {
   @ApiProperty()

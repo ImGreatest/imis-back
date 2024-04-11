@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreateRole } from './interface/create.role';
-import { IUpdateRole } from './interface/update.role';
-import { IUpdatePermission } from './interface/update.permissions';
+import { ICreateRole } from './interface/create.role.interface';
+import { IUpdateRole } from './interface/update.role.interface';
+import { IUpdatePermission } from './interface/update.permissions.interface';
 @Injectable()
 export class RoleService {
   constructor(private prisma: PrismaService) {}

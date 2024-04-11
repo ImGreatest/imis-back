@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ICreateRole } from 'libs/domains/role/interface/create.role';
-import { IUpdatePermission } from 'libs/domains/role/interface/update.permissions';
-import { IUpdateRole } from 'libs/domains/role/interface/update.role';
+import { ICreateRole } from 'libs/domains/role/interface/create.role.interface';
+import { IUpdatePermission } from 'libs/domains/role/interface/update.permissions.interface';
+import { IUpdateRole } from 'libs/domains/role/interface/update.role.interface';
 import { RoleService } from 'libs/domains/role/role.service';
 
 @Injectable()

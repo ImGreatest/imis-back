@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreateTag } from './interface/create.tag';
-import { IUpdateTag } from './interface/update.tag';
+import { ICreateTag } from './interface/create.tag.interface';
+import { IUpdateTag } from './interface/update.tag.interface';
 @Injectable()
 export class TagService {
   constructor(private prisma: PrismaService) {}

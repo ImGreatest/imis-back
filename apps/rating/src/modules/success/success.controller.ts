@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Put,
   Query,
@@ -14,8 +13,8 @@ import { SuccessControllerService } from './success.controller.service';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
-import { ReqCreateSuccessDto } from './dto/create.success';
-import { ReqUpdateSuccessDto } from './dto/update.success';
+import { ReqCreateSuccessDto } from './dto/req.create.success.dto';
+import { ReqUpdateSuccessDto } from './dto/req.update.success.dto';
 
 @Controller('success')
 @ApiBearerAuth()
@@ -29,7 +28,6 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  @ApiBody({ type: ReqCreateSuccessDto })
   async create(@Body() success: ReqCreateSuccessDto) {
     return this.successService.create(success);
   }
@@ -40,10 +38,7 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPage(
-    @Query('limit', ParseIntPipe) limit: number,
-    @Param('page', ParseIntPipe) page: number,
-  ) {
+  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
     return this.successService.getPage(limit, page);
   }
 
@@ -53,7 +48,7 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  async getById(@Param('id') id: number) {
     return this.successService.getById(id);
   }
 
@@ -63,11 +58,7 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Put(':id')
-  @ApiBody({ type: ReqUpdateSuccessDto })
-  async update(
-    @Param('id', ParseIntPipe) id: number,
-    success: ReqUpdateSuccessDto,
-  ) {
+  async update(@Param('id') id: number, success: ReqUpdateSuccessDto) {
     return this.successService.update(id, success);
   }
   @checkAbilities({
@@ -76,7 +67,7 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Delete(':id')
-  async delete(@Param('id', ParseIntPipe) id: number) {
+  async delete(@Param('id') id: number) {
     return this.successService.delete(id);
   }
   @checkAbilities({
@@ -87,7 +78,7 @@ export class SuccessController {
   @Post('tags/:id')
   @ApiBody({ type: [Number] })
   async deleteAddTags(
-    @Param('id', ParseIntPipe) successId: number,
+    @Param('id') successId: number,
     @Body() tagsIds: number[],
   ) {
     return this.successService.deleteAddTags(successId, tagsIds);

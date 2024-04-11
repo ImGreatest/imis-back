@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreateSuccess } from './interface/create.success';
-import { IUpdateSuccess } from './interface/update.success';
+import { ICreateSuccess } from './interface/create.success.interface';
+import { IUpdateSuccess } from './interface/update.success.interface';
 @Injectable()
 export class SuccessService {
   constructor(private prisma: PrismaService) {}

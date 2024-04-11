@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
-import { ICreatePermission } from 'libs/domains/permission/interface/create.permission';
+import { ICreatePermission } from 'libs/domains/permission/interface/create.permission.interface';
 
 export class ReqCreatePermissionDto implements ICreatePermission {
   @ApiProperty()

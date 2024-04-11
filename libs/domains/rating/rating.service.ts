@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreateRating } from './interface/create.rating';
-import { IUpdateRating } from './interface/update.rating';
-import { IScopeRating } from './interface/scope.rating';
+import { ICreateRating } from './interface/create.rating.interface';
+import { IUpdateRating } from './interface/update.rating.interface';
+import { IScopeRating } from './interface/scope.rating.interface';
 import { CronService } from 'libs/services/cron/cron.service';
-import { IFilter } from './interface/filter.rating';
+import { IFilter } from './interface/filter.rating.interface';
 @Injectable()
 export class RatingService {
   constructor(
@@ -115,7 +115,7 @@ export class RatingService {
           ? { student: { group: { name: sortDirection } } }
           : { student: { [column]: sortDirection } };
     const scoresCount = await this.prisma.score.count({
-      where: { ratingId: id },
+      where: whereOptions,
     });
     const scores = await this.prisma.score.findMany({
       where: whereOptions,
