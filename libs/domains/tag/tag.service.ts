@@ -11,22 +11,69 @@ export class TagService {
       data: tag,
     });
   }
-  async getPage(limit: number, page: number) {
-    const offset = (page - 1) * limit;
-    const pageCount = await this.prisma.tag.count();
-    const tags = await this.prisma.tag.findMany({
-      take: limit,
-      skip: offset,
-    });
-    return {
-      info: {
-        page: page,
-        pageSize: limit,
-        totalCount: pageCount,
-        totalPages: Math.ceil(pageCount / limit),
+  async getTagsTree(ratingId: number) {
+    const baseTags = await this.prisma.tag.findMany({
+      where: { baseTagId: null, deletedAt: null },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        childTags: true,
+        ratingScope: {
+          where: { ratingId: ratingId },
+          select: { ratingScore: true },
+        },
       },
-      content: tags,
+    });
+
+    const fetchChildrenRecursively = async (tag) => {
+      if (tag.childTags.length > 0) {
+        const childTagsWithChildren = await Promise.all(
+          tag.childTags.map(async (childTag) => {
+            const tagWithChildren = await this.prisma.tag.findUnique({
+              where: { id: childTag.id, deletedAt: null },
+              select: {
+                id: true,
+                name: true,
+                description: true,
+                childTags: true,
+                ratingScope: {
+                  where: { ratingId: ratingId },
+                  select: { ratingScore: true },
+                },
+              },
+            });
+            return fetchChildrenRecursively(tagWithChildren);
+          }),
+        );
+        return {
+          ...tag,
+          childTags: childTagsWithChildren,
+        };
+      } else {
+        return tag;
+      }
     };
+
+    const baseTagsWithChildren = await Promise.all(
+      baseTags.map(async (tag) => {
+        return fetchChildrenRecursively(tag);
+      }),
+    );
+
+    return baseTagsWithChildren;
+  }
+
+  async getList() {
+    const tags = await this.prisma.tag.findMany({
+      where: { childTags: { none: {} }, deletedAt: null },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
+    });
+    return tags;
   }
   async getById(id: number) {
     return this.prisma.tag.findUnique({

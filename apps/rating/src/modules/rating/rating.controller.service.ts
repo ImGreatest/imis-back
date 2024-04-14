@@ -28,8 +28,11 @@ export class RatingControllerService implements OnApplicationBootstrap {
   async deleteRating(id: number) {
     return this.ratingService.deleteRating(id);
   }
-  async createDeleteRatigsScope(ratingId: number, newScope: IScopeRating[]) {
-    return this.ratingService.createDeleteRatigsScope(ratingId, newScope);
+  async deleteAndCreateRatingsScope(
+    ratingId: number,
+    newScope: IScopeRating[],
+  ) {
+    return this.ratingService.deleteAndCreateRatingsScope(ratingId, newScope);
   }
   async getRatingScore(
     id: number,

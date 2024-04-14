@@ -19,7 +19,7 @@ export class RatingService {
       data: { ...rating, createrId: createrId },
     });
 
-    await this.createDeleteRatigsScope(createdRating.id, scope);
+    await this.deleteAndCreateRatingsScope(createdRating.id, scope);
     if (rating.minuteUpdate) {
       this.cronService.addInterval(
         `rating-${createdRating.id}`,
@@ -55,7 +55,7 @@ export class RatingService {
     const scope = rating.scope;
     delete rating.scope;
     if (scope) {
-      await this.createDeleteRatigsScope(id, scope);
+      await this.deleteAndCreateRatingsScope(id, scope);
     }
     this.cronService.deleteInterval(`rating-${id}`);
     if (rating.minuteUpdate) {
@@ -86,7 +86,10 @@ export class RatingService {
       where: { id: id },
     });
   }
-  async createDeleteRatigsScope(ratingId: number, newScope: IScopeRating[]) {
+  async deleteAndCreateRatingsScope(
+    ratingId: number,
+    newScope: IScopeRating[],
+  ) {
     await this.prisma.ratingScope.deleteMany({
       where: {
         ratingId: ratingId,
@@ -207,17 +210,20 @@ export class RatingService {
                 return ratingScope[tag.tag.id];
               }
               let curId = tag.tag.baseTagId;
-              let curSum = tag.tag.ratingScope.find(
+              const scope = tag.tag.ratingScope.find(
                 (scope) => scope.ratingId === id,
               ).ratingScore;
+              let curSum = scope ? scope : 0;
+
               while (curId) {
                 const currentTag = await this.prisma.tag.findFirstOrThrow({
                   where: { id: curId },
                   include: { ratingScope: true },
                 });
-                curSum *= currentTag.ratingScope.find(
+                const scope = currentTag.ratingScope.find(
                   (scope) => scope.ratingId === id,
                 ).ratingScore;
+                curSum *= scope ? scope : 1;
                 curId = currentTag.baseTagId;
               }
               ratingScope[tag.tag.id] = curSum;

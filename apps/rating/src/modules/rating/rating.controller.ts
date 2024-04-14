@@ -93,11 +93,14 @@ export class RatingController {
     @Param('id') ratingId: number,
     @Body() newScope: ReqUpdateScopeDto,
   ) {
-    return this.ratingService.createDeleteRatigsScope(ratingId, newScope.scope);
+    return this.ratingService.deleteAndCreateRatingsScope(
+      ratingId,
+      newScope.scope,
+    );
   }
 
   @Public()
-  @Put(':id/score')
+  @Put(':id/score') // http:localhost:3000/api/rating/1/score
   async getRatingScore(
     @Param('id') ratingId: number,
     @Body() getData: ReqGetScoreDto,
