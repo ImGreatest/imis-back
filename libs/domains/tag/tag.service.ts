@@ -12,13 +12,13 @@ export class TagService {
     });
   }
   async getTagsTree(ratingId: number) {
-    const baseTags = await this.prisma.tag.findMany({
-      where: { baseTagId: null, deletedAt: null },
+    const allTags = await this.prisma.tag.findMany({
+      where: { deletedAt: null },
       select: {
         id: true,
         name: true,
+        baseTagId: true,
         description: true,
-        childTags: true,
         ratingScope: {
           where: { ratingId: ratingId },
           select: { ratingScore: true },
@@ -26,42 +26,28 @@ export class TagService {
       },
     });
 
-    const fetchChildrenRecursively = async (tag) => {
-      if (tag.childTags.length > 0) {
-        const childTagsWithChildren = await Promise.all(
-          tag.childTags.map(async (childTag) => {
-            const tagWithChildren = await this.prisma.tag.findUnique({
-              where: { id: childTag.id, deletedAt: null },
-              select: {
-                id: true,
-                name: true,
-                description: true,
-                childTags: true,
-                ratingScope: {
-                  where: { ratingId: ratingId },
-                  select: { ratingScore: true },
-                },
-              },
-            });
-            return fetchChildrenRecursively(tagWithChildren);
-          }),
-        );
-        return {
-          ...tag,
-          childTags: childTagsWithChildren,
-        };
-      } else {
-        return tag;
-      }
-    };
+    const baseTags = allTags.filter((tag) => !tag.baseTagId);
 
-    const baseTagsWithChildren = await Promise.all(
-      baseTags.map(async (tag) => {
-        return fetchChildrenRecursively(tag);
-      }),
-    );
+    const tagWithChild = baseTags.map((tag) => ({
+      id: tag.id,
+      name: tag.name,
+      description: tag.description,
+      ratingScope: tag.ratingScope && tag.ratingScope[0]?.ratingScore,
+      childTags: this.recurse(tag, allTags),
+    }));
 
-    return baseTagsWithChildren;
+    return tagWithChild;
+  }
+
+  recurse(tag, allTags) {
+    const children = allTags.filter((child) => child.baseTagId === tag.id);
+    return children.map((child) => ({
+      id: child.id,
+      name: child.name,
+      description: child.description,
+      ratingScope: child.ratingScope && child.ratingScope[0]?.ratingScore,
+      childTags: this.recurse(child, allTags),
+    }));
   }
 
   async getList() {
