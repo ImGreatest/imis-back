@@ -181,58 +181,59 @@ export class RatingService {
       include: {
         tags: {
           include: {
-            tag: {
-              include: {
-                ratingScope: true,
-              },
-            },
+            tag: true,
           },
         },
       },
     });
-    const ratingScope = {};
+    const allTags = await this.prisma.tag.findMany({
+      where: { deletedAt: null },
+      include: {
+        childTags: true,
+        ratingScope: {
+          where: {
+            ratingId: id,
+          },
+        },
+      },
+    });
+    const rootTags = allTags.filter((tag) => tag.childTags.length === 0);
+
+    const recurseModify = (tag, sum): number => {
+      const child = allTags.find((child) => child.id === tag.baseTagId);
+      sum *= child.ratingScope ? child.ratingScope[0].ratingScore : 1;
+      if (child.baseTagId) {
+        return recurseModify(child, sum);
+      }
+      return sum;
+    };
+
+    const ratingScope: { [key: number]: number } = {};
+
+    rootTags.forEach((tag) => {
+      const ratingScore =
+        tag.ratingScope.length > 0 ? tag.ratingScope[0].ratingScore : 0;
+      ratingScope[tag.id] = tag.baseTagId
+        ? recurseModify(tag, ratingScore)
+        : ratingScore;
+    });
 
     const scorePromises = students.map(async (student) => {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
       );
       const sum = await Promise.all(
-        studentSuccess.flatMap(async (success) => {
+        studentSuccess.map(async (success) => {
           const tagRatings = await Promise.all(
             success.tags.map(async (tag) => {
-              if (ratingScope[tag.tag.id]) {
-                return ratingScope[tag.tag.id];
-              }
-              if (!tag.tag.baseTagId) {
-                ratingScope[tag.tag.id] = tag.tag.ratingScope.find(
-                  (scope) => scope.ratingId === id,
-                ).ratingScore;
-                return ratingScope[tag.tag.id];
-              }
-              let curId = tag.tag.baseTagId;
-              const scope = tag.tag.ratingScope.find(
-                (scope) => scope.ratingId === id,
-              ).ratingScore;
-              let curSum = scope ? scope : 0;
-
-              while (curId) {
-                const currentTag = await this.prisma.tag.findFirstOrThrow({
-                  where: { id: curId },
-                  include: { ratingScope: true },
-                });
-                const scope = currentTag.ratingScope.find(
-                  (scope) => scope.ratingId === id,
-                ).ratingScore;
-                curSum *= scope ? scope : 1;
-                curId = currentTag.baseTagId;
-              }
-              ratingScope[tag.tag.id] = curSum;
-              return curSum;
+              const score = ratingScope[tag.tagId] || 0;
+              return score;
             }),
           );
           return tagRatings.reduce((acc, cur) => acc + cur, 0);
         }),
       );
+
       const totalSum = sum.reduce((acc, cur) => acc + cur, 0);
       return this.prisma.score.create({
         data: {
