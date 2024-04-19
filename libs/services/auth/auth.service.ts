@@ -16,7 +16,7 @@ export class AuthService {
   ) {}
 
   async signIn(mail: string, pass: string): Promise<{ access_token: string }> {
-    const user = await this.usersService.findOneByEmail(mail);
+    const user = await this.usersService.getUserByEmail(mail);
     if (!user) {
       throw new UnauthorizedException("User doesn't exist");
     }
@@ -35,7 +35,7 @@ export class AuthService {
     };
   }
   async signUp(signUpData: IsignUp) {
-    const user = await this.usersService.findOneByEmail(signUpData.email);
+    const user = await this.usersService.getUserByEmail(signUpData.email);
     if (user) {
       throw new ConflictException('User already exists');
     }

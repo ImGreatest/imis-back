@@ -1,39 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreateUser } from './interface/create.user.interface';
-import { IUpdateUser } from './interface/update.user.interface';
+import { IReqCreateUser } from './dto/req-dto/req-create-user.interface.dto';
+import { IReqUpdateUser } from './dto/req-dto/req-update-user.interface.dto';
+import { IResUser } from "./dto/res-dto/res-user.dto";
+import { IResGetUserAndCountDto } from "./dto/res-dto/res-get-user-and-count.dto";
+import { UserRepository } from "./repositories/user.repository";
+
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly userRep: UserRepository) {}
 
-  async createUser(user: ICreateUser) {
-    return this.prisma.user.create({
-      data: user,
-    });
+  async createUser(user: IReqCreateUser): Promise<IResUser> {
+    return this.userRep.createUser(user);
   }
 
-  async findAndCount() {
-    const users = await this.prisma.user.findMany();
-    const totalCount = await this.prisma.user.count();
-
-    const resListDto = {
-      rows: users,
-      count: totalCount,
-    };
-
-    return resListDto;
+  async getUserAndCount(): Promise<IResGetUserAndCountDto>  {
+    return this.userRep.getUserAndCount();
   }
 
-  async findOneByEmail(mail: string) {
-    return this.prisma.user.findFirst({ where: { email: mail } });
+  async getUserByEmail(email: string): Promise<IResUser> {
+    return this.userRep.getUserByEmail(email);
   }
-  async findOneById(id: number) {
-    return this.prisma.user.findFirst({ where: { id } });
+
+  async getUserById(id: number): Promise<IResUser> {
+    return this.userRep.getUserById(id);
   }
-  async updateUser(id: number, user: IUpdateUser) {
-    return await this.prisma.user.update({
-      where: { id: id },
-      data: user,
-    });
+
+  async getUsers(): Promise<IResUser[]> {
+    return this.userRep.getUsers();
+  }
+
+  async updateUser(id: number, user: IReqUpdateUser): Promise<IResUser> {
+    return this.userRep.updateUser(id, user);
+  }
+
+  async deleteUser(id: number): Promise<IResUser> {
+    return this.userRep.deleteUser(id);
   }
 }
