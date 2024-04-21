@@ -110,8 +110,7 @@ export class RatingController {
       getData.page,
       getData.pageSize,
       getData.filters,
-      getData.column,
-      getData.sortDirection,
+      getData.orderProps,
     );
   }
   @checkAbilities({

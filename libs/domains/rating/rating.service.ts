@@ -5,6 +5,7 @@ import { IUpdateRating } from './interface/update.rating.interface';
 import { IScopeRating } from './interface/scope.rating.interface';
 import { CronService } from 'libs/services/cron/cron.service';
 import { IFilter } from './interface/filter.rating.interface';
+import { IOrder } from './interface/order.rating.interface';
 @Injectable()
 export class RatingService {
   constructor(
@@ -104,19 +105,13 @@ export class RatingService {
     filters: IFilter[] = [],
     page: number,
     limit: number,
-    column: string,
-    sortDirection: 'asc' | 'desc',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    orderProps: IOrder,
   ) {
     let whereOptions = { ratingId: id };
     filters.forEach((filter) => {
       whereOptions = { ...whereOptions, [filter.column]: filter.value };
     });
-    const orderProps =
-      column === 'ratingScore'
-        ? { [column]: sortDirection }
-        : column === 'group'
-          ? { student: { group: { name: sortDirection } } }
-          : { student: { [column]: sortDirection } };
     const scoresCount = await this.prisma.score.count({
       where: whereOptions,
     });

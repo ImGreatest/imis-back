@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNumber, IsObject } from 'class-validator';
 import { IFilter } from 'libs/domains/rating/interface/filter.rating.interface';
+import { IOrder } from 'libs/domains/rating/interface/order.rating.interface';
 
 export class ReqGetScoreDto {
   @ApiProperty()
@@ -9,12 +10,12 @@ export class ReqGetScoreDto {
   @ApiProperty()
   @IsNumber()
   pageSize: number;
-  @ApiProperty()
-  @IsString()
-  sortDirection: 'asc' | 'desc';
-  @ApiProperty()
-  @IsString()
-  column: string;
   @ApiProperty({ example: [{ column: 'scoreRating', value: 5 }] })
+  @IsArray()
   filters: IFilter[];
+
+  @ApiProperty({ example: { ratingScore: 'asc' } })
+  @IsObject()
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  orderProps: IOrder;
 }

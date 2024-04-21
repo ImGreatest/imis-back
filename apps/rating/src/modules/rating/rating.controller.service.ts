@@ -1,6 +1,7 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { ICreateRating } from 'libs/domains/rating/interface/create.rating.interface';
 import { IFilter } from 'libs/domains/rating/interface/filter.rating.interface';
+import { IOrder } from 'libs/domains/rating/interface/order.rating.interface';
 import { IScopeRating } from 'libs/domains/rating/interface/scope.rating.interface';
 import { IUpdateRating } from 'libs/domains/rating/interface/update.rating.interface';
 import { RatingService } from 'libs/domains/rating/rating.service';
@@ -39,16 +40,15 @@ export class RatingControllerService implements OnApplicationBootstrap {
     page: number,
     limit: number,
     filters: IFilter[],
-    column: string = 'ratingScore',
-    sortDirection: 'asc' | 'desc' = 'desc',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    orderProps: IOrder,
   ) {
     return this.ratingService.getRatingScore(
       id,
       filters,
       page,
       limit,
-      column,
-      sortDirection,
+      orderProps,
     );
   }
   async updateRatingScore(id: number) {
