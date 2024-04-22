@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,7 +18,7 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { Public } from 'libs/decorators/public.decorator';
 import { JwtService } from '@nestjs/jwt';
 import { ReqUpdateScopeDto } from './dto/req.update.scope.dto';
-import { ReqGetScoreDto } from './dto/req.get.score.dto';
+import { ReqGetPageDto } from '../../../../../libs/shared/interface/req.get.page.dto';
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')
@@ -42,14 +41,20 @@ export class RatingController {
     return this.ratingService.createRating(userId, rating);
   }
 
-  @checkAbilities({
-    action: 'read',
-    subject: 'Rating',
-  })
-  @UseGuards(AbilitiesGuard)
-  @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
-    return this.ratingService.getPage(limit, page);
+  // @checkAbilities({
+  //   action: 'read',
+  //   subject: 'Rating',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
+  @Post('/table')
+  async getPage(@Body() getData: ReqGetPageDto) {
+    return this.ratingService.getPage(
+      getData.pageSize,
+      getData.page,
+      getData.filters,
+      getData.orderProps,
+    );
   }
 
   @checkAbilities({
@@ -103,7 +108,7 @@ export class RatingController {
   @Put(':id/score') // http:localhost:3000/api/rating/1/score
   async getRatingScore(
     @Param('id') ratingId: number,
-    @Body() getData: ReqGetScoreDto,
+    @Body() getData: ReqGetPageDto,
   ) {
     return this.ratingService.getRatingScore(
       ratingId,
