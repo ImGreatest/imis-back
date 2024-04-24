@@ -23,10 +23,11 @@ export class UserController {
     return this.userService.getUserAndCount();
   }
 
-  @Get('get-user-by-email:/email')
+  @Get('get-user-by-email/:email')
   getUserByEmail(
     @Param('email') email: string
   ): Promise<ResUserDto> {
+    console.log(email);
     return this.userService.getUserByEmail(email);
   }
 

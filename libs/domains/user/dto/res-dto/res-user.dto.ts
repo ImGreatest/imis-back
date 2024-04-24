@@ -1,3 +1,4 @@
+import { UserRole } from "@prisma/client";
 
 export interface IResUser {
     id: number,
@@ -7,8 +8,8 @@ export interface IResUser {
     roleId: number,
     pass: string,
     course?: number,
-    direction?: string,
-    group?: string,
+    direction?: number,
+    group?: number,
     createdAt?: Date,
     updatedAt?: Date,
     deletedAt?: Date,
