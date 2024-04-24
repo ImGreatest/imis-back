@@ -11,6 +11,7 @@ export class TagService {
       data: tag,
     });
   }
+
   async getTagsTree(ratingId: number) {
     const allTags = await this.prisma.tag.findMany({
       where: { deletedAt: null },

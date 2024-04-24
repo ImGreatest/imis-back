@@ -4,7 +4,7 @@ import { IReqCreateUser } from "../../domains/user/dto/req-dto/req-create-user.i
 import { IResUser } from "../../domains/user/dto/res-dto/res-user.dto";
 import { PrismaService } from "../../services/prisma/prisma.service";
 import { IResGetUserAndCountDto } from "../../domains/user/dto/res-dto/res-get-user-and-count.dto";
-import { User } from "../../entity/user";
+import { User } from "../../domains/user/entities/user";
 import { IReqUpdateUser } from "../../domains/user/dto/req-dto/req-update-user.interface.dto";
 
 @Injectable()

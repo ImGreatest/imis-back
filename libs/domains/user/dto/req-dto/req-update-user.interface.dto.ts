@@ -1,5 +1,3 @@
-export interface IReqUpdateUser {
-  email: string;
-  name: string;
-  surname: string;
-}
+import { IReqCreateUser } from "./req-create-user.interface.dto";
+
+export interface IReqUpdateUser extends IReqCreateUser {}
