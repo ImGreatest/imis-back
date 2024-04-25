@@ -1,4 +1,4 @@
-import { User } from '../../../../entity/user';
+import { User } from '../../entities/user';
 
 export interface IResGetUserAndCountDto {
   rows: User[];
