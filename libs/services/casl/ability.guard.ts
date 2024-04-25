@@ -104,7 +104,7 @@ export class AbilitiesGuard implements CanActivate {
         }
 
         ForbiddenError.from(ability)
-          .setMessage('You are not allowed to perform this action')
+          .setMessage('У вас нет доступа к этой операции')
           .throwUnlessCan(rule.action, subject(rule.subject, sub));
       }
       return true;
@@ -146,7 +146,7 @@ export class AbilitiesGuard implements CanActivate {
         id,
       },
     });
-    if (!subject) throw new NotFoundException(`${subName} not found`);
+    if (!subject) throw new NotFoundException(`${subName} не найден`);
     return subject;
   }
 }

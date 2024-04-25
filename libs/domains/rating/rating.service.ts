@@ -76,7 +76,7 @@ export class RatingService {
       where: { id: id },
     });
     if (!dbRating) {
-      throw new NotFoundException(`Rating with ID ${id} not found in database`);
+      throw new NotFoundException(`Рейтинг не найден`);
     }
     const scope = rating.scope;
     delete rating.scope;
@@ -105,7 +105,7 @@ export class RatingService {
       where: { id: id },
     });
     if (!raiting) {
-      throw new NotFoundException(`Rating with ID ${id} not found`);
+      throw new NotFoundException(`Рейтинг не найден`);
     }
 
     return this.prisma.rating.delete({

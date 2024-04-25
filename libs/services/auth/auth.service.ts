@@ -18,11 +18,11 @@ export class AuthService {
   async signIn(mail: string, pass: string): Promise<{ access_token: string }> {
     const user = await this.usersService.getUserByEmail(mail);
     if (!user) {
-      throw new UnauthorizedException("User doesn't exist");
+      throw new UnauthorizedException('Нет такого пользователя');
     }
-    const isMatch = await bcrypt.compare(user?.pass, pass);
-    if (isMatch) {
-      throw new UnauthorizedException();
+    const isMatch = await bcrypt.compare(pass, user?.pass);
+    if (!isMatch) {
+      throw new UnauthorizedException('Неверный пароль');
     }
     const payload = {
       sub: user.id,
@@ -37,7 +37,7 @@ export class AuthService {
   async signUp(signUpData: IsignUp) {
     const user = await this.usersService.getUserByEmail(signUpData.email);
     if (user) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException('Пользователь с такой почтой уже существует');
     }
     const hash = await bcrypt.hash(signUpData.pass, config.HashSaltRound);
     signUpData.pass = hash;

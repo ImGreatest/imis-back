@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateTag } from './interface/create.tag.interface';
 import { IUpdateTag } from './interface/update.tag.interface';
@@ -75,15 +75,29 @@ export class TagService {
     return tags;
   }
   async getById(id: number) {
-    return this.prisma.tag.findUnique({
+    const tag = await this.prisma.tag.findUnique({
       where: { id: id },
     });
+
+    if (!tag) {
+      // Обработка случая, когда запись не найдена
+      console.error(`Tag with id ${id} not found`);
+      throw new NotFoundException(`Такого тега нет`);
+    }
+
+    return tag;
   }
   async update(id: number, tag: IUpdateTag) {
-    return this.prisma.tag.update({
-      where: { id: id },
-      data: tag,
-    });
+    try {
+      const updatedTag = await this.prisma.tag.update({
+        where: { id: id },
+        data: tag,
+      });
+      return updatedTag;
+    } catch (error) {
+      console.error('Failed to update tag:', error);
+      throw new NotFoundException('Такого тега нет');
+    }
   }
 
   async delete(id: number) {

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'libs/domains/user/repositories/user.repository';
 import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.interface.dto';
 import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
@@ -6,7 +6,7 @@ import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
 import { User } from 'libs/domains/user/entities/user';
 import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
-import { CryptoService } from "libs/services/crypto/crypto.service";
+import { CryptoService } from 'libs/services/crypto/crypto.service';
 
 @Injectable()
 export class UserAdapter extends UserRepository {
@@ -70,13 +70,11 @@ export class UserAdapter extends UserRepository {
   async getUserByEmail(email: string): Promise<IResUser> {
     Logger.verbose('getUserByEmail', email);
 
-    const user = this.prisma.user.findFirst({
+    const user = await this.prisma.user.findFirst({
       where: { email: email },
     });
 
-    Logger.verbose('getUserByEmail', user);
-
-    if (!user) throw new Error();
+    if (!user) throw new NotFoundException('Пользователя с такой почтой нет');
 
     Logger.verbose('getUserByEmail', user);
 
