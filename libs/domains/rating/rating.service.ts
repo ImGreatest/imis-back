@@ -71,7 +71,13 @@ export class RatingService {
       where: { id: id },
     });
   }
-  async updateRatingName(id: number, rating: IUpdateRating) {
+  async updateRating(id: number, rating: IUpdateRating) {
+    const dbRating = await this.prisma.rating.findUnique({
+      where: { id: id },
+    });
+    if (!dbRating) {
+      throw new NotFoundException(`Rating with ID ${id} not found in database`);
+    }
     const scope = rating.scope;
     delete rating.scope;
     if (scope) {

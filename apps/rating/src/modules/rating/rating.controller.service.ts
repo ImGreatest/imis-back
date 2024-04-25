@@ -27,8 +27,8 @@ export class RatingControllerService implements OnApplicationBootstrap {
   async getById(id: number) {
     return this.ratingService.getById(id);
   }
-  async updateRatingName(id: number, rating: IUpdateRating) {
-    return this.ratingService.updateRatingName(id, rating);
+  async updateRating(id: number, rating: IUpdateRating) {
+    return this.ratingService.updateRating(id, rating);
   }
 
   async deleteRating(id: number) {

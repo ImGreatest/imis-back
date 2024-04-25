@@ -67,17 +67,18 @@ export class RatingController {
     return this.ratingService.getById(id);
   }
 
-  @checkAbilities({
-    action: 'update',
-    subject: 'Rating',
-  })
-  @UseGuards(AbilitiesGuard)
+  // @checkAbilities({
+  //   action: 'update',
+  //   subject: 'Rating',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
   @Put(':id')
-  async updateRatingName(
+  async updateRating(
     @Param('id') id: number,
     @Body() rating: ReqUpdateRatingDto,
   ) {
-    return this.ratingService.updateRatingName(id, rating);
+    return this.ratingService.updateRating(id, rating);
   }
   @checkAbilities({
     action: 'delete',
