@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateTag } from './interface/create.tag.interface';
 import { IUpdateTag } from './interface/update.tag.interface';
+import { ITreeTag } from './interface/tags.tree.interface';
 @Injectable()
 export class TagService {
   constructor(private prisma: PrismaService) {}
@@ -11,8 +12,12 @@ export class TagService {
       data: tag,
     });
   }
+<<<<<<< c366ce1977df2d0db047dee0f5eb4d70b4997745
 
   async getTagsTree(ratingId: number) {
+=======
+  async getTagsTree(ratingId: number): Promise<ITreeTag> {
+>>>>>>> 874a3aeae749b0c151ddad5fe18f5564c44f6870
     const allTags = await this.prisma.tag.findMany({
       where: { deletedAt: null },
       select: {
@@ -37,7 +42,18 @@ export class TagService {
       childTags: this.recurse(tag, allTags),
     }));
 
-    return tagWithChild;
+    const rating = await this.prisma.rating.findUnique({
+      where: { id: ratingId },
+    });
+
+    const ratingName = rating?.name || '';
+    const hourlyUpdate = rating?.minuteUpdate || 0;
+
+    return {
+      ratingName: ratingName,
+      hourlyUpdate: hourlyUpdate,
+      tag: tagWithChild,
+    };
   }
 
   recurse(tag, allTags) {

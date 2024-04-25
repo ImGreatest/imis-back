@@ -4,7 +4,8 @@ import { ICreateRating } from './interface/create.rating.interface';
 import { IUpdateRating } from './interface/update.rating.interface';
 import { IScopeRating } from './interface/scope.rating.interface';
 import { CronService } from 'libs/services/cron/cron.service';
-import { IFilter } from './interface/filter.rating.interface';
+import { IFilter } from '../../shared/interface/filter.interface';
+import { IOrder } from '../../shared/interface/order.interface';
 @Injectable()
 export class RatingService {
   constructor(
@@ -29,12 +30,31 @@ export class RatingService {
     }
     return createdRating;
   }
-  async getPage(limit: number, page: number) {
+  async getPage(
+    limit: number,
+    page: number,
+    filters: IFilter[] = [],
+    orderProps: IOrder,
+  ) {
+    let whereOptions = {};
+    filters.forEach((filter) => {
+      whereOptions = { ...whereOptions, [filter.column]: filter.value };
+    });
     const offset = (page - 1) * limit;
-    const pageCount = await this.prisma.rating.count();
+    const pageCount = await this.prisma.rating.count({ where: whereOptions });
     const ratings = await this.prisma.rating.findMany({
+      where: whereOptions,
+      orderBy: orderProps,
       take: limit,
       skip: offset,
+      include: {
+        creater: {
+          select: {
+            name: true,
+            surname: true,
+          },
+        },
+      },
     });
     return {
       info: {
@@ -43,7 +63,7 @@ export class RatingService {
         totalCount: pageCount,
         totalPages: Math.ceil(pageCount / limit),
       },
-      content: ratings,
+      rows: ratings,
     };
   }
   async getById(id: number) {
@@ -104,19 +124,13 @@ export class RatingService {
     filters: IFilter[] = [],
     page: number,
     limit: number,
-    column: string,
-    sortDirection: 'asc' | 'desc',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    orderProps: IOrder,
   ) {
     let whereOptions = { ratingId: id };
     filters.forEach((filter) => {
       whereOptions = { ...whereOptions, [filter.column]: filter.value };
     });
-    const orderProps =
-      column === 'ratingScore'
-        ? { [column]: sortDirection }
-        : column === 'group'
-          ? { student: { group: { name: sortDirection } } }
-          : { student: { [column]: sortDirection } };
     const scoresCount = await this.prisma.score.count({
       where: whereOptions,
     });

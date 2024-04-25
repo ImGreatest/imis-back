@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IScopeRating } from 'libs/domains/rating/interface/scope.rating.interface';
+import { IsArray } from 'class-validator';
 
 export class ReqUpdateScopeDto {
   @ApiProperty({
@@ -10,5 +11,6 @@ export class ReqUpdateScopeDto {
       },
     ],
   })
+  @IsArray()
   scope: IScopeRating[];
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsObject, IsString } from 'class-validator';
 import { IUpdatePermission } from 'libs/domains/role/interface/update.permissions.interface';
 
 export class UpdatePermissionDto implements IUpdatePermission {
@@ -13,6 +13,7 @@ export class UpdatePermissionDto implements IUpdatePermission {
   @IsBoolean()
   inverted?: boolean;
   @ApiProperty()
+  @IsObject()
   conditions?: {
     [key: string]: string;
   };
