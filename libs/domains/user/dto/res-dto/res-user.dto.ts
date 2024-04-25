@@ -1,16 +1,14 @@
-import { UserRole } from "@prisma/client";
-
 export interface IResUser {
-    id: number,
-    email: string,
-    name: string,
-    surname: string,
-    roleId: number,
-    pass: string,
-    course?: number,
-    direction?: number,
-    group?: number,
-    createdAt?: Date,
-    updatedAt?: Date,
-    deletedAt?: Date,
+  id: number;
+  email: string;
+  name: string;
+  surname: string;
+  roleId: number;
+  pass: string;
+  course?: number;
+  direction?: number;
+  group?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+  deletedAt?: Date;
 }

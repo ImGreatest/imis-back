@@ -12,12 +12,11 @@
 // users UserProject[]
 // usersWithFavor UserFavoritProject[]
 
-import { User } from "../../user/entities/user";
+import { User } from '../../user/entities/user';
 
 export interface IReqCreateProjectDto {
-    name: string;
-    status: string;
-    description: string;
-    creater: User;
-
+  name: string;
+  status: string;
+  description: string;
+  creater: User;
 }
