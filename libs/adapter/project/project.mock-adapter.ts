@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ProjectRepository } from 'libs/domains/project/repositories/project.repository';
 import { IReqCreateProjectDto } from 'libs/domains/project/dto/req-create-project.dto';
-import { Project } from 'libs/entity/project';
 import { IReqGetProject } from 'libs/domains/project/dto/req-get-project.dto';
-import { User } from 'libs/entity/user';
 import { IReqUpdateProjectDto } from 'libs/domains/project/dto/req-update-project.dto';
+import { Project } from "libs/domains/project/entities/project";
+import { User } from "libs/domains/user/entities/user";
 
 @Injectable()
 export class ProjectMockAdapter extends ProjectRepository {
