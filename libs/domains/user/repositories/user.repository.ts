@@ -14,6 +14,8 @@ export abstract class UserRepository {
 
   abstract getUserById(id: number): Promise<IResUser>;
 
+  abstract getUserRoleId(id: number): Promise<number>;
+
   abstract getUsers(): Promise<IResUser[]>;
 
   abstract updateUser(id: number, user: IReqUpdateUser): Promise<IResUser>;

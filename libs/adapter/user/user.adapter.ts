@@ -111,6 +111,21 @@ export class UserAdapter extends UserRepository {
     return users;
   }
 
+  async getUserRoleId(id: number): Promise<number> {
+    Logger.verbose('getUserRole');
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: id,
+      }
+    })
+
+    if (!user) {
+      throw new Error(`User with id = ${id} is not found!`);
+    }
+
+    return user.roleId
+  }
+
   async updateUser(id: number, user: IReqUpdateUser): Promise<IResUser> {
     Logger.verbose('updateUser', id, user);
 

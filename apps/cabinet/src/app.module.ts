@@ -9,7 +9,7 @@ import { RolesGuard } from 'libs/services/auth/roles.guard';
 @Module({
   imports: [
     PrismaModule,
-    // UserModule,
+    AuthModule,
     UserControllerModule,
   ],
   providers: [

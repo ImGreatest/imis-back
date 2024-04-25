@@ -25,6 +25,10 @@ export class UserControllerService {
     return this.userService.getUserById(id);
   }
 
+  getUserRoleId(id: number): Promise<number> {
+    return this.userService.getUserRoleId(id);
+  }
+
   getUsers(): Promise<ResUserDto[]> {
     return this.userService.getUsers();
   }

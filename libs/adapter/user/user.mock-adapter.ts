@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { UserRepository } from '../../domains/user/repositories/user.repository';
-import { IReqCreateUser } from '../../domains/user/dto/req-dto/req-create-user.interface.dto';
-import { IResUser } from '../../domains/user/dto/res-dto/res-user.dto';
-import { IResGetUserAndCountDto } from '../../domains/user/dto/res-dto/res-get-user-and-count.dto';
-import { IReqUpdateUser } from '../../domains/user/dto/req-dto/req-update-user.interface.dto';
+import { UserRepository } from 'libs/domains/user/repositories/user.repository';
+import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.interface.dto';
+import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
+import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
+import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
 
 @Injectable()
 export class UserMockAdapter extends UserRepository {
@@ -24,6 +24,10 @@ export class UserMockAdapter extends UserRepository {
   }
 
   async getUserById(id: number): Promise<IResUser> {
+    throw new Error(`${id}`);
+  }
+
+  async getUserRoleId(id: number): Promise<number> {
     throw new Error(`${id}`);
   }
 
