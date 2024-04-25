@@ -9,11 +9,11 @@ import { User } from "libs/entity/user";
 export abstract class ProjectRepository {
   abstract createProject(data: IReqCreateProjectDto): Promise<Project>;
 
-  abstract getProjects(): IReqGetProject;
+  abstract getProjects(): Promise<IReqGetProject>;
 
-  abstract getProjectByUser(user: User): IReqGetProject;
+  abstract getProjectByUser(user: User): Promise<IReqGetProject>;
 
-  abstract getProjectById(id: number): IReqGetProject;
+  abstract getProjectById(id: number): Promise<IReqGetProject>;
 
   abstract updateProject(data: IReqUpdateProjectDto): Promise<Project>;
 
