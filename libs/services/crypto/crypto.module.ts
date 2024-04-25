@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { CryptoService } from "libs/services/crypto/crypto.service";
+import { Module } from '@nestjs/common';
+import { CryptoService } from 'libs/services/crypto/crypto.service';
 
 @Module({
-	providers: [CryptoService],
-	exports: [CryptoService]
+  providers: [CryptoService],
+  exports: [CryptoService],
 })
 export class CryptoModule {}

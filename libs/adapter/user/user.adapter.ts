@@ -6,7 +6,7 @@ import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
 import { User } from 'libs/domains/user/entities/user';
 import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
-import { CryptoService } from "libs/services/crypto/crypto.service";
+import { CryptoService } from 'libs/services/crypto/crypto.service';
 
 @Injectable()
 export class UserAdapter extends UserRepository {
@@ -118,14 +118,14 @@ export class UserAdapter extends UserRepository {
     const user = await this.prisma.user.findUnique({
       where: {
         id: id,
-      }
-    })
+      },
+    });
 
     if (!user) {
       throw new Error(`User with id = ${id} is not found!`);
     }
 
-    return user.roleId
+    return user.roleId;
   }
 
   async updateUser(id: number, user: IReqUpdateUser): Promise<IResUser> {
