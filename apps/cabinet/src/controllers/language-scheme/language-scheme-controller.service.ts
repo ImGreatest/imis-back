@@ -1,16 +1,16 @@
-import { Injectable } from "@nestjs/common";
-import { ColorSchemeService } from "../../../../../libs/services/color-schemas/color-scheme.service";
-import { ResScheme, ResSchemeResult } from "./dto/res-scheme.dto";
+import { Injectable } from '@nestjs/common';
+import { ColorSchemeService } from '../../../../../libs/services/color-schemas/color-scheme.service';
+import { ResScheme, ResSchemeResult } from './dto/res-scheme.dto';
 
 @Injectable()
 export class LanguageSchemeControllerService {
-	constructor(private readonly colorSchemeService: ColorSchemeService) {}
+  constructor(private readonly colorSchemeService: ColorSchemeService) {}
 
-	getColorSchemeByLanguage(language: string): Promise<ResSchemeResult> {
-		return this.colorSchemeService.getColorSchemeByLanguage(language);
-	}
+  getColorSchemeByLanguage(language: string): Promise<ResSchemeResult> {
+    return this.colorSchemeService.getColorSchemeByLanguage(language);
+  }
 
-	getColorScheme(): Promise<ResScheme> {
-		return this.colorSchemeService.getColorScheme();
-	}
+  getColorScheme(): Promise<ResScheme> {
+    return this.colorSchemeService.getColorScheme();
+  }
 }

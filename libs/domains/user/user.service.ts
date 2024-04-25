@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { IReqCreateUser } from './dto/req-dto/req-create-user.interface.dto';
 import { IReqUpdateUser } from './dto/req-dto/req-update-user.interface.dto';
-import { IResUser } from "./dto/res-dto/res-user.dto";
-import { IResGetUserAndCountDto } from "./dto/res-dto/res-get-user-and-count.dto";
-import { UserRepository } from "./repositories/user.repository";
+import { IResUser } from './dto/res-dto/res-user.dto';
+import { IResGetUserAndCountDto } from './dto/res-dto/res-get-user-and-count.dto';
+import { UserRepository } from './repositories/user.repository';
 
 @Injectable()
 export class UserService {
@@ -13,7 +13,7 @@ export class UserService {
     return this.userRep.createUser(user);
   }
 
-  async getUserAndCount(): Promise<IResGetUserAndCountDto>  {
+  async getUserAndCount(): Promise<IResGetUserAndCountDto> {
     return this.userRep.getUserAndCount();
   }
 

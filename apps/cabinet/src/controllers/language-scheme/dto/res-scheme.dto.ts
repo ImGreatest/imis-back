@@ -1,8 +1,8 @@
 export class ResScheme {
-	[language: string]: ResScheme | ResSchemeResult;
+  [language: string]: ResScheme | ResSchemeResult;
 }
 
 export class ResSchemeResult {
-	color: string;
-	url: string;
+  color: string;
+  url: string;
 }

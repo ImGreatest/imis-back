@@ -1,8 +1,8 @@
 export interface IResScheme {
-	[language: string]: IResScheme | IResSchemeResult;
+  [language: string]: IResScheme | IResSchemeResult;
 }
 
 export interface IResSchemeResult {
-	color: string;
-	url: string;
+  color: string;
+  url: string;
 }

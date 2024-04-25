@@ -1,6 +1,6 @@
-import { User } from "../../../../entity/user";
+import { User } from '../../../../entity/user';
 
 export interface IResGetUserAndCountDto {
-    rows: User[],
-    count: number
+  rows: User[];
+  count: number;
 }
