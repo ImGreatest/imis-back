@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { UserRepository } from '../../domains/user/repositories/user.repository';
-import { IReqCreateUser } from '../../domains/user/dto/req-dto/req-create-user.interface.dto';
-import { IResUser } from '../../domains/user/dto/res-dto/res-user.dto';
-import { PrismaService } from '../../services/prisma/prisma.service';
-import { IResGetUserAndCountDto } from '../../domains/user/dto/res-dto/res-get-user-and-count.dto';
-import { User } from '../../entity/user';
-import { IReqUpdateUser } from '../../domains/user/dto/req-dto/req-update-user.interface.dto';
+import { UserRepository } from 'libs/domains/user/repositories/user.repository';
+import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.interface.dto';
+import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
+import { PrismaService } from 'libs/services/prisma/prisma.service';
+import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
+import { User } from 'libs/domains/user/entities/user';
+import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
 
 @Injectable()
 export class UserAdapter extends UserRepository {
@@ -16,8 +16,33 @@ export class UserAdapter extends UserRepository {
   async createUser(user: IReqCreateUser): Promise<IResUser> {
     Logger.verbose('createUser', user);
 
+    const userData = {
+      email: user.email,
+      name: user.name,
+      surname: user.surname,
+      role: {
+        connect: {
+          id: user.roleId,
+        },
+      },
+      pass: user.pass,
+      course: user.course,
+      direction: {
+        connect: {
+          id: user.direction,
+        },
+      },
+      group: {
+        connect: {
+          id: user.group,
+        },
+      },
+    };
+
+    Logger.verbose('createUser - userData', userData);
+
     return this.prisma.user.create({
-      data: user,
+      data: userData,
     });
   }
 
@@ -87,9 +112,34 @@ export class UserAdapter extends UserRepository {
   async updateUser(id: number, user: IReqUpdateUser): Promise<IResUser> {
     Logger.verbose('updateUser', id, user);
 
+    const userData = {
+      email: user.email,
+      name: user.name,
+      surname: user.surname,
+      role: {
+        connect: {
+          id: user.roleId,
+        },
+      },
+      pass: user.pass,
+      course: user.course,
+      direction: {
+        connect: {
+          id: user.direction,
+        },
+      },
+      group: {
+        connect: {
+          id: user.group,
+        },
+      },
+    };
+
     return this.prisma.user.update({
-      where: { id: id },
-      data: user,
+      where: {
+        id: id,
+      },
+      data: userData,
     });
   }
 

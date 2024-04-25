@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { cloneDeep } from 'lodash';
 import * as bcrypt from 'bcrypt';
-import { config } from '../../config/config';
+import { config } from 'config/config';
 //('student', 'teacher', 'supervisor');
 export const roles = [
   {

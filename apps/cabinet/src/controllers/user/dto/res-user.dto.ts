@@ -33,14 +33,14 @@ export class ResUserDto {
   course?: number;
 
   @ApiProperty()
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  direction?: string;
+  direction?: number;
 
   @ApiProperty()
-  @IsString()
+  @IsNumber()
   @IsOptional()
-  group?: string;
+  group?: number;
 
   @ApiProperty()
   @IsDate()

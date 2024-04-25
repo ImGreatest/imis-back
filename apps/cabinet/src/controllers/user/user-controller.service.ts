@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserService } from '../../../../../libs/domains/user/user.service';
+import { UserService } from 'libs/domains/user/user.service';
 import { ReqCreateUserDto } from './dto/req-create-user.dto';
 import { ResUserDto } from './dto/res-user.dto';
 import { ResGetUserAndCountDto } from './dto/res-get-user-and-count.dto';

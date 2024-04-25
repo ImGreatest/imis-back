@@ -14,7 +14,7 @@ export class ReqCreateUserDto {
   @IsString()
   surname!: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   @IsNumber()
   roleId!: number;
 
@@ -22,18 +22,18 @@ export class ReqCreateUserDto {
   @IsString()
   pass!: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   @IsNumber()
   @IsOptional()
   course?: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   @IsNumber()
   @IsOptional()
-  directionId?: number;
+  direction?: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   @IsNumber()
   @IsOptional()
-  groupId?: number;
+  group?: number;
 }

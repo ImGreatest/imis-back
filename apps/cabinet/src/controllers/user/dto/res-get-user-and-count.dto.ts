@@ -1,4 +1,4 @@
-import { User } from '../../../../../../libs/entity/user';
+import { User } from '../../../../../../libs/domains/user/entities/user';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNumber } from 'class-validator';
 
