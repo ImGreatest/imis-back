@@ -7,7 +7,7 @@ export const winstonModuleOptions = (filename: string) => ({
       format: winston.format.combine(
         winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
         winston.format.ms(),
-        utilities.format.nestLike('example-app-name', {
+        utilities.format.nestLike(`${filename}-name`, {
           prettyPrint: true,
           colors: true,
         }),
