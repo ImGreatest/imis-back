@@ -3,8 +3,8 @@ import { ProjectRepository } from 'libs/domains/project/repositories/project.rep
 import { IReqCreateProjectDto } from 'libs/domains/project/dto/req-create-project.dto';
 import { IReqGetProject } from 'libs/domains/project/dto/req-get-project.dto';
 import { IReqUpdateProjectDto } from 'libs/domains/project/dto/req-update-project.dto';
-import { Project } from "libs/domains/project/entities/project";
-import { User } from "libs/domains/user/entities/user";
+import { Project } from 'libs/domains/project/entities/project';
+import { User } from 'libs/domains/user/entities/user';
 
 @Injectable()
 export class ProjectMockAdapter extends ProjectRepository {

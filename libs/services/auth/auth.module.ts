@@ -4,9 +4,9 @@ import { UserModule } from 'libs/domains/user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { config } from 'config/config';
-import { AuthTokenService } from "libs/services/auth/token.service";
-import { JwtStrategy } from "libs/services/auth/strategy/jwt.strategy";
-import { CryptoService } from "libs/services/crypto/crypto.service";
+import { AuthTokenService } from 'libs/services/auth/token.service';
+import { JwtStrategy } from 'libs/services/auth/strategy/jwt.strategy';
+import { CryptoService } from 'libs/services/crypto/crypto.service';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { CryptoService } from "libs/services/crypto/crypto.service";
       global: true,
       secret: config.JwtSecret,
       signOptions: {
-        expiresIn: config.JwtExpiresIn
+        expiresIn: config.JwtExpiresIn,
       },
     }),
   ],
