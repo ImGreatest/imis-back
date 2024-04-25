@@ -1,4 +1,4 @@
-export interface IResUser {
+export class User {
   id: number;
   email: string;
   name: string;
@@ -6,9 +6,9 @@ export interface IResUser {
   roleId: number;
   pass: string;
   course?: number;
-  direction?: number;
-  group?: number;
-  createdAt?: Date;
-  updatedAt?: Date;
+  direction?: string;
+  group?: string;
+  createdAt: Date;
+  updatedAt: Date;
   deletedAt?: Date;
 }

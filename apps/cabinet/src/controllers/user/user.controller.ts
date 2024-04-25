@@ -1,10 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { ApiTags } from "@nestjs/swagger";
-import { UserControllerService } from "./user-controller.service";
-import { ResUserDto } from "./dto/res-user.dto";
-import { ReqUpdateUserDto } from "./dto/req-update-user.dto";
-import { ReqCreateUserDto } from "./dto/req-create-user.dto";
-import { ResGetUserAndCountDto } from "./dto/res-get-user-and-count.dto";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
+import { UserControllerService } from './user-controller.service';
+import { ResUserDto } from './dto/res-user.dto';
+import { ReqUpdateUserDto } from './dto/req-update-user.dto';
+import { ReqCreateUserDto } from './dto/req-create-user.dto';
+import { ResGetUserAndCountDto } from './dto/res-get-user-and-count.dto';
 
 @ApiTags('user')
 @Controller('user')
@@ -12,9 +20,7 @@ export class UserController {
   constructor(private readonly userService: UserControllerService) {}
 
   @Post('create-user')
-  createUser(
-    @Body() user: ReqCreateUserDto
-  ): Promise<ResUserDto> {
+  createUser(@Body() user: ReqCreateUserDto): Promise<ResUserDto> {
     return this.userService.createUser(user);
   }
 
@@ -23,17 +29,14 @@ export class UserController {
     return this.userService.getUserAndCount();
   }
 
-  @Get('get-user-by-email:/email')
-  getUserByEmail(
-    @Param('email') email: string
-  ): Promise<ResUserDto> {
+  @Get('get-user-by-email/:email')
+  getUserByEmail(@Param('email') email: string): Promise<ResUserDto> {
+    console.log(email);
     return this.userService.getUserByEmail(email);
   }
 
   @Get('get-user-by-id/:id')
-  getUserById(
-    @Param('id') id: number
-  ): Promise<ResUserDto> {
+  getUserById(@Param('id') id: number): Promise<ResUserDto> {
     return this.userService.getUserById(id);
   }
 
@@ -51,9 +54,7 @@ export class UserController {
   }
 
   @Delete('remove/:id')
-  async deleteUser(
-    @Param('id') id: number
-  ): Promise<ResUserDto> {
+  async deleteUser(@Param('id') id: number): Promise<ResUserDto> {
     return this.userService.deleteUser(id);
   }
 }

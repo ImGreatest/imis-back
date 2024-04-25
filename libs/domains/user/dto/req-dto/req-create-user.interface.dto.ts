@@ -5,6 +5,6 @@ export interface IReqCreateUser {
   roleId: number;
   pass: string;
   course?: number;
-  directionId?: number;
-  groupId?: number;
+  direction?: number;
+  group?: number;
 }
