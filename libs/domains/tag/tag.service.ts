@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateTag } from './interface/create.tag.interface';
 import { IUpdateTag } from './interface/update.tag.interface';
+import { ITreeTag } from './interface/tags.tree.interface';
 
 @Injectable()
 export class TagService {
@@ -12,8 +13,7 @@ export class TagService {
       data: tag,
     });
   }
-
-  async getTagsTree(ratingId: number) {
+  async getTagsTree(ratingId: number): Promise<ITreeTag> {
     const allTags = await this.prisma.tag.findMany({
       where: { deletedAt: null },
       select: {
