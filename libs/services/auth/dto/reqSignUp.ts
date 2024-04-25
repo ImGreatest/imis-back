@@ -1,10 +1,10 @@
 // user.dto.ts
 
 import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
-import { IsignUp } from '../interface/signUp';
+import { ISignUpDto } from 'libs/services/auth/interface/signUp.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class signUpDto implements IsignUp {
+export class signUpDto implements ISignUpDto {
   @IsNotEmpty({ message: 'roleId is required' })
   @ApiProperty({ example: 1 })
   roleId: number;

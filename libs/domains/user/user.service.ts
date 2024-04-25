@@ -29,6 +29,10 @@ export class UserService {
     return this.userRep.getUsers();
   }
 
+  async getUserRoleId(id: number): Promise<number> {
+    return this.userRep.getUserRoleId(id);
+  }
+
   async updateUser(id: number, user: IReqUpdateUser): Promise<IResUser> {
     return this.userRep.updateUser(id, user);
   }
