@@ -6,10 +6,14 @@ import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
 import { User } from 'libs/domains/user/entities/user';
 import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
+import { CryptoService } from "libs/services/crypto/crypto.service";
 
 @Injectable()
 export class UserAdapter extends UserRepository {
-  constructor(private prisma: PrismaService) {
+  constructor(
+    private prisma: PrismaService,
+    private cryptoService: CryptoService,
+  ) {
     super();
   }
 
@@ -25,7 +29,7 @@ export class UserAdapter extends UserRepository {
           id: user.roleId,
         },
       },
-      pass: user.pass,
+      pass: this.cryptoService.getHash(user.pass),
       course: user.course,
       direction: {
         connect: {
@@ -121,7 +125,7 @@ export class UserAdapter extends UserRepository {
           id: user.roleId,
         },
       },
-      pass: user.pass,
+      pass: this.cryptoService.getHash(user.pass),
       course: user.course,
       direction: {
         connect: {
