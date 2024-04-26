@@ -125,7 +125,7 @@ export class AbilitiesGuard implements CanActivate {
 
         for (const conditionKey of conditionsToParse) {
           if (permission.conditions[conditionKey]) {
-            cond[conditionKey] = +currentUser.role; // Convert parsed value to number
+            cond[conditionKey] = +currentUser.sub; // Convert parsed value to number
             break; // Stop iteration if a condition is found
           }
         }
