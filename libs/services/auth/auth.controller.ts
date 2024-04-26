@@ -6,6 +6,8 @@ import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ResSignInDto } from 'libs/services/auth/dto/res-dto/res-sign-in.dto';
 import { AuthTokenService } from 'libs/services/auth/token.service';
 import { ReqRefreshDto } from 'libs/services/auth/dto/req-dto/req-refresh.dto';
+import { ReqSignUpDto } from 'libs/services/auth/dto/req-dto/req-sign-up.dto';
+import { ResSignUpDto } from 'libs/services/auth/dto/res-dto/res-sign-up.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -28,5 +30,14 @@ export class AuthController {
   @Post('refresh')
   refresh(@Body() data: ReqRefreshDto): Promise<ResSignInDto> {
     return this.authTokenService.refresh(data);
+  }
+
+  @Public()
+  @Post('sign-up')
+  @ApiBody({ type: ReqSignUpDto })
+  signUp(
+    @Body(new ValidationPipe()) data: ReqSignUpDto,
+  ): Promise<ResSignUpDto> {
+    return this.authService.signUp(data);
   }
 }

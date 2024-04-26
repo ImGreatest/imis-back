@@ -30,7 +30,7 @@ export const roles = [
   },
   {
     id: 7,
-    name: 'supervisor ',
+    name: 'supervisor',
   },
 ];
 
