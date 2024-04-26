@@ -1,13 +1,13 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
+import { ReqRefreshDto } from './dto/req-dto/req-refresh.dto';
+import { ReqSignInDto } from './dto/req-dto/req-sign-in.dto';
+import { ReqSignUpDto } from './dto/req-dto/req-sign-up.dto';
+import { ResSignInDto } from './dto/res-dto/res-sign-in.dto';
+import { ResSignUpDto } from './dto/res-dto/res-sign-up.dto';
+import { AuthTokenService } from './token.service';
 import { Public } from 'libs/decorators/public.decorator';
-import { ReqSignInDto } from 'libs/services/auth/dto/req-dto/req-sign-in.dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
-import { ResSignInDto } from 'libs/services/auth/dto/res-dto/res-sign-in.dto';
-import { AuthTokenService } from 'libs/services/auth/token.service';
-import { ReqRefreshDto } from 'libs/services/auth/dto/req-dto/req-refresh.dto';
-import { ReqSignUpDto } from 'libs/services/auth/dto/req-dto/req-sign-up.dto';
-import { ResSignUpDto } from 'libs/services/auth/dto/res-dto/res-sign-up.dto';
 
 @ApiTags('auth')
 @Controller('auth')
