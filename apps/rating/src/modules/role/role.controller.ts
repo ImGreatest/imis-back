@@ -16,6 +16,7 @@ import { RoleControllerService } from './role.controller.service';
 import { ReqCreateRoleDto } from './dto/req.create.role.dto';
 import { ReqUpdateRoleDto } from './dto/req.update.role.dto';
 import { UpdatePermissionDto } from './dto/req.update.permissions.dto';
+import { Public } from 'libs/decorators/public.decorator';
 
 @Controller('role')
 @ApiBearerAuth()
@@ -33,11 +34,12 @@ export class RoleController {
     return this.roleService.create(role);
   }
 
-  @checkAbilities({
-    action: 'read',
-    subject: 'Role',
-  })
-  @UseGuards(AbilitiesGuard)
+  // @checkAbilities({
+  //   action: 'read',
+  //   subject: 'Role',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
   @Get('/page-:page')
   async getPage(@Query('limit') limit: number, @Param('page') page: number) {
     return this.roleService.getPage(limit, page);

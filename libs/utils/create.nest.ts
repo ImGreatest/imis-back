@@ -21,6 +21,6 @@ export async function createNest(
   );
   app.setGlobalPrefix('api');
   swagger(app);
-
+  console.log('00');
   await app.listen(port);
 }

@@ -18,6 +18,7 @@ export class RoleService {
     const roles = await this.prisma.userRole.findMany({
       take: limit,
       skip: offset,
+      where: { deleted_at: null },
     });
     return {
       info: {

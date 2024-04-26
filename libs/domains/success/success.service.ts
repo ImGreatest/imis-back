@@ -9,14 +9,15 @@ export class SuccessService {
   async create(success: ICreateSuccess) {
     const tags = success.tags;
     delete success.tags;
-    return this.prisma.success.create({
+    const createdSuccess = await this.prisma.success.create({
       data: {
         userId: success.userId,
         name: success.name,
         description: success.description,
-        tags: { create: tags.map((tag) => ({ tagId: tag })) },
       },
     });
+    await this.deleteAddTags(createdSuccess.id, tags);
+    return createdSuccess;
   }
   async getPage(limit: number, page: number) {
     const offset = (page - 1) * limit;

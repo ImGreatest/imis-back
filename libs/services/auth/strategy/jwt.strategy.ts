@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
 import { config } from 'config/config';
 import { User } from 'libs/domains/user/entities/user';
 import { IPayload } from 'libs/services/auth/payloads/payload.interface';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
+import { ExtractJwt, Strategy } from 'passport-jwt';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -24,7 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
 
     if (!user) {
-      throw new Error('User not found!');
+      throw new NotFoundException('User not found!');
     }
 
     return user;

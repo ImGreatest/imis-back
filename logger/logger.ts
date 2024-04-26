@@ -17,6 +17,8 @@ export const winstonModuleOptions = (filename: string) => ({
     new winston.transports.File({
       dirname: 'logs',
       filename: `${filename}.log`,
+      zippedArchive: true,
+      maxsize: 200,
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.logstash(),
