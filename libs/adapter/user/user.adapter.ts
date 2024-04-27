@@ -4,7 +4,7 @@ import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.in
 import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
-import { User } from 'libs/domains/user/entities/user';
+import { User } from 'libs/domains/user/entities/user.entity';
 import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
 import { CryptoService } from 'libs/services/crypto/crypto.service';
 

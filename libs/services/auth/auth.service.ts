@@ -4,13 +4,15 @@ import { ResSignInDto } from 'libs/services/auth/dto/res-dto/res-sign-in.dto';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { CryptoService } from 'libs/services/crypto/crypto.service';
 import { AuthTokenService } from 'libs/services/auth/token.service';
-import { User } from 'libs/domains/user/entities/user';
+import { User } from 'libs/domains/user/entities/user.entity';
 import { ReqSignUpDto } from 'libs/services/auth/dto/req-dto/req-sign-up.dto';
 import { ResSignUpDto } from 'libs/services/auth/dto/res-dto/res-sign-up.dto';
 import { BackendExceptions } from 'libs/exceptions/backend.exceptions';
 import { EErrorCode } from 'libs/exceptions/enums/error-code.enum';
 import { UserService } from 'libs/domains/user/user.service';
 import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
+import { ReqResetPasswordDto } from "libs/services/auth/dto/req-dto/req-reset-password.dto";
+import { ResUserDto } from "apps/cabinet/src/controllers/user/dto/res-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -101,5 +103,19 @@ export class AuthService {
       refresh,
       user,
     };
+  }
+
+  async resetPassword(data: ReqResetPasswordDto): Promise<ResUserDto> {
+    let user: ResUserDto = await this.userService.getUserByEmail(data.email);
+
+    if (!user) {
+      throw new BackendExceptions(EErrorCode.NotFound, {
+        messageDebug: `User with ${data.email} not found, change email and password`,
+      });
+    }
+
+    user.pass = data.newPassword;
+
+    return this.userService.updateUser(user.id, user);
   }
 }
