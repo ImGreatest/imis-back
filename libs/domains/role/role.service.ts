@@ -12,7 +12,7 @@ import {
 export class RoleService {
   constructor(private prisma: PrismaService) {}
 
-  async create(role: ICreateRole) {
+  create(role: ICreateRole) {
     return this.prisma.userRole.create({
       data: role,
     });
@@ -49,26 +49,26 @@ export class RoleService {
       content: roles,
     };
   }
-  async getRolesAssert() {
+  getRolesAssert() {
     return {
       subjects: ruSybjects,
       actions: ruActions,
       posibleConditions: posibleConditions,
     };
   }
-  async getById(id: number) {
+  getById(id: number) {
     return this.prisma.userRole.findUnique({
       where: { id: id },
     });
   }
-  async update(id: number, role: IUpdateRole) {
+  update(id: number, role: IUpdateRole) {
     return this.prisma.userRole.update({
       where: { id: id },
       data: role,
     });
   }
 
-  async delete(id: number) {
+  delete(id: number) {
     return this.prisma.userRole.delete({
       where: { id: id },
     });
