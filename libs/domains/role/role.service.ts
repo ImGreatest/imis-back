@@ -47,6 +47,10 @@ export class RoleService {
         totalPages: Math.ceil(pageCount / limit),
       },
       content: roles,
+    };
+  }
+  async getRolesAssert() {
+    return {
       subjects: ruSybjects,
       actions: ruActions,
       posibleConditions: posibleConditions,

@@ -45,6 +45,16 @@ export class RoleController {
     return this.roleService.getPage(limit, page);
   }
 
+  // @checkAbilities({
+  //   action: 'read',
+  //   subject: 'Role',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
+  @Get('/role-assert')
+  getRolesAssert() {
+    return this.roleService.getRolesAssert();
+  }
   @checkAbilities({
     action: 'read',
     subject: 'Role',
