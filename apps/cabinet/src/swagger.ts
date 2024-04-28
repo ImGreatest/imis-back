@@ -6,6 +6,7 @@ export function swagger(app: INestApplication): INestApplication {
     .setTitle('API для микросервиса ИМИСа по кабинетам')
     .addBearerAuth()
     .build();
+  app.enableCors();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('doc', app, document);
   return app;
