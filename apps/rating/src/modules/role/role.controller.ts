@@ -41,8 +41,13 @@ export class RoleController {
   // @UseGuards(AbilitiesGuard)
   @Public()
   @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
-    return this.roleService.getPage(limit, page);
+  async getPage(
+    @Query('limit') limit: number,
+    @Param('page') page: number,
+    @Query('direction') direction: number,
+    @Query('name') name: string,
+  ) {
+    return this.roleService.getPage(limit, page, direction, name);
   }
 
   // @checkAbilities({

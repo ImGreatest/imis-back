@@ -10,8 +10,8 @@ export class RoleControllerService {
   create(role: ICreateRole) {
     return this.roleService.create(role);
   }
-  getPage(limit: number, page: number) {
-    return this.roleService.getPage(limit, page);
+  getPage(limit: number, page: number, direction: number, name: string) {
+    return this.roleService.getPage(limit, page, direction, name);
   }
   getById(id: number) {
     return this.roleService.getById(id);

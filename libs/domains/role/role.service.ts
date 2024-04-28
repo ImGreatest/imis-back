@@ -17,15 +17,25 @@ export class RoleService {
       data: role,
     });
   }
-  async getPage(limit: number, page: number) {
+  async getPage(limit: number, page: number, direction: number, name: string) {
     const offset = (page - 1) * limit;
     const pageCount = await this.prisma.userRole.count({
-      where: { deleted_at: null },
+      where: {
+        deleted_at: null,
+        name: {
+          contains: name,
+        },
+      },
     });
     const roles = await this.prisma.userRole.findMany({
       take: limit,
       skip: offset,
-      where: { deleted_at: null },
+      where: {
+        deleted_at: null,
+        name: {
+          contains: name,
+        },
+      },
       select: {
         id: true,
         name: true,
@@ -38,6 +48,9 @@ export class RoleService {
           },
         },
       },
+      orderBy: {
+        name: direction === -1 ? 'asc' : 'desc',
+      },
     });
     return {
       info: {
@@ -46,7 +59,7 @@ export class RoleService {
         totalCount: pageCount,
         totalPages: Math.ceil(pageCount / limit),
       },
-      content: roles,
+      rows: roles,
     };
   }
   getRolesAssert() {
