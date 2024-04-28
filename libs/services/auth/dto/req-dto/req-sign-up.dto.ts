@@ -24,7 +24,7 @@ export class ReqSignUpDto {
   @IsString({ message: 'Surname must be string!' })
   surname!: string;
 
-  @ApiProperty({ example: 'student' })
+  @ApiProperty({ example: 1 })
   @IsNotEmpty({ message: 'Role is required' })
   @IsNumber({}, { message: 'Role must be number' })
   @Min(1, { message: 'Role doesn`t exist' })
