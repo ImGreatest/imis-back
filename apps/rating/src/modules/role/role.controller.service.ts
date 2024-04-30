@@ -23,8 +23,8 @@ export class RoleControllerService {
   delete(id: number) {
     return this.roleService.delete(id);
   }
-  createDeletePermissions(roleId: number, newPermission: IUpdatePermission[]) {
-    return this.roleService.createDeletePermissions(roleId, newPermission);
+  createDeletePermissions(role: string, newPermission: IUpdatePermission[]) {
+    return this.roleService.createDeletePermissions(role, newPermission);
   }
   getRolesAssert() {
     return this.roleService.getRolesAssert();

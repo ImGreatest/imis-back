@@ -89,16 +89,17 @@ export class RoleController {
     return this.roleService.delete(id);
   }
 
-  @checkAbilities({
-    action: 'update',
-    subject: 'Permission',
-  })
-  @UseGuards(AbilitiesGuard)
-  @Put('/permission/:id')
+  // @checkAbilities({
+  //   action: 'update',
+  //   subject: 'Permission',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
+  @Put('/permission/:role')
   async createDeletePermissions(
-    @Param('id') roleId: number,
+    @Param('role') role: string,
     @Body() newPermission: UpdatePermissionDto[],
   ) {
-    return this.roleService.createDeletePermissions(roleId, newPermission);
+    return this.roleService.createDeletePermissions(role, newPermission);
   }
 }

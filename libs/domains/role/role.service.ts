@@ -88,16 +88,20 @@ export class RoleService {
   }
 
   async createDeletePermissions(
-    roleId: number,
+    role: string,
     newPermission: IUpdatePermission[],
   ) {
+    const roleInstance = await this.prisma.userRole.findFirst({
+      where: { name: role },
+    });
+
     await this.prisma.permission.deleteMany({
       where: {
-        roleId: roleId,
+        roleId: roleInstance.id,
       },
     });
     return this.prisma.permission.createMany({
-      data: newPermission.map((perm) => ({ ...perm, roleId: roleId })),
+      data: newPermission.map((perm) => ({ ...perm, roleId: roleInstance.id })),
     });
   }
 }
