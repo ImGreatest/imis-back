@@ -12,6 +12,9 @@ export class TagControllerService {
   getList() {
     return this.tagService.getList();
   }
+  getAll() {
+    return this.tagService.getAll();
+  }
   getById(id: number) {
     return this.tagService.getById(id);
   }

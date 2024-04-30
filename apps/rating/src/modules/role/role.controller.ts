@@ -24,11 +24,12 @@ import { Public } from 'libs/decorators/public.decorator';
 export class RoleController {
   constructor(private roleService: RoleControllerService) {}
 
-  @checkAbilities({
-    action: 'create',
-    subject: 'Role',
-  })
-  @UseGuards(AbilitiesGuard)
+  // @checkAbilities({
+  //   action: 'create',
+  //   subject: 'Role',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
   @Post()
   async create(@Body() role: ReqCreateRoleDto) {
     return this.roleService.create(role);
@@ -79,11 +80,12 @@ export class RoleController {
   async update(@Param('id') id: number, @Body() role: ReqUpdateRoleDto) {
     return this.roleService.update(id, role);
   }
-  @checkAbilities({
-    action: 'delete ',
-    subject: 'Role',
-  })
-  @UseGuards(AbilitiesGuard)
+  // @checkAbilities({
+  //   action: 'delete ',
+  //   subject: 'Role',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
   @Delete(':id')
   async delete(@Param('id') id: number) {
     return this.roleService.delete(id);

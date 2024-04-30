@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 import { ICreateTag } from 'libs/domains/tag/interface/create.tag.interface';
 
 export class ReqCreateTagDto implements ICreateTag {
@@ -13,5 +13,6 @@ export class ReqCreateTagDto implements ICreateTag {
 
   @ApiProperty()
   @IsNumber()
+  @IsOptional()
   baseTagId?: number;
 }

@@ -98,12 +98,19 @@ model Notifacation{
   @@id([senderId,recipientId])
     
 }
+enum RatingScoringType{
+  average
+  maximum
+  sum
+  mediana
+}
 model Rating{
   id    Int     @default(autoincrement()) @id
-  name String @db.VarChar()
+  name String @db.VarChar() @unique
   minuteUpdate Int @db.Integer() @default(0)
   creater User @relation(fields: [createrId], references: [id])
   createrId Int @db.Integer()
+  scoringType RatingScoringType @default(average)
   score Score[]
   ratingScope RatingScope[]
   

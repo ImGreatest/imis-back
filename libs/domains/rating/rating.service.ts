@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRating } from './interface/create.rating.interface';
 import { IUpdateRating } from './interface/update.rating.interface';
@@ -19,6 +23,10 @@ export class RatingService {
     const createdRating = await this.prisma.rating.create({
       data: { ...rating, createrId: createrId },
     });
+
+    if (!createdRating) {
+      throw new ConflictException('Рейтинг не создан');
+    }
 
     await this.deleteAndCreateRatingsScope(createdRating.id, scope);
     if (rating.minuteUpdate) {
@@ -78,13 +86,14 @@ export class RatingService {
     if (!dbRating) {
       throw new NotFoundException(`Рейтинг не найден`);
     }
+    console.log(dbRating);
     const scope = rating.scope;
     delete rating.scope;
     if (scope) {
       await this.deleteAndCreateRatingsScope(id, scope);
     }
     this.cronService.deleteInterval(`rating-${id}`);
-    if (rating.minuteUpdate) {
+    if (rating.minuteUpdate && rating.minuteUpdate !== dbRating.minuteUpdate) {
       this.cronService.addInterval(
         `rating-${id}`,
         1000 * 60 * rating.minuteUpdate,
@@ -125,6 +134,19 @@ export class RatingService {
       data: newScope.map((scope) => ({ ...scope, ratingId: ratingId })),
     });
   }
+  getMediana(array: number[]) {
+    const sortedArray = array.slice().sort((a, b) => a - b);
+    const middleIndex = Math.floor(sortedArray.length / 2);
+
+    if (sortedArray.length % 2 !== 0) {
+      return sortedArray[middleIndex];
+    } else {
+      const middleValuesSum =
+        sortedArray[middleIndex - 1] + sortedArray[middleIndex];
+      return middleValuesSum / 2;
+    }
+  }
+
   async getRatingScore(
     id: number,
     filters: IFilter[] = [],
@@ -190,6 +212,15 @@ export class RatingService {
     });
   }
   async updateRatingScore(id: number) {
+    const rating = await this.prisma.rating.findUnique({
+      where: { id: id },
+      select: {
+        scoringType: true,
+      },
+    });
+    if (!rating) {
+      throw new NotFoundException(`Рейтинг не найден`);
+    }
     await this.prisma.score.deleteMany({
       where: { ratingId: id },
     });
@@ -250,7 +281,26 @@ export class RatingService {
               return score;
             }),
           );
-          return tagRatings.reduce((acc, cur) => acc + cur, 0);
+          if (rating.scoringType === 'mediana') {
+            return this.getMediana(tagRatings);
+          }
+          const scoringFunctions = {
+            sum: (acc, cur) => acc + cur,
+            maximum: (acc, cur) => Math.max(acc, cur),
+            average: (acc, cur) => acc + cur,
+          };
+          const successSum = tagRatings.reduce((acc, cur) => {
+            const scoringFunction = scoringFunctions[rating.scoringType];
+            if (scoringFunction) {
+              return scoringFunction(acc, cur);
+            } else {
+              return acc;
+            }
+          }, 0);
+
+          return rating.scoringType === 'average'
+            ? successSum / tagRatings.length
+            : successSum;
         }),
       );
 

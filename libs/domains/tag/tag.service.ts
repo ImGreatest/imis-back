@@ -44,10 +44,12 @@ export class TagService {
 
     const ratingName = rating?.name || '';
     const hourlyUpdate = rating?.minuteUpdate || 0;
+    const scoringType = rating?.scoringType || 'average';
 
     return {
       ratingName: ratingName,
       hourlyUpdate: hourlyUpdate,
+      scoringType: scoringType,
       tag: tagWithChild,
     };
   }
@@ -64,7 +66,7 @@ export class TagService {
   }
 
   async getList() {
-    const tags = await this.prisma.tag.findMany({
+    return this.prisma.tag.findMany({
       where: { childTags: { none: {} }, deletedAt: null },
       select: {
         id: true,
@@ -72,7 +74,16 @@ export class TagService {
         description: true,
       },
     });
-    return tags;
+  }
+  getAll() {
+    return this.prisma.tag.findMany({
+      where: { deletedAt: null },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+      },
+    });
   }
   async getById(id: number) {
     const tag = await this.prisma.tag.findUnique({

@@ -10,5 +10,6 @@ interface ITreeTagElement extends ITag {
 export interface ITreeTag {
   ratingName: string;
   hourlyUpdate: number;
+  scoringType: string;
   tag: ITreeTagElement[];
 }
