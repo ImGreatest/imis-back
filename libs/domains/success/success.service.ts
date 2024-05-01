@@ -35,6 +35,12 @@ export class SuccessService {
     const pageCount = await this.prisma.success.count();
     const success = await this.prisma.success.findMany({
       where: whereOptions,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        tags: { select: { tag: { select: { id: true, name: true } } } },
+      },
       take: limit,
       skip: offset,
       orderBy: orderProps,
