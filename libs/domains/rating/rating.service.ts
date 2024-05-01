@@ -20,6 +20,12 @@ export class RatingService {
   async createRating(createrId: number, rating: ICreateRating) {
     const scope = rating.scope;
     delete rating.scope;
+    if (rating.default) {
+      await this.prisma.rating.updateMany({
+        where: { default: true },
+        data: { default: false },
+      });
+    }
     const createdRating = await this.prisma.rating.create({
       data: { ...rating, createrId: createrId },
     });
@@ -86,7 +92,12 @@ export class RatingService {
     if (!dbRating) {
       throw new NotFoundException(`Рейтинг не найден`);
     }
-    console.log(dbRating);
+    if (rating.default) {
+      await this.prisma.rating.updateMany({
+        where: { default: true },
+        data: { default: false },
+      });
+    }
     const scope = rating.scope;
     delete rating.scope;
     if (scope) {
@@ -154,6 +165,7 @@ export class RatingService {
     limit: number,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     orderProps: IOrder,
+    all: boolean = false,
   ) {
     let whereOptions = { ratingId: id };
     filters.forEach((filter) => {
@@ -162,6 +174,10 @@ export class RatingService {
     const scoresCount = await this.prisma.score.count({
       where: whereOptions,
     });
+    let takeProps = {};
+    if (!all) {
+      takeProps = { take: limit, skip: (page - 1) * limit };
+    }
     const scores = await this.prisma.score.findMany({
       where: whereOptions,
       include: {
@@ -176,8 +192,7 @@ export class RatingService {
           },
         },
       },
-      take: limit,
-      skip: (page - 1) * limit,
+      ...takeProps,
       orderBy: orderProps,
     });
     whereOptions = { ratingId: id };
@@ -190,7 +205,7 @@ export class RatingService {
         page: page,
         pageSize: limit,
         totalCount: scoresCount,
-        totalPages: Math.ceil(scoresCount / limit),
+        totalPages: all ? 1 : Math.ceil(scoresCount / limit),
         minScores: minMaxScores._min.ratingScore,
         maxScores: minMaxScores._max.ratingScore,
       },

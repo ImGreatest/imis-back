@@ -1,6 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { RatingScoringType } from '@prisma/client';
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ICreateRating } from 'libs/domains/rating/interface/create.rating.interface';
 import { IScopeRating } from 'libs/domains/rating/interface/scope.rating.interface';
 
@@ -20,4 +26,8 @@ export class ReqCreateRatingDto implements ICreateRating {
   @ApiProperty({ example: 'maximum' })
   @IsString()
   scoringType: RatingScoringType;
+  @ApiProperty({ example: false })
+  @IsBoolean()
+  @IsOptional()
+  default?: boolean;
 }

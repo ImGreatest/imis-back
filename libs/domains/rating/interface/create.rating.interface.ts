@@ -6,4 +6,5 @@ export interface ICreateRating {
   minuteUpdate: number;
   scope: IScopeRating[];
   scoringType: RatingScoringType;
+  default?: boolean;
 }

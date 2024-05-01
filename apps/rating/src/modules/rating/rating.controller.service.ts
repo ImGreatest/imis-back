@@ -47,6 +47,7 @@ export class RatingControllerService implements OnApplicationBootstrap {
     filters: IFilter[],
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     orderProps: IOrder,
+    all: boolean = false,
   ) {
     return this.ratingService.getRatingScore(
       id,
@@ -54,6 +55,7 @@ export class RatingControllerService implements OnApplicationBootstrap {
       page,
       limit,
       orderProps,
+      all,
     );
   }
   async updateRatingScore(id: number) {

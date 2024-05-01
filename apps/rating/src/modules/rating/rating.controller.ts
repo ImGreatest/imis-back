@@ -117,6 +117,7 @@ export class RatingController {
       getData.pageSize,
       getData.filters,
       getData.orderProps,
+      getData.all,
     );
   }
   @checkAbilities({

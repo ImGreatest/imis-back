@@ -112,6 +112,7 @@ model Rating{
   creater User @relation(fields: [createrId], references: [id])
   createrId Int @db.Integer()
   scoringType RatingScoringType @default(average)
+  default Boolean @default(false)
   score Score[]
   ratingScope RatingScope[]
   

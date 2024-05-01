@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsObject } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsObject,
+  IsOptional,
+} from 'class-validator';
 import { IFilter } from 'libs/shared/interface/filter.interface';
 import { IOrder } from 'libs/shared/interface/order.interface';
 
@@ -18,4 +24,8 @@ export class ReqGetPageDto {
   @IsObject()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   orderProps: IOrder;
+  @ApiProperty({ example: true })
+  @IsBoolean()
+  @IsOptional()
+  all?: boolean;
 }
