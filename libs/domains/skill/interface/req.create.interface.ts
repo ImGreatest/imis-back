@@ -1,4 +1,4 @@
 export interface ICreateSkill {
   name: string;
-  skillTypeId?: number;
+  skillTypeId: number;
 }

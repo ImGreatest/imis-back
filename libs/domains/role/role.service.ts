@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRole } from './interface/create.role.interface';
 import { IUpdateRole } from './interface/update.role.interface';
@@ -94,6 +94,9 @@ export class RoleService {
     const roleInstance = await this.prisma.userRole.findFirst({
       where: { name: role },
     });
+    if (!roleInstance) {
+      throw new NotFoundException(`Роль ${role} не найдена`);
+    }
 
     await this.prisma.permission.deleteMany({
       where: {

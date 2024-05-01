@@ -40,6 +40,17 @@ export class SkillService {
   }
 
   create(skill: ICreateSkill) {
-    return this.prisma.skillType.create({ data: skill });
+    return this.prisma.skills.create({ data: skill });
+  }
+
+  createSkillType(skillType: string) {
+    return this.prisma.skillType.create({ data: { name: skillType } });
+  }
+
+  delete(id: number) {
+    return this.prisma.skills.delete({ where: { id: id } });
+  }
+  deleteSkillType(id: number) {
+    return this.prisma.skillType.delete({ where: { id: id } });
   }
 }

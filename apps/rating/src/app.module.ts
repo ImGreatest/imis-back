@@ -10,6 +10,7 @@ import { TagControllerModule } from './modules/tag/tag.controller.module';
 import { RoleControllerModule } from './modules/role/role.controller.module';
 import { PermissionControllerModule } from './modules/permission/permission.controller.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { SkillControllerModule } from './modules/skill/skill.controller.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     TagControllerModule,
     RoleControllerModule,
     PermissionControllerModule,
+    SkillControllerModule,
   ],
   providers: [
     {

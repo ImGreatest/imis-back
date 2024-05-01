@@ -1,4 +1,9 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { PrismaClient, Prisma } from '@prisma/client';
 
 @Injectable()
@@ -8,7 +13,7 @@ export class PrismaService
 {
   async onModuleInit() {
     await this.$connect();
-    this.$use(this.SoftDeleteMiddleware);
+    this.$use(this.softDeleteMiddleware);
   }
 
   async onModuleDestroy() {
@@ -25,15 +30,49 @@ export class PrismaService
     Tag: { where: { name: requestData.args.data?.name } },
   });
 
-  private SoftDeleteMiddleware: Prisma.Middleware = async (params, next) => {
+  private readonly modelToNotCheckConflict = [
+    'RatingScope',
+    'Score',
+    'ProjectSkils',
+    'UserSkills',
+    'UserProject',
+    'UserFavoritProject',
+    'Permission',
+    'SuccessTags',
+    'Notifacation',
+  ];
+
+  private softDeleteMiddleware: Prisma.Middleware = async (params, next) => {
     const { model, action, args } = params;
+
+    // Check if model is not included in deletion middleware
     if (
       !['User', 'Company', 'Theme', 'Project', 'Success', 'Tag'].includes(model)
     ) {
+      if (
+        action === 'create' &&
+        !this.modelToNotCheckConflict.includes(model)
+      ) {
+        let existingObject = null;
+        try {
+          // Check if object with the same name already exists
+          existingObject = await this[model].findUnique({
+            where: {
+              name: args.data.name,
+            },
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        if (existingObject) {
+          throw new ConflictException(`${model} уже существует`);
+        }
+      }
       return next(params);
     }
 
     if (action === 'delete' || action === 'deleteMany') {
+      // Soft delete by updating deletedAt timestamp
       const updatedAction = action === 'delete' ? 'update' : 'updateMany';
       return next({
         ...params,
@@ -42,11 +81,8 @@ export class PrismaService
       });
     }
 
-    if (
-      action === 'findUnique' ||
-      action === 'findFirst' ||
-      action === 'findMany'
-    ) {
+    if (['findUnique', 'findFirst', 'findMany'].includes(action)) {
+      // Add condition to filter out soft-deleted records
       return next({
         ...params,
         action: action === 'findMany' ? action : 'findFirst',
@@ -55,11 +91,12 @@ export class PrismaService
     }
 
     if (action === 'create') {
-      console.log(args);
+      // Check if object with the same properties already exists
       const existingObject = await this[model].findUnique(
         this.argsToFind(params)[model],
       );
       if (existingObject) {
+        // Soft delete previous object and update with new one
         return next({
           ...params,
           action: 'update',

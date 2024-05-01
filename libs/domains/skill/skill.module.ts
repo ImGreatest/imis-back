@@ -4,4 +4,4 @@ import { SkillService } from './skill.service';
   providers: [SkillService],
   exports: [SkillService],
 })
-export class SuccessModule {}
+export class SkillModule {}
