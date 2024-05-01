@@ -65,7 +65,7 @@ model User {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime? @db.Timestamp()
-
+  description String? @db.VarChar()  
   userSkils UserSkills[]
   projects UserProject[]
   createdProjects Project[]
