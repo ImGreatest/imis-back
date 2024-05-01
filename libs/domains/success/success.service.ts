@@ -60,7 +60,7 @@ export class SuccessService {
         totalCount: pageCount,
         totalPages: Math.ceil(pageCount / limit),
       },
-      content: success,
+      rows: success,
     };
   }
   async getById(id: number) {

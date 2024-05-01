@@ -15,6 +15,7 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { ReqCreateSuccessDto } from './dto/req.create.success.dto';
 import { ReqUpdateSuccessDto } from './dto/req.update.success.dto';
 import { ReqGetPageDto } from 'libs/shared/interface/req.get.page.dto';
+import { Public } from 'libs/decorators/public.decorator';
 
 @Controller('success')
 @ApiBearerAuth()
@@ -32,11 +33,12 @@ export class SuccessController {
     return this.successService.create(success);
   }
 
-  @checkAbilities({
-    action: 'read',
-    subject: 'Success',
-  })
-  @UseGuards(AbilitiesGuard)
+  // @checkAbilities({
+  //   action: 'read',
+  //   subject: 'Success',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
   @Put('/page')
   async getPage(@Body() getData: ReqGetPageDto) {
     return this.successService.getPage(
