@@ -58,6 +58,22 @@ export class RatingControllerService implements OnApplicationBootstrap {
       all,
     );
   }
+  getDefaultRatingScore(
+    page: number,
+    limit: number,
+    filters: IFilter[],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    orderProps: IOrder,
+    all: boolean = false,
+  ) {
+    return this.ratingService.getDefaultRatingScore(
+      filters,
+      page,
+      limit,
+      orderProps,
+      all,
+    );
+  }
   async updateRatingScore(id: number) {
     return this.ratingService.updateRatingScore(id);
   }

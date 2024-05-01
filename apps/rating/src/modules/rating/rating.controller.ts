@@ -120,6 +120,19 @@ export class RatingController {
       getData.all,
     );
   }
+
+  @Public()
+  @Put('getScore/default') // http:localhost:3000/api/rating/1/score
+  async getDefaultRatingScore(@Body() getData: ReqGetPageDto) {
+    return this.ratingService.getDefaultRatingScore(
+      getData.page,
+      getData.pageSize,
+      getData.filters,
+      getData.orderProps,
+      getData.all,
+    );
+  }
+
   @checkAbilities({
     action: 'update',
     subject: 'Rating',

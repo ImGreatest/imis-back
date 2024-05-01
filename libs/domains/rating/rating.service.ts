@@ -157,7 +157,64 @@ export class RatingService {
       return middleValuesSum / 2;
     }
   }
-
+  async getDefaultRatingScore(
+    filters: IFilter[] = [],
+    page: number,
+    limit: number,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    orderProps: IOrder,
+    all: boolean = false,
+  ) {
+    const rating = await this.prisma.rating.findFirst({
+      where: { default: true },
+    });
+    if (!rating) {
+      throw new NotFoundException(`Рейтинг по умолчанию не найден`);
+    }
+    let whereOptions = { ratingId: rating.id };
+    filters.forEach((filter) => {
+      whereOptions = { ...whereOptions, [filter.column]: filter.value };
+    });
+    const scoresCount = await this.prisma.score.count({
+      where: whereOptions,
+    });
+    let takeProps = {};
+    if (!all) {
+      takeProps = { take: limit, skip: (page - 1) * limit };
+    }
+    const scores = await this.prisma.score.findMany({
+      where: whereOptions,
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+            course: true,
+            group: true,
+            direction: true,
+          },
+        },
+      },
+      ...takeProps,
+      orderBy: orderProps,
+    });
+    const minMaxScores = await this.prisma.score.aggregate({
+      _min: { ratingScore: true },
+      _max: { ratingScore: true },
+    });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: scoresCount,
+        totalPages: all ? 1 : Math.ceil(scoresCount / limit),
+        minScores: minMaxScores._min.ratingScore,
+        maxScores: minMaxScores._max.ratingScore,
+      },
+      rows: scores,
+    };
+  }
   async getRatingScore(
     id: number,
     filters: IFilter[] = [],
