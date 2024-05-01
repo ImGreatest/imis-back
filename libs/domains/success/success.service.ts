@@ -40,6 +40,14 @@ export class SuccessService {
         name: true,
         description: true,
         tags: { select: { tag: { select: { id: true, name: true } } } },
+        user: {
+          select: {
+            name: true,
+            surname: true,
+            direction: { select: { name: true } },
+            group: { select: { name: true } },
+          },
+        },
       },
       take: limit,
       skip: offset,
