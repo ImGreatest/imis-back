@@ -28,15 +28,7 @@ export class PrismaService
   private SoftDeleteMiddleware: Prisma.Middleware = async (params, next) => {
     const { model, action, args } = params;
     if (
-      ![
-        'User',
-        'Company',
-        'Theme',
-        'Project',
-        'Skills',
-        'Success',
-        'Tag',
-      ].includes(model)
+      !['User', 'Company', 'Theme', 'Project', 'Success', 'Tag'].includes(model)
     ) {
       return next(params);
     }

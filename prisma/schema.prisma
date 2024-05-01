@@ -180,9 +180,6 @@ model Project {
 model SkillType {
   id Int @default(autoincrement()) @id
   name String @unique @db.VarChar()
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt DateTime? @db.Timestamp()
   skills Skills[]
 }
 model Skills {
@@ -191,10 +188,6 @@ model Skills {
 
   skillType SkillType @relation(fields: [skillTypeId], references: [id])
   skillTypeId Int
-
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt DateTime? @db.Timestamp()
 
   projectSkils ProjectSkils[]
   userSkils UserSkills[]
