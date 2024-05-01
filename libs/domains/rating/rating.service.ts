@@ -161,7 +161,6 @@ export class RatingService {
     filters: IFilter[] = [],
     page: number,
     limit: number,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     orderProps: IOrder,
     all: boolean = false,
   ) {

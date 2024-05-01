@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ICreateSuccess } from 'libs/domains/success/interface/create.success.interface';
 import { IUpdateSuccess } from 'libs/domains/success/interface/update.success.interface';
 import { SuccessService } from 'libs/domains/success/success.service';
+import { IFilter } from 'libs/shared/interface/filter.interface';
+import { IOrder } from 'libs/shared/interface/order.interface';
 
 @Injectable()
 export class SuccessControllerService {
@@ -9,8 +11,13 @@ export class SuccessControllerService {
   async create(user: ICreateSuccess) {
     return this.successService.create(user);
   }
-  async getPage(limit: number, page: number) {
-    return this.successService.getPage(limit, page);
+  async getPage(
+    filters: IFilter[] = [],
+    page: number,
+    limit: number,
+    orderProps: IOrder,
+  ) {
+    return this.successService.getPage(filters, page, limit, orderProps);
   }
   async getById(id: number) {
     return this.successService.getById(id);

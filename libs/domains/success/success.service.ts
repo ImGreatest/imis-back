@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateSuccess } from './interface/create.success.interface';
 import { IUpdateSuccess } from './interface/update.success.interface';
+import { IFilter } from 'libs/shared/interface/filter.interface';
+import { IOrder } from 'libs/shared/interface/order.interface';
 @Injectable()
 export class SuccessService {
   constructor(private prisma: PrismaService) {}
@@ -19,12 +21,23 @@ export class SuccessService {
     await this.deleteAddTags(createdSuccess.id, tags);
     return createdSuccess;
   }
-  async getPage(limit: number, page: number) {
+  async getPage(
+    filters: IFilter[] = [],
+    page: number,
+    limit: number,
+    orderProps: IOrder,
+  ) {
+    let whereOptions = {};
+    filters.forEach((filter) => {
+      whereOptions = { ...whereOptions, [filter.column]: filter.value };
+    });
     const offset = (page - 1) * limit;
     const pageCount = await this.prisma.success.count();
     const success = await this.prisma.success.findMany({
+      where: whereOptions,
       take: limit,
       skip: offset,
+      orderBy: orderProps,
     });
     return {
       info: {
