@@ -40,6 +40,7 @@ export class PrismaService
     'Permission',
     'SuccessTags',
     'Notifacation',
+    'RefreshToken',
   ];
 
   private softDeleteMiddleware: Prisma.Middleware = async (params, next) => {
