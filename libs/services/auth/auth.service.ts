@@ -11,8 +11,8 @@ import { BackendExceptions } from 'libs/exceptions/backend.exceptions';
 import { EErrorCode } from 'libs/exceptions/enums/error-code.enum';
 import { UserService } from 'libs/domains/user/user.service';
 import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
-import { ReqResetPasswordDto } from "libs/services/auth/dto/req-dto/req-reset-password.dto";
-import { ResUserDto } from "apps/cabinet/src/controllers/user/dto/res-user.dto";
+import { ReqResetPasswordDto } from 'libs/services/auth/dto/req-dto/req-reset-password.dto';
+import { ResUserDto } from 'apps/cabinet/src/controllers/user/dto/res-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -40,6 +40,10 @@ export class AuthService {
     const access: string = this.authTokenService.generateJwt({
       sub: user.id,
       role: user.roleId,
+      name: user.name,
+      surname: user.surname,
+      course: user.course,
+      direction: user.direction,
     });
 
     Logger.verbose('Аутентификация прошла успешно', access);
@@ -87,6 +91,10 @@ export class AuthService {
     const access: string = this.authTokenService.generateJwt({
       sub: user.id,
       role: user.roleId,
+      name: user.name,
+      surname: user.surname,
+      course: user.course,
+      direction: user.direction,
     });
 
     Logger.verbose('access token - ', access);
@@ -106,7 +114,7 @@ export class AuthService {
   }
 
   async resetPassword(data: ReqResetPasswordDto): Promise<ResUserDto> {
-    let user: ResUserDto = await this.userService.getUserByEmail(data.email);
+    const user: ResUserDto = await this.userService.getUserByEmail(data.email);
 
     if (!user) {
       throw new BackendExceptions(EErrorCode.NotFound, {

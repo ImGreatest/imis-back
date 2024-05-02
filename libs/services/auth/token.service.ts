@@ -9,6 +9,7 @@ import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ReqRefreshDto } from 'libs/services/auth/dto/req-dto/req-refresh.dto';
 import { UserService } from 'libs/domains/user/user.service';
 import { ResSignInDto } from 'libs/services/auth/dto/res-dto/res-sign-in.dto';
+import { IResUser } from '../../domains/user/dto/res-dto/res-user.dto';
 
 @Injectable()
 export class AuthTokenService {
@@ -50,7 +51,7 @@ export class AuthTokenService {
         },
       },
     });
-    const roleUser: number = await this.userService.getUserRoleId(
+    const roleUser: IResUser = await this.userService.getUserById(
       oldRefresh.userId,
     );
 
@@ -66,11 +67,15 @@ export class AuthTokenService {
         },
       },
     });
-
-    const access: string = this.generateJwt({
+    const accessPayload: IPayload = {
       sub: oldRefresh.userId,
-      role: roleUser,
-    });
+      role: roleUser.roleId,
+      name: roleUser.name,
+      surname: roleUser.surname,
+      course: roleUser.course,
+      direction: roleUser.direction,
+    };
+    const access: string = this.generateJwt(accessPayload);
     const refresh: string = await this.generateRefreshToken(
       oldRefresh.userId,
       oldRefresh.deviceId,
