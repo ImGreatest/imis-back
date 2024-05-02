@@ -22,7 +22,7 @@ export async function createNest(
   );
   app.setGlobalPrefix('api');
   app.enableCors({
-    origin: 'http://localhost:6000/doc',
+    origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
