@@ -1,14 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Employer } from 'libs/entity/employer';
-import { ReqChangeEmailDto } from './req-dto/req-change-email.dto';
-import { ReqChangePasswordDto } from './req-dto/req-change-password-dto';
-import { ReqCreateEmployerDto } from './req-dto/req-create-employer.dto';
 import { User } from 'libs/entity/user';
-import { CreateProjectDto } from './req-dto/create-project.dto';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { UserService } from '../user/user-controller.service';
 import { NotFoundException, BadRequestException} from '@nestjs/common';
 import { Project } from 'libs/entity/project';
 import { UpdateProjectDto } from './req-dto/update-roject.dto';
@@ -88,7 +82,7 @@ async createProject(createProjectDto, userId: number) {
 }
 
 async updateProject(updateProjectDto: UpdateProjectDto, userId: string): Promise <Project> {
-  const { projectId, title, description, developers, status, techStack, employerId } = updateProjectDto;
+  const { projectId, title, description, status, techStack, employerId } = updateProjectDto;
 
   const project = await this.projectsRepository.findOne({ where: { id: parseInt(projectId) } });
 
