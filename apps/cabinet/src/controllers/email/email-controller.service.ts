@@ -1,17 +1,18 @@
 import { Injectable } from "@nestjs/common";
 import { EmailService } from "libs/services/email/email.service";
 import { IMessageHtmlDto, IMessageTextDto } from "apps/cabinet/src/controllers/email/dto/message.dto";
-import { IConfirmDto } from "apps/cabinet/src/controllers/email/dto/confirm.dto";
+import { ResConfirmDto } from "apps/cabinet/src/controllers/email/dto/res-dto/res-confirm.dto";
+import { ResSentMessageDto } from "apps/cabinet/src/controllers/email/dto/res-dto/res-sent-message.dto";
 
 @Injectable()
 export class EmailControllerService {
 	constructor(private readonly emailService: EmailService) {}
 
-	sentMessage(message: IMessageTextDto): Promise<void> {
-		return this.emailService.sendMessage(message);
+	sentMessage(message: IMessageTextDto): Promise<ResSentMessageDto> {
+		return this.emailService.sentMessage(message);
 	}
 
-	sentConfirmActionMessage(message: IMessageHtmlDto): Promise<IConfirmDto> {
+	confirmAction(message: IMessageHtmlDto) {
 		return this.emailService.confirmAction(message);
 	}
 }

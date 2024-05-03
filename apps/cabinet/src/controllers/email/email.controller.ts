@@ -1,9 +1,10 @@
-import { ApiTags } from "@nestjs/swagger";
-import { Controller, Post, Body, Logger } from "@nestjs/common";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
+import { Controller, Post, Get, Body, Logger } from "@nestjs/common";
 import { EmailControllerService } from "apps/cabinet/src/controllers/email/email-controller.service";
 import { Public } from 'libs/decorators/public.decorator';
 import { IMessageHtmlDto, IMessageTextDto } from "apps/cabinet/src/controllers/email/dto/message.dto";
-import { IConfirmDto } from "apps/cabinet/src/controllers/email/dto/confirm.dto";
+import { ResSentMessageDto } from "apps/cabinet/src/controllers/email/dto/res-dto/res-sent-message.dto";
+import { ResConfirmDto } from "apps/cabinet/src/controllers/email/dto/res-dto/res-confirm.dto";
 
 @ApiTags('email-service')
 @Controller('email-service')
@@ -12,14 +13,17 @@ export class EmailController {
 
 	@Public()
 	@Post('sent-text-message')
-	sentMessage(@Body() message: IMessageTextDto): Promise<void> {
+	@ApiBody({ type: IMessageTextDto })
+	sentMessage(@Body() message: IMessageTextDto): Promise<ResSentMessageDto> {
 		Logger.verbose("sentMessage", message);
 		return this.emailService.sentMessage(message);
 	}
 
 	@Public()
-	@Post('sent-confirm-message')
-	sentConfirmActionMessage(@Body() message: IMessageHtmlDto): Promise<IConfirmDto> {
-		return this.emailService.sentConfirmActionMessage(message);
+	@Post('sent-html-message')
+	@ApiBody({ type: IMessageHtmlDto })
+	confirmAction(@Body() message: IMessageHtmlDto) {
+		Logger.verbose("confirmAction", message.to, message.subject, message.text);
+		return this.emailService.confirmAction(message);
 	}
 }
