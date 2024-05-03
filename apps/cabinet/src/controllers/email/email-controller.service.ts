@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { EmailService } from "libs/services/email/email.service";
 import { IMessageHtmlDto, IMessageTextDto } from "apps/cabinet/src/controllers/email/dto/message.dto";
-import { ResConfirmDto } from "apps/cabinet/src/controllers/email/dto/res-dto/res-confirm.dto";
 import { ResSentMessageDto } from "apps/cabinet/src/controllers/email/dto/res-dto/res-sent-message.dto";
+import { ResConfirmDto } from "apps/cabinet/src/controllers/email/dto/res-dto/res-confirm.dto";
 
 @Injectable()
 export class EmailControllerService {
@@ -12,7 +12,7 @@ export class EmailControllerService {
 		return this.emailService.sentMessage(message);
 	}
 
-	confirmAction(message: IMessageHtmlDto) {
+	confirmAction(message: IMessageHtmlDto): Promise<ResConfirmDto> {
 		return this.emailService.confirmAction(message);
 	}
 }

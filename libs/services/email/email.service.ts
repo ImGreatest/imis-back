@@ -19,10 +19,8 @@ export class EmailService {
 				port: 465,
 				secure: true, // true for 465, false for other ports
 				auth: {
-					// user: emailConfig.EmailFrom,
-					// pass: emailConfig.EmailPass,
-					user: 'imis_letter_sendler@mail.ru',
-					pass: 'k8zm7RePucA0209QLymh'
+					user: emailConfig.EmailFrom,
+					pass: emailConfig.EmailPass,
 				}
 			},
 				{
@@ -44,7 +42,7 @@ export class EmailService {
 		}
 	}
 
-	async confirmAction(data: IReqMessageHtmlDto) {
+	async confirmAction(data: IReqMessageHtmlDto): Promise<IResConfirmDto> {
 		Logger.verbose("confirmAction", data.to, data.subject);
 		try {
 			const access: number = Math.floor(100000 + Math.random() * 900000);
@@ -54,6 +52,9 @@ export class EmailService {
 				html: "<div style='display:flex;flex-direction: column;align-items:center;background:rgb(255,255,255)'><h2 style='margin-top:2rem;color:rgb(82,110,211)'>Экосистема IMIS</h2><h4 style='text-align: center;color:rgb(27,31,59,0.65)'>Ваш код доступа для смены пароля от учетной записи IMIS: "+ access +"</h4><div style='margin-bottom:2rem;background:rgb(250,249,250);border:1px solid rgb(218,216,222);padding:5px'><span style='font-size: 1.17rem;font-weight: bold;text-align: center;letter-spacing: 0.35rem;color:rgb(50,47,55)'>"+ access +"</span></div></div>"
 			});
 
+			return {
+				access: access
+			}
 		} catch (err) {
 			Logger.verbose("confirmAction error is ", err);
 
