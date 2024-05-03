@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { IReqCreateUser } from '../dto/req-dto/req-create-user.interface.dto';
 import { IResSuccessUser, IResUser } from '../dto/res-dto/res-user.dto';
-import { IReqUpdateUser } from '../dto/req-dto/req-update-user.interface.dto';
+import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.dto';
+import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.dto';
 import { IResGetUserAndCountDto } from '../dto/res-dto/res-get-user-and-count.dto';
 
 @Injectable()
