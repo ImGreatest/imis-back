@@ -8,13 +8,10 @@ import {
   Put,
   Query,
   UseGuards,
-  Patch,
   Req
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { EmployerService } from './employer.service';
-import { ReqChangeEmailDto } from './req-dto/req-change-email.dto';
-import { ReqChangePasswordDto } from './req-dto/req-change-password-dto';
 import { Employer } from 'libs/entity/employer';
 import { CreateProjectDto } from './req-dto/create-project.dto';
 import { Project } from 'libs/entity/project';
@@ -42,7 +39,7 @@ export class EmployerController{
   })
   @UseGuards(AbilitiesGuard)
   @Get('/page-:page')
-  async getPageEmployers(@Query('limit') limit: number, @Param('page') page: number) {
+  async getPageEmployers() {
     return this.employerService.getPageEmployers();
   }
 
@@ -75,7 +72,6 @@ export class EmployerController{
   async updateEmployer(@Param('id') id: string, @Body() employer: Employer, @Req() req) {
     const token = req.headers.authorization.split(' ')[1];
     const payload = this.jwtService.decode(token);
-    const userId = payload['sub'];
     return this.employerService.update(id, employer);
   }
 
@@ -101,7 +97,6 @@ export class EmployerController{
   async updateProject(@Param('id') projectId: string, @Body() updateProjectData: UpdateProjectDto, @Req() req) {
     const token = req.headers.authorization.split(' ')[1];
     const payload = this.jwtService.decode(token);
-    const userId = payload['sub'];
     return this.employerService.updateProject(updateProjectData, projectId);
   }
 

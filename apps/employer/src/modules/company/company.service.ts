@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Company } from 'libs/entity/company';
-import { UpdateResult, DeleteResult } from 'typeorm';
 import { ReqUpdateCompany } from './req-dto/company.update.dto';
 import { User } from 'libs/entity/user';
 import { ReqCompanyCreate } from './req-dto/company.create.dto';

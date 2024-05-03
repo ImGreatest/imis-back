@@ -5,8 +5,6 @@ import {
     Get,
     Param,
     Patch,
-    Post,
-    UseGuards,
     Query, Body,
     Res,
     HttpStatus
@@ -14,7 +12,7 @@ import {
 import { CompanyService } from './company.service';
 import { Response } from 'express';
 import { ReqUpdateCompany } from './req-dto/company.update.dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {  ApiOperation } from '@nestjs/swagger';
 import { ReqCompanyCreate } from './req-dto/company.create.dto';
 
 
