@@ -91,11 +91,16 @@ model User {
   getNotifications Notifacation[] @relation("recipient")
 }
 
+enum NotifacationStatus{
+  read
+  unread
+}
 model Notifacation{
   sender User @relation(fields: [senderId], references: [id], name: "sender")
   senderId Int @db.Integer()
   recipient User @relation(fields: [recipientId], references: [id], name: "recipient")
   recipientId Int @db.Integer()
+  status NotifacationStatus
   @@id([senderId,recipientId])
     
 }
