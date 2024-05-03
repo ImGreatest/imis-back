@@ -41,11 +41,12 @@ export class TagController {
     return this.tagService.create(tag);
   }
 
-  @checkAbilities({
-    action: 'read',
-    subject: 'Tag',
-  })
-  @UseGuards(AbilitiesGuard)
+  // @checkAbilities({
+  //   action: 'read',
+  //   subject: 'Tag',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
   @Get('/getList')
   getList() {
     return this.tagService.getList();
