@@ -1,6 +1,10 @@
 import { IsNotEmpty, IsArray } from 'class-validator';
 
 export class UpdateProjectDto {
+  
+  @IsNotEmpty()
+  projectId: string;
+
   @IsNotEmpty()
   employerId: string;
 

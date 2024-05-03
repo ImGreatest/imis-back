@@ -1,6 +1,10 @@
-import { IsNotEmpty, IsArray } from 'class-validator';
+import { IsNotEmpty, IsArray, isNotEmpty } from 'class-validator';
 
 export class CreateProjectDto {
+
+  @IsNotEmpty()
+  projectId: string;
+
   @IsNotEmpty()
   employerId: string;
 
