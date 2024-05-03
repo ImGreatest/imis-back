@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Employer } from 'libs/entity/employer';
-import { User } from 'libs/entity/user';
 import { NotFoundException, BadRequestException} from '@nestjs/common';
 import { Project } from 'libs/entity/project';
 import { UnauthorizedException } from '@nestjs/common';

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsArray, isNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsArray } from 'class-validator';
 
 export class CreateProjectDto {
 
