@@ -13,6 +13,8 @@ import { NotFoundException, BadRequestException} from '@nestjs/common';
 import { Project } from 'libs/entity/project';
 import { UpdateProjectDto } from './req-dto/update-roject.dto';
 import { InternalServerErrorException } from '@nestjs/common';
+import { UpdateEmployerDto } from './req-dto/req-update-employer.dto';
+import { UnauthorizedException } from '@nestjs/common';
 @Injectable()
 export class EmployerService {
 
@@ -64,60 +66,45 @@ export class EmployerService {
         return updatedEmployer;
 }
     
-// async createProject(createProjectDto: CreateProjectDto, userId: string): Promise<Project> {
-//   const { employerId, title, description, developers, stage, techStack } = createProjectDto;
+// Ваш сервис
+async createProject(createProjectDto, userId: number) {
+  // Проверка на пустой ввод
+  if (!createProjectDto) throw new BadRequestException('Invalid input data');
+  
+  const { name, ...otherData } = createProjectDto;
 
-//   const employer = await this.employerRepository.findOne({ where: { id: parseInt(employerId) } });
+  // Поиск пользователя в базе данных
+  const user = await this.userRepository.findOne({ where: { id: userId } });
+  if (!user) throw new NotFoundException(`User with id ${userId} does not exist.`);
+  
+  // Создание нового проекта
+  const project = await this.projectsRepository.create({ ...otherData, name, employerId: userId });
+  
+  // Сохранение и возвращение нового проекта
+  const savedProject = await this.projectsRepository.save(project);
+  if (!savedProject) throw new InternalServerErrorException('Failed to create project');
 
-//   if (!employer) {
-//     throw new NotFoundException('Employer with this id does not exist');
-//   }
+  return savedProject;
+}
 
-//   if (!title || !description || !stage || !techStack) {
-//     throw new BadRequestException('Required fields are missing');
-//   }
+async updateProject(updateProjectDto: UpdateProjectDto, userId: string): Promise <Project> {
+  const { projectId, title, description, developers, status, techStack, employerId } = updateProjectDto;
 
-//   const newProject = this.projectsRepository.create({
-//     description: description,
-//     creatorId: parseInt(employerId),
-//     stage: stage,
-//     techStack: techStack
-//   });
-
-//   const savedProject = await this.projectsRepository.save(newProject);
-
-//   await Promise.all(developers.map(async (developerId) => {
-//     const developer = await this.userRepository.findOne({ where: { id: parseInt(developerId) } });
-
-//     if (!developer) {
-//       throw new NotFoundException(`Developer with id ${developerId} does not exist`);
-//     }
-
-//     await this.projectDevelopersRepository.create({
-//       projectId: savedProject.id, 
-//       developerId: developer.id
-//     });
-//   }));
-
-//   return savedProject;
-// }
-
-async updateProject(updateProjectDto: UpdateProjectDto, userId: string, employerId: string): Promise <Project> {
-  const { projectId, title, description, developers, stage, techStack } = updateProjectDto;
-
-  // Проверка на существование проекта
-  const project = await this.projectsRepository.findOne({ where: { id: parseInt(projectId)} });
+  const project = await this.projectsRepository.findOne({ where: { id: parseInt(projectId) } });
 
   if (!project) {
-      throw new NotFoundException('Проект с таким id не существует');
+    throw new NotFoundException('Проект с таким id не существует');
   }
 
-  const user = await this.userRepository.findOne({ where: { id: parseInt(projectId) } });
+  if (project.creatorId !== parseInt(employerId)) {
+    throw new UnauthorizedException('Вы не имеете права обновлять этот проект');
+  }
+  
+  const user = await this.userRepository.findOne({ where: { id: parseInt(userId) } });
 
   if (!user) {
       throw new NotFoundException('Пользователя с таким id не существует');
   }
-
 
   if (title) {
       project.title = title;
@@ -125,24 +112,33 @@ async updateProject(updateProjectDto: UpdateProjectDto, userId: string, employer
   if (description) {
       project.description = description;
   }
-  // if (stage) {
-  //     project.stage = stage;
-  // }
-  // if (techStack) {
-  //     project.techStack = techStack;
-  // }
+  if (status) {
+       project.status = status;
+  }
+  if (techStack) {
+       project.techStack = techStack;
+  }
+
+  // Здесь добавьте код для обновления developers, если это нужно. 
+
   const updatedProject = await this.projectsRepository.save(project);
 
   return updatedProject;
 }
-      async updateEmployerData(employerId: string, employerData: Partial<Employer>): Promise<Employer> {
-        // Обновление данных работодателя...
-      }
-      
 
-      
-      async filterStudents(filterData: FilterDto): Promise<Student[]> {
-        // Фильтрация и поиск студентов...
-      }
-    }
-    
+async updateEmployerData(employerId: string, employerData: UpdateEmployerDto): Promise<Employer> {
+  if (!employerId || !employerData) throw new BadRequestException('Invalid input data');
+  const employer = await this.employerRepository.findOne({ where: { id: parseInt(employerId) } });
+
+  if (!employer) throw new NotFoundException('Employer not found');
+
+  Object.assign(employer, employerData);
+
+  const updatedEmployer = await this.employerRepository.save(employer);
+  if (!updatedEmployer) throw new InternalServerErrorException('Failed to update employer');
+  
+  return updatedEmployer;
+}
+
+}
+
