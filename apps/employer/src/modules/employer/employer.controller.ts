@@ -88,7 +88,7 @@ export class EmployerController{
   async createProject(@Body() createProjectDto: CreateProjectDto, @Req() req) {
     const token = req.headers.authorization.split(' ')[1];
     const payload = this.jwtService.decode(token);
-    const userId = payload['sub'];
+    const userId = parseInt(payload['sub']);
     return this.employerService.createProject(createProjectDto, userId);
   }
 
@@ -102,6 +102,8 @@ export class EmployerController{
     const token = req.headers.authorization.split(' ')[1];
     const payload = this.jwtService.decode(token);
     const userId = payload['sub'];
-    return this.employerService.updateProject( updateProjectData,projectId, userId);
+    return this.employerService.updateProject(updateProjectData, projectId);
   }
+
+  
 }

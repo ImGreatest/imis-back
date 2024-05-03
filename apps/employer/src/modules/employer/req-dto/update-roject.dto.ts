@@ -22,4 +22,7 @@ export class UpdateProjectDto {
 
   @IsNotEmpty()
   stage: string;
+
+  @IsNotEmpty()
+  status: string;
 }
