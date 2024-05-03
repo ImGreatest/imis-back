@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from 'libs/domains/user/repositories/user.repository';
-import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.interface.dto';
+import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.dto';
 import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
 import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
-import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
+import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.dto';
 
 @Injectable()
 export class UserMockAdapter extends UserRepository {

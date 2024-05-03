@@ -6,9 +6,7 @@ import { ResScheme, ResSchemeResult } from './dto/res-scheme.dto';
 @ApiTags('language-scheme')
 @Controller('language-scheme')
 export class LanguageSchemeController {
-  constructor(
-    private readonly colorSchemeService: LanguageSchemeControllerService,
-  ) {}
+  constructor(private readonly colorSchemeService: LanguageSchemeControllerService,) {}
 
   @Get('get-color-scheme-by-language')
   getColorSchemeByLanguage(
