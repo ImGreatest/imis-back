@@ -24,8 +24,4 @@ export class IMessageHtmlDto {
 	@ApiProperty({ example: 'Example subject' })
 	@IsString()
 	subject!: string;
-
-	@ApiProperty({ example: 'Test text' })
-	@IsString()
-	text!: string;
 }

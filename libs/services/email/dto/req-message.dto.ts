@@ -7,6 +7,5 @@ export interface IReqMessageTextDto {
 
 export interface IReqMessageHtmlDto {
 	to: string;
-	subject: string;
-	text: string;
+	subject: string
 }
