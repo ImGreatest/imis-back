@@ -12,4 +12,5 @@ export interface ITreeTag {
   hourlyUpdate: number;
   scoringType: string;
   tag: ITreeTagElement[];
+  default: boolean;
 }
