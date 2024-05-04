@@ -96,6 +96,20 @@ export class UserAdapter extends UserRepository {
     return user;
   }
 
+  getStudents(): Promise<IResUser[]> {
+    Logger.verbose('getStudents');
+    const users = this.prisma.user.findMany({
+      where: { deletedAt: null, roleId: 1 },
+    });
+
+    Logger.verbose('getStudents', users);
+
+    if (!users) throw new NotFoundException();
+
+    Logger.verbose('getStudents', users);
+
+    return users;
+  }
   async getUsers(): Promise<IResUser[]> {
     Logger.verbose('getUsers');
     const users = this.prisma.user.findMany({

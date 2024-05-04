@@ -51,6 +51,11 @@ export class UserController {
     return this.userService.getUsers();
   }
 
+  @Get('students')
+  getStudents() {
+    return this.userService.getStudents();
+  }
+
   @Put('update/:id')
   async updateUser(
     @Param('id') id: number,

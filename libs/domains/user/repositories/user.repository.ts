@@ -21,4 +21,6 @@ export abstract class UserRepository {
   abstract updateUser(id: number, user: IReqUpdateUser): Promise<IResUser>;
 
   abstract deleteUser(id: number): Promise<IResUser>;
+
+  abstract getStudents(): Promise<IResUser[]>;
 }

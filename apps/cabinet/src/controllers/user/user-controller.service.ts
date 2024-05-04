@@ -33,6 +33,9 @@ export class UserControllerService {
     return this.userService.getUsers();
   }
 
+  getStudents(): Promise<ResUserDto[]> {
+    return this.userService.getStudents();
+  }
   updateUser(id: number, user: ReqUpdateUserDto): Promise<ResUserDto> {
     return this.userService.updateUser(id, user);
   }

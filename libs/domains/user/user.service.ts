@@ -20,6 +20,9 @@ export class UserService {
   async getUserByEmail(email: string): Promise<IResUser> {
     return this.userRep.getUserByEmail(email);
   }
+  getStudents(): Promise<IResUser[]> {
+    return this.userRep.getStudents();
+  }
 
   async getUserById(id: number): Promise<IResUser> {
     return this.userRep.getUserById(id);
