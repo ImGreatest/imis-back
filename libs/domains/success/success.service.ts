@@ -66,7 +66,7 @@ export class SuccessService {
   async getById(id: number) {
     return this.prisma.success.findUnique({
       where: { id: id },
-      include: { tags: { include: { tag: true } } },
+      include: { tags: { include: { tag: true } }, user: true },
     });
   }
   async update(id: number, success: IUpdateSuccess) {
