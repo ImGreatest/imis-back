@@ -11,6 +11,10 @@ export class CronService {
   }
   deleteInterval(name: string) {
     console.log(name);
-    this.schedulerRegistry.deleteInterval(name);
+    try {
+      this.schedulerRegistry.deleteInterval(name);
+    } catch {
+      console.log('interval not found');
+    }
   }
 }

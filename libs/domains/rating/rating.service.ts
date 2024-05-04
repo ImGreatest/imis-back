@@ -1,10 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRating } from './interface/create.rating.interface';
 import { IUpdateRating } from './interface/update.rating.interface';
 import { IScopeRating } from './interface/scope.rating.interface';
 import { CronService } from 'libs/services/cron/cron.service';
-import { IFilter } from './interface/filter.rating.interface';
+import { IFilter } from '../../shared/interface/filter.interface';
+import { IOrder } from '../../shared/interface/order.interface';
 @Injectable()
 export class RatingService {
   constructor(
@@ -15,11 +20,21 @@ export class RatingService {
   async createRating(createrId: number, rating: ICreateRating) {
     const scope = rating.scope;
     delete rating.scope;
+    if (rating.default) {
+      await this.prisma.rating.updateMany({
+        where: { default: true },
+        data: { default: false },
+      });
+    }
     const createdRating = await this.prisma.rating.create({
       data: { ...rating, createrId: createrId },
     });
 
-    await this.createDeleteRatigsScope(createdRating.id, scope);
+    if (!createdRating) {
+      throw new ConflictException('Рейтинг не создан');
+    }
+
+    await this.deleteAndCreateRatingsScope(createdRating.id, scope);
     if (rating.minuteUpdate) {
       this.cronService.addInterval(
         `rating-${createdRating.id}`,
@@ -29,12 +44,31 @@ export class RatingService {
     }
     return createdRating;
   }
-  async getPage(limit: number, page: number) {
+  async getPage(
+    limit: number,
+    page: number,
+    filters: IFilter[] = [],
+    orderProps: IOrder,
+  ) {
+    let whereOptions = {};
+    filters.forEach((filter) => {
+      whereOptions = { ...whereOptions, [filter.column]: filter.value };
+    });
     const offset = (page - 1) * limit;
-    const pageCount = await this.prisma.rating.count();
+    const pageCount = await this.prisma.rating.count({ where: whereOptions });
     const ratings = await this.prisma.rating.findMany({
+      where: whereOptions,
+      orderBy: orderProps,
       take: limit,
       skip: offset,
+      include: {
+        creater: {
+          select: {
+            name: true,
+            surname: true,
+          },
+        },
+      },
     });
     return {
       info: {
@@ -43,7 +77,7 @@ export class RatingService {
         totalCount: pageCount,
         totalPages: Math.ceil(pageCount / limit),
       },
-      content: ratings,
+      rows: ratings,
     };
   }
   async getById(id: number) {
@@ -51,14 +85,26 @@ export class RatingService {
       where: { id: id },
     });
   }
-  async updateRatingName(id: number, rating: IUpdateRating) {
+  async updateRating(id: number, rating: IUpdateRating) {
+    const dbRating = await this.prisma.rating.findUnique({
+      where: { id: id },
+    });
+    if (!dbRating) {
+      throw new NotFoundException(`Рейтинг не найден`);
+    }
+    if (rating.default) {
+      await this.prisma.rating.updateMany({
+        where: { default: true },
+        data: { default: false },
+      });
+    }
     const scope = rating.scope;
     delete rating.scope;
     if (scope) {
-      await this.createDeleteRatigsScope(id, scope);
+      await this.deleteAndCreateRatingsScope(id, scope);
     }
     this.cronService.deleteInterval(`rating-${id}`);
-    if (rating.minuteUpdate) {
+    if (rating.minuteUpdate && rating.minuteUpdate !== dbRating.minuteUpdate) {
       this.cronService.addInterval(
         `rating-${id}`,
         1000 * 60 * rating.minuteUpdate,
@@ -79,14 +125,17 @@ export class RatingService {
       where: { id: id },
     });
     if (!raiting) {
-      throw new NotFoundException(`Rating with ID ${id} not found`);
+      throw new NotFoundException(`Рейтинг не найден`);
     }
 
     return this.prisma.rating.delete({
       where: { id: id },
     });
   }
-  async createDeleteRatigsScope(ratingId: number, newScope: IScopeRating[]) {
+  async deleteAndCreateRatingsScope(
+    ratingId: number,
+    newScope: IScopeRating[],
+  ) {
     await this.prisma.ratingScope.deleteMany({
       where: {
         ratingId: ratingId,
@@ -96,27 +145,42 @@ export class RatingService {
       data: newScope.map((scope) => ({ ...scope, ratingId: ratingId })),
     });
   }
-  async getRatingScore(
-    id: number,
+  getMediana(array: number[]) {
+    const sortedArray = array.slice().sort((a, b) => a - b);
+    const middleIndex = Math.floor(sortedArray.length / 2);
+
+    if (sortedArray.length % 2 !== 0) {
+      return sortedArray[middleIndex];
+    } else {
+      const middleValuesSum =
+        sortedArray[middleIndex - 1] + sortedArray[middleIndex];
+      return middleValuesSum / 2;
+    }
+  }
+  async getDefaultRatingScore(
     filters: IFilter[] = [],
     page: number,
     limit: number,
-    column: string,
-    sortDirection: 'asc' | 'desc',
+    orderProps: IOrder,
+    all: boolean = false,
   ) {
-    let whereOptions = { ratingId: id };
+    const rating = await this.prisma.rating.findFirst({
+      where: { default: true },
+    });
+    if (!rating) {
+      throw new NotFoundException(`Рейтинг по умолчанию не найден`);
+    }
+    let whereOptions = { ratingId: rating.id };
     filters.forEach((filter) => {
       whereOptions = { ...whereOptions, [filter.column]: filter.value };
     });
-    const orderProps =
-      column === 'ratingScore'
-        ? { [column]: sortDirection }
-        : column === 'group'
-          ? { student: { group: { name: sortDirection } } }
-          : { student: { [column]: sortDirection } };
     const scoresCount = await this.prisma.score.count({
       where: whereOptions,
     });
+    let takeProps = {};
+    if (!all) {
+      takeProps = { take: limit, skip: (page - 1) * limit };
+    }
     const scores = await this.prisma.score.findMany({
       where: whereOptions,
       include: {
@@ -131,8 +195,60 @@ export class RatingService {
           },
         },
       },
-      take: limit,
-      skip: (page - 1) * limit,
+      ...takeProps,
+      orderBy: orderProps,
+    });
+    const minMaxScores = await this.prisma.score.aggregate({
+      _min: { ratingScore: true },
+      _max: { ratingScore: true },
+    });
+    return {
+      info: {
+        page: page,
+        pageSize: limit,
+        totalCount: scoresCount,
+        totalPages: all ? 1 : Math.ceil(scoresCount / limit),
+        minScores: minMaxScores._min.ratingScore,
+        maxScores: minMaxScores._max.ratingScore,
+      },
+      rows: scores,
+    };
+  }
+  async getRatingScore(
+    id: number,
+    filters: IFilter[] = [],
+    page: number,
+    limit: number,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    orderProps: IOrder,
+    all: boolean = false,
+  ) {
+    let whereOptions = { ratingId: id };
+    filters.forEach((filter) => {
+      whereOptions = { ...whereOptions, [filter.column]: filter.value };
+    });
+    const scoresCount = await this.prisma.score.count({
+      where: whereOptions,
+    });
+    let takeProps = {};
+    if (!all) {
+      takeProps = { take: limit, skip: (page - 1) * limit };
+    }
+    const scores = await this.prisma.score.findMany({
+      where: whereOptions,
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+            course: true,
+            group: true,
+            direction: true,
+          },
+        },
+      },
+      ...takeProps,
       orderBy: orderProps,
     });
     whereOptions = { ratingId: id };
@@ -145,7 +261,7 @@ export class RatingService {
         page: page,
         pageSize: limit,
         totalCount: scoresCount,
-        totalPages: Math.ceil(scoresCount / limit),
+        totalPages: all ? 1 : Math.ceil(scoresCount / limit),
         minScores: minMaxScores._min.ratingScore,
         maxScores: minMaxScores._max.ratingScore,
       },
@@ -167,6 +283,15 @@ export class RatingService {
     });
   }
   async updateRatingScore(id: number) {
+    const rating = await this.prisma.rating.findUnique({
+      where: { id: id },
+      select: {
+        scoringType: true,
+      },
+    });
+    if (!rating) {
+      throw new NotFoundException(`Рейтинг не найден`);
+    }
     await this.prisma.score.deleteMany({
       where: { ratingId: id },
     });
@@ -178,55 +303,78 @@ export class RatingService {
       include: {
         tags: {
           include: {
-            tag: {
-              include: {
-                ratingScope: true,
-              },
-            },
+            tag: true,
           },
         },
       },
     });
-    const ratingScope = {};
+    const allTags = await this.prisma.tag.findMany({
+      where: { deletedAt: null },
+      include: {
+        childTags: true,
+        ratingScope: {
+          where: {
+            ratingId: id,
+          },
+        },
+      },
+    });
+    const rootTags = allTags.filter((tag) => tag.childTags.length === 0);
+
+    const recurseModify = (tag, sum): number => {
+      const child = allTags.find((child) => child.id === tag.baseTagId);
+      sum *= child.ratingScope ? child.ratingScope[0].ratingScore : 1;
+      if (child.baseTagId) {
+        return recurseModify(child, sum);
+      }
+      return sum;
+    };
+
+    const ratingScope: { [key: number]: number } = {};
+
+    rootTags.forEach((tag) => {
+      const ratingScore =
+        tag.ratingScope.length > 0 ? tag.ratingScope[0].ratingScore : 0;
+      ratingScope[tag.id] = tag.baseTagId
+        ? recurseModify(tag, ratingScore)
+        : ratingScore;
+    });
 
     const scorePromises = students.map(async (student) => {
       const studentSuccess = success.filter(
         (success) => success.userId === student.id,
       );
       const sum = await Promise.all(
-        studentSuccess.flatMap(async (success) => {
+        studentSuccess.map(async (success) => {
           const tagRatings = await Promise.all(
             success.tags.map(async (tag) => {
-              if (ratingScope[tag.tag.id]) {
-                return ratingScope[tag.tag.id];
-              }
-              if (!tag.tag.baseTagId) {
-                ratingScope[tag.tag.id] = tag.tag.ratingScope.find(
-                  (scope) => scope.ratingId === id,
-                ).ratingScore;
-                return ratingScope[tag.tag.id];
-              }
-              let curId = tag.tag.baseTagId;
-              let curSum = tag.tag.ratingScope.find(
-                (scope) => scope.ratingId === id,
-              ).ratingScore;
-              while (curId) {
-                const currentTag = await this.prisma.tag.findFirstOrThrow({
-                  where: { id: curId },
-                  include: { ratingScope: true },
-                });
-                curSum *= currentTag.ratingScope.find(
-                  (scope) => scope.ratingId === id,
-                ).ratingScore;
-                curId = currentTag.baseTagId;
-              }
-              ratingScope[tag.tag.id] = curSum;
-              return curSum;
+              const score = ratingScope[tag.tagId] || 0;
+              return score;
             }),
           );
-          return tagRatings.reduce((acc, cur) => acc + cur, 0);
+          if (rating.scoringType === 'mediana') {
+            return this.getMediana(tagRatings);
+          }
+          const scoringFunctions = {
+            sum: (acc, cur) => acc + cur,
+            maximum: (acc, cur) => Math.max(acc, cur),
+            average: (acc, cur) => acc + cur,
+          };
+          const successSum = tagRatings.reduce((acc, cur) => {
+            const scoringFunction = scoringFunctions[rating.scoringType];
+            if (scoringFunction) {
+              return scoringFunction(acc, cur);
+            } else {
+              return acc;
+            }
+          }, 0);
+
+          return rating.scoringType === 'average'
+            ? successSum / tagRatings.length
+            : successSum;
         }),
       );
+
       const totalSum = sum.reduce((acc, cur) => acc + cur, 0);
       return this.prisma.score.create({
         data: {

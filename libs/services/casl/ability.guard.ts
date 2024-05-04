@@ -27,28 +27,37 @@ import {
 } from '@nestjs/common';
 import { IUserPayload } from './user-payload.interface';
 
-export const actions = [
-  'read',
-  'manage',
-  'create',
-  'update',
-  'updateStatus',
-  'delete',
-] as const;
+export const posibleConditions = [
+  { row: 'id', entitys: ['User'] },
+  { row: 'createrId', entitys: ['Project', 'Rating'] },
+  { row: 'spokesPersonId', entitys: ['Company'] },
+];
 
-export const subjects = [
-  'UserRole',
-  'User',
-  'Permission',
-  'Company',
-  'Theme',
-  'Project',
-  'Skills',
-  'Success',
-  'Tag',
-  'Rating',
-  'all',
-] as const;
+export const ruActions = {
+  read: 'Чтение',
+  create: 'Создание',
+  update: 'Изменение',
+  updateStatus: 'Изменение статуса',
+  delete: 'Удаление',
+};
+
+export const actions = Object.keys(ruActions);
+
+export const ruSybjects = {
+  all: 'Все',
+  User: 'Пользователь',
+  Company: 'Компания',
+  Theme: 'Тема',
+  Project: 'Проект',
+  Skills: 'Навыки',
+  Success: 'Успех',
+  Tag: 'Тег',
+  Rating: 'Рейтинг',
+  UserRole: 'Роль',
+  Permission: 'Разрешение',
+};
+
+export const subjects = Object.keys(ruSybjects);
 
 export type Abilities = [
   (typeof actions)[number],
@@ -98,13 +107,17 @@ export class AbilitiesGuard implements CanActivate {
             permission.action === rule.action &&
             permission.subject === rule.subject,
         );
-        if (thisPermissions && size(thisPermissions.conditions)) {
+        if (
+          thisPermissions &&
+          size(thisPermissions.conditions) &&
+          rule.subject !== 'all'
+        ) {
           const subId = +request.params['id'];
           sub = await this.getSubjectById(subId, rule.subject);
         }
 
         ForbiddenError.from(ability)
-          .setMessage('You are not allowed to perform this action')
+          .setMessage('У вас нет доступа к этой операции')
           .throwUnlessCan(rule.action, subject(rule.subject, sub));
       }
       return true;
@@ -121,11 +134,11 @@ export class AbilitiesGuard implements CanActivate {
     const data = map(permissions, (permission) => {
       if (size(permission.conditions)) {
         const cond = {};
-        const conditionsToParse = ['id', 'spokesPersonId', 'createrId'];
+        const conditionsToParse = posibleConditions.map((cond) => cond.row);
 
         for (const conditionKey of conditionsToParse) {
           if (permission.conditions[conditionKey]) {
-            cond[conditionKey] = +currentUser.role; // Convert parsed value to number
+            cond[conditionKey] = +currentUser.sub; // Convert parsed value to number
             break; // Stop iteration if a condition is found
           }
         }
@@ -146,7 +159,7 @@ export class AbilitiesGuard implements CanActivate {
         id,
       },
     });
-    if (!subject) throw new NotFoundException(`${subName} not found`);
+    if (!subject) throw new NotFoundException(`${subName} не найден`);
     return subject;
   }
 }

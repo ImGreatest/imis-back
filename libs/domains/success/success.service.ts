@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateSuccess } from './interface/create.success.interface';
 import { IUpdateSuccess } from './interface/update.success.interface';
+import { IFilter } from 'libs/shared/interface/filter.interface';
+import { IOrder } from 'libs/shared/interface/order.interface';
 @Injectable()
 export class SuccessService {
   constructor(private prisma: PrismaService) {}
@@ -9,21 +11,47 @@ export class SuccessService {
   async create(success: ICreateSuccess) {
     const tags = success.tags;
     delete success.tags;
-    return this.prisma.success.create({
+    const createdSuccess = await this.prisma.success.create({
       data: {
         userId: success.userId,
         name: success.name,
         description: success.description,
-        tags: { create: tags.map((tag) => ({ tagId: tag })) },
       },
     });
+    await this.deleteAddTags(createdSuccess.id, tags);
+    return createdSuccess;
   }
-  async getPage(limit: number, page: number) {
+  async getPage(
+    filters: IFilter[] = [],
+    page: number,
+    limit: number,
+    orderProps: IOrder,
+  ) {
+    let whereOptions = {};
+    filters.forEach((filter) => {
+      whereOptions = { ...whereOptions, [filter.column]: filter.value };
+    });
     const offset = (page - 1) * limit;
     const pageCount = await this.prisma.success.count();
     const success = await this.prisma.success.findMany({
+      where: whereOptions,
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        tags: { select: { tag: { select: { id: true, name: true } } } },
+        user: {
+          select: {
+            name: true,
+            surname: true,
+            direction: { select: { name: true } },
+            group: { select: { name: true } },
+          },
+        },
+      },
       take: limit,
       skip: offset,
+      orderBy: orderProps,
     });
     return {
       info: {
@@ -32,7 +60,7 @@ export class SuccessService {
         totalCount: pageCount,
         totalPages: Math.ceil(pageCount / limit),
       },
-      content: success,
+      rows: success,
     };
   }
   async getById(id: number) {

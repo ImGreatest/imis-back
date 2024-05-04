@@ -36,7 +36,18 @@ model Permission {
   updated_at DateTime? @updatedAt()
   deleted_at DateTime? @db.Timestamp()
 
+
   @@map("permissions")
+}
+
+model RefreshToken{
+  token String
+  deviceId String
+  user User @relation(fields: [userId], references: [id])
+  userId Int @db.Integer()
+  created_at DateTime  @default(now())
+  expieres_at DateTime
+  @@id([token,deviceId])
 }
 model Group{
   id    Int     @default(autoincrement()) @id
@@ -65,6 +76,8 @@ model User {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime? @db.Timestamp()
+
+  refreshToken RefreshToken[]
   description String? @db.VarChar()  
   userSkils UserSkills[]
   projects UserProject[]
@@ -87,12 +100,20 @@ model Notifacation{
   @@id([senderId,recipientId])
     
 }
+enum RatingScoringType{
+  average
+  maximum
+  sum
+  mediana
+}
 model Rating{
   id    Int     @default(autoincrement()) @id
-  name String @db.VarChar()
+  name String @db.VarChar() @unique
   minuteUpdate Int @db.Integer() @default(0)
   creater User @relation(fields: [createrId], references: [id])
   createrId Int @db.Integer()
+  scoringType RatingScoringType @default(average)
+  default Boolean @default(false)
   score Score[]
   ratingScope RatingScope[]
   
@@ -159,31 +180,34 @@ model Project {
   usersWithFavor UserFavoritProject[]
 
 }
-
+model SkillType {
+  id Int @default(autoincrement()) @id
+  name String @unique @db.VarChar()
+  skills Skills[]
+}
 model Skills {
   id Int @default(autoincrement()) @id
   name String @unique @db.VarChar()
 
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt DateTime? @db.Timestamp()
+  skillType SkillType @relation(fields: [skillTypeId], references: [id], onDelete: Cascade)
+  skillTypeId Int
 
   projectSkils ProjectSkils[]
   userSkils UserSkills[]
 }
 
 model ProjectSkils{
-  project Project @relation(fields: [projectId], references: [id])
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId Int @db.Integer()
-  skils Skills @relation(fields: [skilsId], references: [id])
+  skils Skills @relation(fields: [skilsId], references: [id], onDelete: Cascade)
   skilsId Int @db.Integer()
   @@id([projectId,skilsId])
 }
 
 model UserSkills{
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId Int @db.Integer()
-  skils Skills @relation(fields: [skilsId], references: [id])
+  skils Skills @relation(fields: [skilsId], references: [id], onDelete: Cascade)
   skilsId Int @db.Integer()
   @@id([userId,skilsId])
 }
@@ -205,7 +229,7 @@ model UserFavoritProject{
 }
 model Success{
   id Int @default(autoincrement()) @id
-  name String @unique @db.VarChar()
+  name String @db.VarChar()
   description String @db.VarChar()
   
   createdAt  DateTime   @default(now())

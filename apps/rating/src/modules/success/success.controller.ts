@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { SuccessControllerService } from './success.controller.service';
@@ -15,6 +14,8 @@ import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { ReqCreateSuccessDto } from './dto/req.create.success.dto';
 import { ReqUpdateSuccessDto } from './dto/req.update.success.dto';
+import { ReqGetPageDto } from 'libs/shared/interface/req.get.page.dto';
+import { Public } from 'libs/decorators/public.decorator';
 
 @Controller('success')
 @ApiBearerAuth()
@@ -32,14 +33,20 @@ export class SuccessController {
     return this.successService.create(success);
   }
 
-  @checkAbilities({
-    action: 'read',
-    subject: 'Success',
-  })
-  @UseGuards(AbilitiesGuard)
-  @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
-    return this.successService.getPage(limit, page);
+  // @checkAbilities({
+  //   action: 'read',
+  //   subject: 'Success',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
+  @Put('/page')
+  async getPage(@Body() getData: ReqGetPageDto) {
+    return this.successService.getPage(
+      getData.filters,
+      getData.page,
+      getData.pageSize,
+      getData.orderProps,
+    );
   }
 
   @checkAbilities({

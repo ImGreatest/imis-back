@@ -1,24 +1,51 @@
-import { Body, Controller, Post, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Put } from '@nestjs/common';
+import { ApiTags, ApiBody } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
+import { ReqRefreshDto } from './dto/req-dto/req-refresh.dto';
+import { ReqSignInDto } from './dto/req-dto/req-sign-in.dto';
+import { ReqSignUpDto } from './dto/req-dto/req-sign-up.dto';
+import { ResSignInDto } from './dto/res-dto/res-sign-in.dto';
+import { ResSignUpDto } from './dto/res-dto/res-sign-up.dto';
+import { AuthTokenService } from './token.service';
 import { Public } from 'libs/decorators/public.decorator';
-import { AuthDto } from './dto/reqSignIn';
-import { signUpDto } from './dto/reqSignUp';
-import { ApiBody } from '@nestjs/swagger';
+import { ReqResetPasswordDto } from "libs/services/auth/dto/req-dto/req-reset-password.dto";
+import { ResUserDto } from "apps/cabinet/src/controllers/user/dto/res-user.dto";
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private authTokenService: AuthTokenService,
+  ) {}
 
   @Public()
   @Post('login')
-  @ApiBody({ type: AuthDto })
-  signIn(@Body(new ValidationPipe()) signInDto: AuthDto) {
-    return this.authService.signIn(signInDto.email, signInDto.password);
+  @ApiBody({ type: ReqSignInDto })
+  signIn(
+    @Body(new ValidationPipe()) signInDto: ReqSignInDto,
+  ): Promise<ResSignInDto> {
+    return this.authService.signIn(signInDto);
   }
+
   @Public()
-  @Post('signUp')
-  @ApiBody({ type: signUpDto })
-  signUp(@Body(new ValidationPipe()) signUpData: signUpDto) {
-    return this.authService.signUp(signUpData);
+  @Post('refresh')
+  refresh(@Body() data: ReqRefreshDto): Promise<ResSignInDto> {
+    return this.authTokenService.refresh(data);
+  }
+
+  @Public()
+  @Post('sign-up')
+  @ApiBody({ type: ReqSignUpDto })
+  signUp(
+    @Body(new ValidationPipe()) data: ReqSignUpDto,
+  ): Promise<ResSignUpDto> {
+    return this.authService.signUp(data);
+  }
+
+  @Put('reset-password')
+  @ApiBody({ type: ReqResetPasswordDto })
+  resetPassword(@Body() data: ReqResetPasswordDto): Promise<ResUserDto> {
+    return this.authService.resetPassword(data);
   }
 }

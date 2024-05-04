@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -19,7 +18,7 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { Public } from 'libs/decorators/public.decorator';
 import { JwtService } from '@nestjs/jwt';
 import { ReqUpdateScopeDto } from './dto/req.update.scope.dto';
-import { ReqGetScoreDto } from './dto/req.get.score.dto';
+import { ReqGetPageDto } from '../../../../../libs/shared/interface/req.get.page.dto';
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')
@@ -42,14 +41,20 @@ export class RatingController {
     return this.ratingService.createRating(userId, rating);
   }
 
-  @checkAbilities({
-    action: 'read',
-    subject: 'Rating',
-  })
-  @UseGuards(AbilitiesGuard)
-  @Get('/page-:page')
-  async getPage(@Query('limit') limit: number, @Param('page') page: number) {
-    return this.ratingService.getPage(limit, page);
+  // @checkAbilities({
+  //   action: 'read',
+  //   subject: 'Rating',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
+  @Post('/table')
+  async getPage(@Body() getData: ReqGetPageDto) {
+    return this.ratingService.getPage(
+      getData.pageSize,
+      getData.page,
+      getData.filters,
+      getData.orderProps,
+    );
   }
 
   @checkAbilities({
@@ -62,17 +67,18 @@ export class RatingController {
     return this.ratingService.getById(id);
   }
 
-  @checkAbilities({
-    action: 'update',
-    subject: 'Rating',
-  })
-  @UseGuards(AbilitiesGuard)
+  // @checkAbilities({
+  //   action: 'update',
+  //   subject: 'Rating',
+  // })
+  // @UseGuards(AbilitiesGuard)
+  @Public()
   @Put(':id')
-  async updateRatingName(
+  async updateRating(
     @Param('id') id: number,
     @Body() rating: ReqUpdateRatingDto,
   ) {
-    return this.ratingService.updateRatingName(id, rating);
+    return this.ratingService.updateRating(id, rating);
   }
   @checkAbilities({
     action: 'delete',
@@ -93,24 +99,40 @@ export class RatingController {
     @Param('id') ratingId: number,
     @Body() newScope: ReqUpdateScopeDto,
   ) {
-    return this.ratingService.createDeleteRatigsScope(ratingId, newScope.scope);
+    return this.ratingService.deleteAndCreateRatingsScope(
+      ratingId,
+      newScope.scope,
+    );
   }
 
   @Public()
-  @Put(':id/score')
+  @Put(':id/score') // http:localhost:3000/api/rating/1/score
   async getRatingScore(
     @Param('id') ratingId: number,
-    @Body() getData: ReqGetScoreDto,
+    @Body() getData: ReqGetPageDto,
   ) {
     return this.ratingService.getRatingScore(
       ratingId,
       getData.page,
       getData.pageSize,
       getData.filters,
-      getData.column,
-      getData.sortDirection,
+      getData.orderProps,
+      getData.all,
     );
   }
+
+  @Public()
+  @Put('getScore/default') // http:localhost:3000/api/rating/1/score
+  async getDefaultRatingScore(@Body() getData: ReqGetPageDto) {
+    return this.ratingService.getDefaultRatingScore(
+      getData.page,
+      getData.pageSize,
+      getData.filters,
+      getData.orderProps,
+      getData.all,
+    );
+  }
+
   @checkAbilities({
     action: 'update',
     subject: 'Rating',

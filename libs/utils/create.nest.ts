@@ -13,6 +13,7 @@ export async function createNest(
     logger: WinstonModule.createLogger(winstonModuleOptions(name)),
     cors: true,
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -20,7 +21,13 @@ export async function createNest(
     }),
   );
   app.setGlobalPrefix('api');
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
   swagger(app);
-
+  console.log('00');
   await app.listen(port);
 }
