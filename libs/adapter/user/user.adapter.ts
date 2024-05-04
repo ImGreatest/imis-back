@@ -1,10 +1,10 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'libs/domains/user/repositories/user.repository';
+import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.dto';
 import {
   IResSuccessUser,
   IResUser,
 } from 'libs/domains/user/dto/res-dto/res-user.dto';
-import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.dto';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
 import { User } from 'libs/domains/user/entities/user.entity';
