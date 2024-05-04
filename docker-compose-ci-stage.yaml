@@ -11,6 +11,9 @@ services:
     env_file:
       - $ENV
     command: yarn seed 
+    depends_on:
+      migrations-stage:
+        condition: service_completed_successfully
       
 
   app-cabinet-stage:
