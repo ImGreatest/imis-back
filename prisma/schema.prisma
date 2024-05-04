@@ -81,7 +81,8 @@ model User {
   userSkils UserSkills[]
   projects UserProject[]
   createdProjects Project[]
-  success Success[]
+  successStudent Success[] @relation("success-student")
+  successCreate Success[] @relation("success-creater")
   favoritProject UserFavoritProject[]
   company Company?
   themes Theme[]
@@ -240,9 +241,12 @@ model Success{
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime? @db.Timestamp()
   
-  user User @relation(fields: [userId],references: [id])
-  userId Int @db.Integer()
-
+  student User @relation(fields: [studentId],references: [id],name: "success-student")
+  studentId Int @db.Integer()
+  
+  creater User @relation(fields: [createrId],references: [id],name:"success-creater")
+  createrId Int @db.Integer()
+  
   tags SuccessTags[]
 }
 

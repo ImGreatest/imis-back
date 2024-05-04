@@ -8,8 +8,8 @@ import { IOrder } from 'libs/shared/interface/order.interface';
 @Injectable()
 export class SuccessControllerService {
   constructor(private successService: SuccessService) {}
-  async create(user: ICreateSuccess) {
-    return this.successService.create(user);
+  async create(createrId: number, user: ICreateSuccess) {
+    return this.successService.create(createrId, user);
   }
   async getPage(
     filters: IFilter[] = [],

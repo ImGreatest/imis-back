@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { SuccessControllerService } from './success.controller.service';
@@ -28,8 +29,9 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  async create(@Body() success: ReqCreateSuccessDto) {
-    return this.successService.create(success);
+  async create(@Body() success: ReqCreateSuccessDto, @Req() req) {
+    const createrId = req.user.id;
+    return this.successService.create(createrId, success);
   }
 
   @checkAbilities({

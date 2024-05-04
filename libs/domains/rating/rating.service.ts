@@ -382,7 +382,7 @@ export class RatingService {
       where: { role: { name: 'student' } },
     });
     const success = await this.prisma.success.findMany({
-      where: { userId: { in: students.map((student) => student.id) } },
+      where: { studentId: { in: students.map((student) => student.id) } },
       include: {
         tags: {
           include: {
@@ -425,7 +425,7 @@ export class RatingService {
 
     const scorePromises = students.map(async (student) => {
       const studentSuccess = success.filter(
-        (success) => success.userId === student.id,
+        (success) => success.studentId === student.id,
       );
       const sum = await Promise.all(
         studentSuccess.map(async (success) => {

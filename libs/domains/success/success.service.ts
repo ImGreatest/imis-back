@@ -8,14 +8,15 @@ import { IOrder } from 'libs/shared/interface/order.interface';
 export class SuccessService {
   constructor(private prisma: PrismaService) {}
 
-  async create(success: ICreateSuccess) {
+  async create(createrId: number, success: ICreateSuccess) {
     const tags = success.tags;
     delete success.tags;
     const createdSuccess = await this.prisma.success.create({
       data: {
-        userId: success.userId,
+        studentId: success.userId,
         name: success.name,
         description: success.description,
+        createrId: createrId,
       },
     });
     await this.deleteAddTags(createdSuccess.id, tags);
@@ -40,7 +41,7 @@ export class SuccessService {
         name: true,
         description: true,
         tags: { select: { tag: { select: { id: true, name: true } } } },
-        user: {
+        student: {
           select: {
             name: true,
             surname: true,
@@ -66,7 +67,7 @@ export class SuccessService {
   async getById(id: number) {
     return this.prisma.success.findUnique({
       where: { id: id },
-      include: { tags: { include: { tag: true } }, user: true },
+      include: { tags: { include: { tag: true } }, student: true },
     });
   }
   async update(id: number, success: IUpdateSuccess) {
@@ -78,7 +79,7 @@ export class SuccessService {
       data: {
         name: success.name,
         description: success.description,
-        userId: success.userId,
+        studentId: success.userId,
         tags: {
           create: success.tags.map((tagId) => {
             return { tagId: tagId };
