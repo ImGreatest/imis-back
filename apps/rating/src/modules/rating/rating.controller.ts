@@ -35,12 +35,11 @@ export class RatingController {
     return this.ratingService.createRating(userId, rating);
   }
 
-  // @checkAbilities({
-  //   action: 'read',
-  //   subject: 'Rating',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'read',
+    subject: 'Rating',
+  })
+  @UseGuards(AbilitiesGuard)
   @Post('/table')
   async getPage(@Body() getData: ReqGetPageDto) {
     return this.ratingService.getPage(
@@ -61,12 +60,11 @@ export class RatingController {
     return this.ratingService.getById(id);
   }
 
-  // @checkAbilities({
-  //   action: 'update',
-  //   subject: 'Rating',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'update',
+    subject: 'Rating',
+  })
+  @UseGuards(AbilitiesGuard)
   @Put(':id')
   async updateRating(
     @Param('id') id: number,
