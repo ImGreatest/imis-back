@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IReqCreateUser } from '../dto/req-dto/req-create-user.interface.dto';
-import { IResUser } from '../dto/res-dto/res-user.dto';
+import { IResSuccessUser, IResUser } from '../dto/res-dto/res-user.dto';
 import { IReqUpdateUser } from '../dto/req-dto/req-update-user.interface.dto';
 import { IResGetUserAndCountDto } from '../dto/res-dto/res-get-user-and-count.dto';
 
@@ -22,5 +22,5 @@ export abstract class UserRepository {
 
   abstract deleteUser(id: number): Promise<IResUser>;
 
-  abstract getStudents(): Promise<IResUser[]>;
+  abstract getStudents(): Promise<IResSuccessUser[]>;
 }

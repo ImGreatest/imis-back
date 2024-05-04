@@ -4,6 +4,7 @@ import { ReqCreateUserDto } from './dto/req-create-user.dto';
 import { ResUserDto } from './dto/res-user.dto';
 import { ResGetUserAndCountDto } from './dto/res-get-user-and-count.dto';
 import { ReqUpdateUserDto } from './dto/req-update-user.dto';
+import { ResStudentSuccessDto } from './dto/res-user-success.dto';
 
 @Injectable()
 export class UserControllerService {
@@ -33,7 +34,7 @@ export class UserControllerService {
     return this.userService.getUsers();
   }
 
-  getStudents(): Promise<ResUserDto[]> {
+  getStudents(): Promise<ResStudentSuccessDto[]> {
     return this.userService.getStudents();
   }
   updateUser(id: number, user: ReqUpdateUserDto): Promise<ResUserDto> {

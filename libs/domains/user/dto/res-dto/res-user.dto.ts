@@ -12,3 +12,11 @@ export interface IResUser {
   updatedAt?: Date;
   deletedAt?: Date;
 }
+
+export interface IResSuccessUser {
+  id: number;
+  name: string;
+  surname: string;
+  direction: { name: string };
+  group: { name: string };
+}
