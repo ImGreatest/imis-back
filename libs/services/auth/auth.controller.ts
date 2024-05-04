@@ -1,4 +1,12 @@
-import { Controller, Post, Body, ValidationPipe, Put, Get, Req } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  Put,
+  Get,
+  Req,
+} from '@nestjs/common';
 import { ApiTags, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { ReqRefreshDto } from './dto/req-dto/req-refresh.dto';
@@ -12,6 +20,7 @@ import { ReqResetPasswordDto } from 'libs/services/auth/dto/req-dto/req-reset-pa
 import { ResUserDto } from 'apps/cabinet/src/controllers/user/dto/res-user.dto';
 
 @ApiTags('auth')
+@ApiBearerAuth()
 @ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
@@ -51,10 +60,7 @@ export class AuthController {
   }
 
   @Get('payload')
-  getPayload(
-    @Req() data,
-  ) {
-    console.log(data['user'])
+  getPayload(@Req() data) {
     return data['user'];
   }
 }
