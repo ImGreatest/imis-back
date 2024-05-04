@@ -394,6 +394,7 @@ const rating = {
   name: 'rating1',
   minuteUpdate: 0,
   createrId: 3,
+  default:true,
 };
 
 const ratingScope = [
