@@ -7,6 +7,9 @@ import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.in
 
 @Injectable()
 export class UserMockAdapter extends UserRepository {
+  getStudents(): Promise<IResUser[]> {
+    throw new Error('Method not implemented.');
+  }
   constructor() {
     super();
   }
