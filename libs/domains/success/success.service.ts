@@ -70,9 +70,21 @@ export class SuccessService {
     });
   }
   async update(id: number, success: IUpdateSuccess) {
+    await this.prisma.successTags.deleteMany({
+      where: { successId: id },
+    });
     return this.prisma.success.update({
       where: { id: id },
-      data: success,
+      data: {
+        name: success.name,
+        description: success.description,
+        userId: success.userId,
+        tags: {
+          create: success.tags.map((tagId) => {
+            return { tagId: tagId };
+          }),
+        },
+      },
     });
   }
 

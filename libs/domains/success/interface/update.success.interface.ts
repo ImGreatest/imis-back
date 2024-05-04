@@ -1,5 +1,6 @@
 export interface IUpdateSuccess {
-  description?: string;
-  userId?: number;
-  name?: string;
+  description: string;
+  tags: number[];
+  userId: number;
+  name: string;
 }

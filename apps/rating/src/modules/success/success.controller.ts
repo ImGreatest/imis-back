@@ -63,7 +63,7 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Put(':id')
-  async update(@Param('id') id: number, success: ReqUpdateSuccessDto) {
+  async update(@Param('id') id: number, @Body() success: ReqUpdateSuccessDto) {
     return this.successService.update(id, success);
   }
   @checkAbilities({
