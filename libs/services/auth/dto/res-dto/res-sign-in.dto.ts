@@ -11,10 +11,10 @@ export class ResSignInDto {
   refresh!: string;
 
   @ApiProperty()
-  permissions: permissions;
+  permissions: permissionsObject;
 }
 
-class permissions {
+class permissionsObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: { action: string; condition: any }[];
 }
