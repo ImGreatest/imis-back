@@ -2,15 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { NotificationRepository } from "libs/domains/notification/repositories/notification.repository";
 import { IResNoticeDto } from "libs/domains/notification/dto/res-dto/res-notice.dto";
 import { IReqCreateNoticeDto } from "libs/domains/notification/dto/req-dto/req-create-notice.dto";
-import { IReqGetCurrentDto } from "libs/domains/notification/dto/req-dto/req-get-current.dto";
-import { IReqGetNoticeBySenderDto } from "libs/domains/notification/dto/req-dto/req-get-by-sender.dto";
-import { IReqGetNoticeByRecipientDto } from "libs/domains/notification/dto/req-dto/req-get-by-recipient.dto";
-import { IReqGetByStatusDto } from "libs/domains/notification/dto/req-dto/req-get-by-status.dto";
-import { IReqGetByTimeDto } from "libs/domains/notification/dto/req-dto/req-get-by-time.dto";
-import { IReqGetBySenderRecipientDto } from "libs/domains/notification/dto/req-dto/req-get-by-sender-recipient.dto";
 import { IReqUpdateNoticeDto } from "libs/domains/notification/dto/req-dto/req-update-notice.dto";
-import { IReqDeleteNoticeDto } from "libs/domains/notification/dto/req-dto/req-delete-notice.dto";
-import { IReqGetByVisibleDto } from "libs/domains/notification/dto/req-dto/req-get-by-visible.dto";
+import { NotifacationStatus } from "@prisma/client";
 
 @Injectable()
 export class NotificationMockAdapter extends NotificationRepository {
@@ -19,35 +12,44 @@ export class NotificationMockAdapter extends NotificationRepository {
 	}
 
 	async createNotice(data: IReqCreateNoticeDto): Promise<IResNoticeDto> {
-		throw new Error(`${data}`);
+		throw new Error(`${{ ...data }}`);
 	}
 
-	async getCurrent(data: IReqGetCurrentDto): Promise<IResNoticeDto[]> {
-		throw new Error(`${data}`);
+	async getCurrent(id: number): Promise<IResNoticeDto> {
+		throw new Error(`${id}`);
 	}
 
-	async getBySender(data: IReqGetNoticeBySenderDto): Promise<IResNoticeDto[]> {
-		throw new Error(`${data}`);
+	async getBySender(id: number, date?: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		throw new Error(`${id}, ${date}, ${visible}`);
 	}
 
-	async getByRecipient(data: IReqGetNoticeByRecipientDto): Promise<IResNoticeDto[]> {
-		throw new Error(`${data}`);
+	async getByRecipient(id: number, date?: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		throw new Error(`${id}, ${date}, ${visible}`);
 	}
 
-	async getByStatus(data: IReqGetByStatusDto): Promise<IResNoticeDto[]> {
-		throw new Error(`${data}`);
+	async getByStatus(status: NotifacationStatus, date?: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		throw new Error(`${status}, ${date}, ${visible}`);
 	}
 
-	async getByTime(data: IReqGetByTimeDto): Promise<IResNoticeDto[]> {
-		throw new Error(`${data}`);
+	async getByTime(date: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		throw new Error(`${date}, ${visible}`);
 	}
 
-	async getBySenderAndRecipient(data: IReqGetBySenderRecipientDto): Promise<IResNoticeDto[]> {
-		throw new Error(`${data}`);
+	async getBySenderAndRecipient(
+		senderId:number,
+		recipientId:number,
+		date:string,
+		visible:boolean
+	): Promise<IResNoticeDto[]> {
+		throw new Error(`${senderId}, ${recipientId}, ${date}, ${visible}`);
 	}
 
-	async getByVisible(data: IReqGetByVisibleDto): Promise<IResNoticeDto[]> {
-		throw new Error(`${data}`);
+	async changeStatus(id: number, status: NotifacationStatus): Promise<void> {
+		throw new Error(`${id}, ${status}`);
+	}
+
+	async getByVisible(visible: boolean, date?: string): Promise<IResNoticeDto[]> {
+		throw new Error(`${visible}, ${date}`);
 	}
 
 	async changeVisible(id: number, visible: boolean): Promise<void> {
@@ -55,10 +57,10 @@ export class NotificationMockAdapter extends NotificationRepository {
 	}
 
 	async updateNotice(id: number, data: IReqUpdateNoticeDto): Promise<void> {
-		throw new Error(`${id}, ${data}`);
+		throw new Error(`${id}, ${{ ...data }}`);
 	}
 
-	async deleteNotice(data: IReqDeleteNoticeDto): Promise<void> {
-		throw new Error(`${data}`);
+	async deleteNotice(id: number): Promise<void> {
+		throw new Error(`${id}`);
 	}
 }

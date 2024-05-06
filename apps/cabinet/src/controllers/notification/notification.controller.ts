@@ -1,25 +1,16 @@
-import { ApiBearerAuth, ApiBody, ApiTags } from "@nestjs/swagger";
-import { Body, Controller, Delete, Get, Logger, Param, Post, Put } from "@nestjs/common";
+import { ApiBearerAuth, ApiBody, ApiParam, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from "@nestjs/common";
 import {
 	NotificationControllerService
 } from "apps/cabinet/src/controllers/notification/notification-controller.service";
 import { ReqCreateNoticeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-create-notice.dto";
 import { ResNoticeDto } from "apps/cabinet/src/controllers/notification/dto/res-dto/res-notice.dto";
-import { ReqGetCurrentDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-current.dto";
-import { ReqGetBySenderDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-sender.dto";
-import { ReqGetByRecipientDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-recipient.dto";
-import { ReqGetByStatusDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-status.dto";
-import { ReqGetByTimeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-time.dto";
-import {
-	ReqGetBySenderRecipientDto
-} from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-sender-recipient.dto";
 import { ReqUpdateNoticeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-update-notice.dto";
-import { ReqDeleteNoticeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-delete-notice.dto";
-import { ReqGetByVisibleDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-visible.dto";
 import { Public } from "libs/decorators/public.decorator";
+import { NotifacationStatus } from "@prisma/client";
 
 @ApiTags('notification')
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('notification')
 export class NotificationController {
 	constructor(private readonly notificationService: NotificationControllerService) {}
@@ -28,61 +19,192 @@ export class NotificationController {
 	@Post('create-notice')
 	@ApiBody({ type: ReqCreateNoticeDto })
 	createNotice(@Body() data: ReqCreateNoticeDto): Promise<ResNoticeDto> {
-		Logger.verbose('createNotice', data.status);
 		return this.notificationService.createNotice(data);
 	}
 
-	@Get('get-current')
-	@ApiBody({ type: ReqGetCurrentDto })
-	getCurrent(@Body() data: ReqGetCurrentDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getCurrent(data);
+	@Get('get-current/:id')
+	@ApiParam({
+		name: 'id',
+		description: 'Id notice',
+		required: true,
+		example: 1
+	})
+	getCurrent(@Param('id') id: number): Promise<ResNoticeDto> {
+		return this.notificationService.getCurrent(id);
 	}
 
-	@Get('get-by-sender')
-	@ApiBody({ type: ReqGetBySenderDto })
-	getBySender(@Body() data: ReqGetBySenderDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getBySender(data);
+	@Get('get-by-sender/:id')
+	@ApiParam({
+		name: 'id',
+		required: true,
+		example: 1,
+	})
+	@ApiQuery({
+		name: 'date',
+		description: 'zerous is **_required_**',
+		required: false,
+		example: new Date().toISOString().slice(0, 10),
+	})
+	@ApiQuery({
+		name: 'visible',
+		required: false,
+		example: true,
+	})
+	getBySender(
+		@Param('id') id: number,
+		@Query('date') date?: string,
+		@Query('visible') visible?: boolean
+	): Promise<ResNoticeDto[]> {
+		return this.notificationService.getBySender(id, date, visible);
 	}
 
-	@Get('get-by-recipient')
-	@ApiBody({ type: ReqGetByRecipientDto })
-	getByRecipient(@Body() data: ReqGetByRecipientDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByRecipient(data);
+	@Get('get-by-recipient/:id')
+	@ApiParam({
+		name: 'id',
+		required: true,
+		example: 1
+	})
+	@ApiQuery({
+		name: 'date',
+		description: 'zerous is **_required_**',
+		required: false,
+		example: new Date().toISOString().slice(0, 10)
+	})
+	@ApiQuery({
+		name: 'visible',
+		required: false,
+		example: true
+	})
+	getByRecipient(
+		@Param('id') id: number,
+		@Query('date') date: string,
+		@Query('visible') visible: boolean
+	): Promise<ResNoticeDto[]> {
+		return this.notificationService.getByRecipient(id, date, visible);
 	}
 
-	@Get('get-by-status')
-	@ApiBody({ type: ReqGetByStatusDto })
-	getByStatus(@Body() data: ReqGetByStatusDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByStatus(data);
+	@Get('get-by-status/:status')
+	@ApiParam({
+		name: 'status',
+		required: true,
+		enum: NotifacationStatus,
+		example: NotifacationStatus.unread,
+	})
+	@ApiQuery({
+		name: 'date',
+		description: 'zeroes is **_required_**',
+		required: false,
+		example: new Date().toISOString().slice(0, 10)
+	})
+	@ApiQuery({
+		name: 'visible',
+		required: false,
+		example: true
+	})
+	getByStatus(
+		@Param('status') status: NotifacationStatus,
+		@Query('date') date: string,
+		@Query('visible') visible: boolean
+	): Promise<ResNoticeDto[]> {
+		return this.notificationService.getByStatus(status, date, visible);
 	}
 
-	@Get('get-by-time')
-	@ApiBody({ type: ReqGetByTimeDto })
-	getByTime(@Body() data: ReqGetByTimeDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByTime(data);
+	@Get('get-by-time/:date')
+	@ApiParam({
+		name: 'date',
+		description: 'zeroes is **_required_**',
+		required: false,
+		example: new Date().toISOString().slice(0, 10)
+	})
+	@ApiQuery({
+		name: 'visible',
+		required: false,
+		example: true
+	})
+	getByTime(
+		@Param('date') date: string,
+		@Query('visible') visible: boolean
+	): Promise<ResNoticeDto[]> {
+		console.log(date, visible);
+		return this.notificationService.getByTime(date, visible);
 	}
 
-	@Get('get-by-sender-and-recipient')
-	@ApiBody({ type: ReqGetBySenderRecipientDto })
-	getBySenderRecipient(@Body() data: ReqGetBySenderRecipientDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getBySenderAndRecipient(data);
+	@Get('get-by-sender-and-recipient/:sender')
+	@ApiParam({
+		name: 'sender',
+		required: true,
+		example: 1
+	})
+	@ApiQuery({
+		name: 'recipient',
+		required: true,
+		example: 1
+	})
+	@ApiQuery({
+		name: 'date',
+		description: 'zeroes is **_required_**',
+		required: false,
+		example: new Date().toISOString().slice(0, 10)
+	})
+	@ApiQuery({
+		name: 'visible',
+		required: false,
+		example: true
+	})
+	getBySenderRecipient(
+		@Param('sender') senderId: number,
+		@Query('recipient') recipientId: number,
+		@Query('date') date: string,
+		@Query('visible') visible: boolean
+	): Promise<ResNoticeDto[]> {
+		return this.notificationService.getBySenderAndRecipient(senderId, recipientId, date, visible);
 	}
 
-	@Get('get-by-visible')
-	@ApiBody({ type: ReqGetByVisibleDto })
-	getByVisible(@Body() data: ReqGetByVisibleDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByVisible(data);
+	@Get('get-by-visible/:visible')
+	@ApiParam({
+		name: 'visible',
+		description: 'Filter visible notifications',
+		required: true,
+		example: true
+	})
+	@ApiQuery({
+		name: 'date',
+		description: 'Helps to use filter on notices => type input(year-month-day) - **_zeroes required_**',
+		required: false,
+		example: '2024-05-06'
+	})
+	getByVisible(
+		@Param('visible') visible: boolean,
+		@Query('date') date: string,
+	): Promise<ResNoticeDto[]> {
+		return this.notificationService.getByVisible(visible, date);
 	}
 
-	@Put('change-visible')
+	@Put('change-status/:id')
+	@Public()
+	@ApiQuery({
+		name: 'status',
+		enum: NotifacationStatus,
+		required: true,
+		example: NotifacationStatus.unread,
+	})
+	changeStatus(
+		@Param('id') id: number,
+		@Query('status') status: NotifacationStatus
+	): Promise<void> {
+		return this.notificationService.changeStatus(id, status);
+	}
+
+	@Put('change-visible/:id')
 	changeVisible(
 		@Param('id') id: number,
-		@Param('visible') visible: boolean
+		@Query('visible') visible: boolean
 	): Promise<void> {
 		return this.notificationService.changeVisible(id, visible);
 	}
 
-	@Put('update-notice')
+	@Put('update-notice/:id')
+	@Public()
 	@ApiBody({ type: ReqUpdateNoticeDto })
 	updateNotice(
 		@Param('id') id: number,
@@ -91,9 +213,9 @@ export class NotificationController {
 		return this.notificationService.updateNotice(id, data);
 	}
 
-	@Delete('delete-notice')
-	@ApiBody({ type: ReqDeleteNoticeDto })
-	deleteNotice(@Body() data: ReqDeleteNoticeDto): Promise<void> {
-		return this.notificationService.deleteNotice(data);
+	@Delete('delete-notice/:id')
+	@Public()
+	deleteNotice(@Param('id') id: number): Promise<void> {
+		return this.notificationService.deleteNotice(id);
 	}
 }

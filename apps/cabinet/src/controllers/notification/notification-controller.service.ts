@@ -2,17 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { NotificationService } from "libs/domains/notification/notification.service";
 import { ReqCreateNoticeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-create-notice.dto";
 import { ResNoticeDto } from "apps/cabinet/src/controllers/notification/dto/res-dto/res-notice.dto";
-import { ReqGetCurrentDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-current.dto";
-import { ReqGetBySenderDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-sender.dto";
-import { ReqGetByRecipientDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-recipient.dto";
-import { ReqGetByStatusDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-status.dto";
-import { ReqGetByTimeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-time.dto";
-import {
-	ReqGetBySenderRecipientDto
-} from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-sender-recipient.dto";
 import { ReqUpdateNoticeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-update-notice.dto";
-import { ReqDeleteNoticeDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-delete-notice.dto";
-import { ReqGetByVisibleDto } from "apps/cabinet/src/controllers/notification/dto/req-dto/req-get-by-visible.dto";
+import { NotifacationStatus } from "@prisma/client";
 
 @Injectable()
 export class NotificationControllerService {
@@ -22,35 +13,44 @@ export class NotificationControllerService {
 		return this.notificationService.createNotice(data);
 	}
 
-	getCurrent(data: ReqGetCurrentDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getCurrent(data);
+	getCurrent(id: number): Promise<ResNoticeDto> {
+		return this.notificationService.getCurrent(id);
 	}
 
-	getBySender(data: ReqGetBySenderDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getBySender(data);
+	getBySender(id: number, date?: string, visible?: boolean): Promise<ResNoticeDto[]> {
+		return this.notificationService.getBySender(id, date, visible);
 	}
 
-	getByRecipient(data: ReqGetByRecipientDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByRecipient(data);
+	getByRecipient(id: number, date?: string, visible?: boolean): Promise<ResNoticeDto[]> {
+		return this.notificationService.getByRecipient(id, date, visible);
 	}
 
-	getByStatus(data: ReqGetByStatusDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByStatus(data);
+	getByStatus(status: NotifacationStatus, date?: string, visible?: boolean): Promise<ResNoticeDto[]> {
+		return this.notificationService.getByStatus(status, date, visible);
 	}
 
-	getByTime(data: ReqGetByTimeDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByTime(data);
+	getByTime(date: string, visible: boolean): Promise<ResNoticeDto[]> {
+		return this.notificationService.getByTime(date, visible);
 	}
 
-	getBySenderAndRecipient(data: ReqGetBySenderRecipientDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getBySenderAndRecipient(data);
+	getBySenderAndRecipient(
+		senderId: number,
+		recipientId: number,
+		date: string,
+		visible: boolean
+	): Promise<ResNoticeDto[]> {
+		return this.notificationService.getBySenderAndRecipient(senderId, recipientId, date, visible);
 	}
 
-	getByVisible(data: ReqGetByVisibleDto): Promise<ResNoticeDto[]> {
-		return this.notificationService.getByVisible(data);
+	getByVisible(visible: boolean, date?: string): Promise<ResNoticeDto[]> {
+		return this.notificationService.getByVisible(visible, date);
 	}
 
-	changeVisible(id: number, visible: boolean) {
+	changeStatus(id: number, status: NotifacationStatus): Promise<void> {
+		return this.notificationService.changeStatus(id, status);
+	}
+
+	changeVisible(id: number, visible: boolean): Promise<void> {
 		return this.notificationService.changeVisible(id, visible);
 	}
 
@@ -58,7 +58,7 @@ export class NotificationControllerService {
 		return this.notificationService.updateNotice(id, data);
 	}
 
-	deleteNotice(data: ReqDeleteNoticeDto): Promise<void> {
-		return this.notificationService.deleteNotice(data);
+	deleteNotice(id: number): Promise<void> {
+		return this.notificationService.deleteNotice(id);
 	}
 }

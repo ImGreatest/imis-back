@@ -2,15 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { NotificationRepository } from "libs/domains/notification/repositories/notification.repository";
 import { IReqCreateNoticeDto } from "libs/domains/notification/dto/req-dto/req-create-notice.dto";
 import { IResNoticeDto } from "libs/domains/notification/dto/res-dto/res-notice.dto";
-import { IReqGetCurrentDto } from "libs/domains/notification/dto/req-dto/req-get-current.dto";
-import { IReqGetNoticeByRecipientDto } from "libs/domains/notification/dto/req-dto/req-get-by-recipient.dto";
-import { IReqGetNoticeBySenderDto } from "libs/domains/notification/dto/req-dto/req-get-by-sender.dto";
-import { IReqGetByStatusDto } from "libs/domains/notification/dto/req-dto/req-get-by-status.dto";
-import { IReqGetByTimeDto } from "libs/domains/notification/dto/req-dto/req-get-by-time.dto";
-import { IReqGetBySenderRecipientDto } from "libs/domains/notification/dto/req-dto/req-get-by-sender-recipient.dto";
 import { IReqUpdateNoticeDto } from "libs/domains/notification/dto/req-dto/req-update-notice.dto";
-import { IReqDeleteNoticeDto } from "libs/domains/notification/dto/req-dto/req-delete-notice.dto";
-import { IReqGetByVisibleDto } from "libs/domains/notification/dto/req-dto/req-get-by-visible.dto";
+import { NotifacationStatus } from "@prisma/client";
 
 @Injectable()
 export class NotificationService {
@@ -20,32 +13,41 @@ export class NotificationService {
 		return this.notificationRep.createNotice(data);
 	}
 
-	async getCurrent(data: IReqGetCurrentDto): Promise<IResNoticeDto[]> {
-		return this.notificationRep.getCurrent(data);
+	async getCurrent(id: number): Promise<IResNoticeDto> {
+		return this.notificationRep.getCurrent(id);
 	}
 
-	async getBySender(data: IReqGetNoticeBySenderDto): Promise<IResNoticeDto[]> {
-		return this.notificationRep.getBySender(data);
+	async getBySender(id: number, date?: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		return this.notificationRep.getBySender(id, date, visible);
 	}
 
-	async getByRecipient(data: IReqGetNoticeByRecipientDto): Promise<IResNoticeDto[]> {
-		return this.notificationRep.getByRecipient(data);
+	async getByRecipient(id: number, date?: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		return this.notificationRep.getByRecipient(id, date, visible);
 	}
 
-	async getByStatus(data: IReqGetByStatusDto): Promise<IResNoticeDto[]> {
-		return this.notificationRep.getByStatus(data);
+	async getByStatus(status: NotifacationStatus, date?: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		return this.notificationRep.getByStatus(status, date, visible);
 	}
 
-	async getByTime(data: IReqGetByTimeDto): Promise<IResNoticeDto[]> {
-		return this.notificationRep.getByTime(data);
+	async getByTime(date: string, visible?: boolean): Promise<IResNoticeDto[]> {
+		return this.notificationRep.getByTime(date, visible);
 	}
 
-	async getBySenderAndRecipient(data: IReqGetBySenderRecipientDto): Promise<IResNoticeDto[]> {
-		return this.notificationRep.getBySenderAndRecipient(data);
+	async getBySenderAndRecipient(
+		senderId: number,
+		recipientId: number,
+		date: string,
+		visible: boolean
+	): Promise<IResNoticeDto[]> {
+		return this.notificationRep.getBySenderAndRecipient(senderId, recipientId, date, visible);
 	}
 
-	async getByVisible(data: IReqGetByVisibleDto): Promise<IResNoticeDto[]> {
-		return this.notificationRep.getByVisible(data);
+	async getByVisible(visible: boolean, date?: string): Promise<IResNoticeDto[]> {
+		return this.notificationRep.getByVisible(visible, date);
+	}
+
+	async changeStatus(id: number, status: NotifacationStatus): Promise<void> {
+		return this.notificationRep.changeStatus(id, status);
 	}
 
 	async changeVisible(id: number, visible: boolean): Promise<void> {
@@ -56,7 +58,7 @@ export class NotificationService {
 		return this.notificationRep.updateNotice(id, data);
 	}
 
-	async deleteNotice(data: IReqDeleteNoticeDto): Promise<void> {
-		return this.notificationRep.deleteNotice(data);
+	async deleteNotice(id: number): Promise<void> {
+		return this.notificationRep.deleteNotice(id);
 	}
 }

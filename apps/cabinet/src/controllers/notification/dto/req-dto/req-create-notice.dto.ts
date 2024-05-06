@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsDate, IsEnum, IsNumber } from "class-validator";
+import { IsBoolean, IsEnum, IsNumber } from "class-validator";
 import { NotifacationStatus } from "@prisma/client";
 
 export class ReqCreateNoticeDto {
@@ -18,10 +18,6 @@ export class ReqCreateNoticeDto {
 	@ApiProperty({ example: NotifacationStatus.read })
 	@IsEnum(NotifacationStatus)
 	status: NotifacationStatus;
-
-	@ApiProperty({ example: new Date() })
-	@IsDate()
-	dateTimeSent: Date;
 
 	@ApiProperty({ example: true })
 	@IsBoolean()

@@ -5,6 +5,5 @@ export interface IReqCreateNoticeDto {
 	senderId: number;
 	recipientId: number;
 	status: NotifacationStatus;
-	dateTimeSent: Date;
 	visible: boolean;
 }
