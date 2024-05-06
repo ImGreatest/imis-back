@@ -5,7 +5,7 @@ import { ResScheme, ResSchemeResult } from './dto/res-scheme.dto';
 @Injectable()
 export class LanguageSchemeControllerService {
   constructor(private readonly colorSchemeService: ColorSchemeService) {}
-x
+  x;
   getColorSchemeByLanguage(language: string): Promise<ResSchemeResult> {
     return this.colorSchemeService.getColorSchemeByLanguage(language);
   }

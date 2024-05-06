@@ -1,8 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean } from 'class-validator';
 
 export class ResSentMessageDto {
-	@ApiProperty()
-	@IsBoolean()
-	state!: boolean;
+  @ApiProperty()
+  @IsBoolean()
+  state!: boolean;
 }
