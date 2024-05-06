@@ -63,6 +63,7 @@ model Direction{
 model User {
   id    Int     @default(autoincrement()) @id
   email String  @unique @db.VarChar()
+  description String @db.Text @default("")
   name  String @db.VarChar(100)
   surname String @db.VarChar(100)
   role    UserRole @relation(fields: [roleId], references: [id])
@@ -77,6 +78,9 @@ model User {
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime? @db.Timestamp()
 
+  dogName String @default(dbgenerated("gen_random_uuid()"))
+
+  links Links[]
   refreshToken RefreshToken[]
   userSkils UserSkills[]
   projects UserProject[]
@@ -92,17 +96,28 @@ model User {
   getNotifications Notifacation[] @relation("recipient")
 }
 
+model Links {
+  id    Int     @default(autoincrement()) @id
+  user User? @relation(fields: [userId], references: [id],onDelete: Cascade)
+  userId Int?
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int?
+  name String
+  link String
+}
+
 enum NotifacationStatus{
   read
   unread
 }
 model Notifacation{
+  id    Int     @default(autoincrement()) @id
   sender User @relation(fields: [senderId], references: [id], name: "sender")
   senderId Int @db.Integer()
   recipient User @relation(fields: [recipientId], references: [id], name: "recipient")
   recipientId Int @db.Integer()
   status NotifacationStatus
-  @@id([senderId,recipientId])
+  @@unique([senderId,recipientId])
     
 }
 enum RatingScoringType{
@@ -180,6 +195,7 @@ model Project {
   descripton String @db.VarChar()
   creater User @relation(fields: [createrId],references: [id])
   createrId Int @db.Integer
+  links Links[]
   projectSkils ProjectSkils[]
   users UserProject[]
   usersWithFavor UserFavoritProject[]
