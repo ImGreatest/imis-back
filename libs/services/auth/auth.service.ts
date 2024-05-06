@@ -13,6 +13,7 @@ import { UserService } from 'libs/domains/user/user.service';
 import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
 import { ReqResetPasswordDto } from 'libs/services/auth/dto/req-dto/req-reset-password.dto';
 import { ResUserDto } from 'apps/cabinet/src/controllers/user/dto/res-user.dto';
+import { RoleService } from 'libs/domains/role/role.service';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +22,7 @@ export class AuthService {
     private cryptoService: CryptoService,
     private authTokenService: AuthTokenService,
     private userService: UserService,
+    private roleService: RoleService,
   ) {}
 
   async signIn(data: ReqSignInDto): Promise<ResSignInDto> {
@@ -54,10 +56,11 @@ export class AuthService {
     );
 
     Logger.verbose('Токен обновлен', refresh);
-
+    const perm = this.roleService.getPermisionsByRoleId(user.roleId);
     return {
       access,
       refresh,
+      permissions: perm,
     };
   }
 

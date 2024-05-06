@@ -6,10 +6,32 @@ import { IUpdatePermission } from './interface/update.permission.interface';
 export class PermissionService {
   constructor(private prisma: PrismaService) {}
   logger = new Logger(PermissionService.name);
-  async create(permission: ICreatePermission) {
+  create(permission: ICreatePermission) {
     this.logger.verbose(permission);
     return this.prisma.permission.create({ data: permission });
   }
+
+  async getPermssionsByRole(roleId: number) {
+    this.logger.verbose(`getPermssionsByRole-${roleId}`);
+    const permissions = await this.prisma.permission.findMany({
+      where: {
+        roleId: roleId,
+      },
+    });
+    const permStructure = {};
+
+    permissions.forEach((perm) => {
+      if (!permStructure[perm.subject]) {
+        permStructure[perm.subject] = [];
+      }
+      permStructure[perm.subject].push({
+        action: perm.action,
+        conditions: perm.conditions,
+      });
+    });
+    return permStructure;
+  }
+
   async getPage(limit: number, page: number) {
     this.logger.verbose(`limit-${limit} page-${page}`);
     const offset = (page - 1) * limit;
