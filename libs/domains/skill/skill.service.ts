@@ -12,7 +12,7 @@ import { SkillTypeRepository } from 'libs/domains/skill/repositories/skill-type.
 export class SkillService {
   constructor(
     private readonly skillRep: SkillRepository,
-    private readonly skillTypeRep: SkillTypeRepository
+    private readonly skillTypeRep: SkillTypeRepository,
   ) {}
 
   async findAll(): Promise<IResSkillTypeFindAllDto[]> {

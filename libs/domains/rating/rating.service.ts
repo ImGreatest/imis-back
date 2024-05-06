@@ -19,6 +19,26 @@ export class RatingService {
   ) {}
 
   /**
+   * Sets up intervals for updating ratings.
+   *
+   * @return {Promise<void>} A promise that resolves when the intervals are set up.
+   */
+  async setIntervalsRating() {
+    const ratings = await this.prisma.rating.findMany({
+      where: { minuteUpdate: { gt: 0 } },
+    });
+    ratings.forEach((rating) => {
+      if (rating.minuteUpdate) {
+        this.cronService.addInterval(
+          `rating-${rating.id}`,
+          1000 * 60 * rating.minuteUpdate,
+          () => this.updateRatingScore(rating.id),
+        );
+      }
+    });
+  }
+
+  /**
    * Creates a new rating for a creator.
    *
    * @param {number} createrId - The ID of the creator.
@@ -341,25 +361,7 @@ export class RatingService {
       rows: scores,
     };
   }
-  /**
-   * Sets up intervals for updating ratings.
-   *
-   * @return {Promise<void>} A promise that resolves when the intervals are set up.
-   */
-  async setIntervalsRating() {
-    const ratings = await this.prisma.rating.findMany({
-      where: { minuteUpdate: { gt: 0 } },
-    });
-    ratings.forEach((rating) => {
-      if (rating.minuteUpdate) {
-        this.cronService.addInterval(
-          `rating-${rating.id}`,
-          1000 * 60 * rating.minuteUpdate,
-          () => this.updateRatingScore(rating.id),
-        );
-      }
-    });
-  }
+
   /**
    * Updates the score of a rating.
    *
