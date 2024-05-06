@@ -6,13 +6,17 @@ import { ResFindAllFromUserDto } from "apps/rating/src/modules/skill/dto/res-dto
 import { ResFindAllFromProjectDto } from "apps/rating/src/modules/skill/dto/res-dto/res-find-all-from-project.dto";
 import { ResCreateSkillDto } from "apps/rating/src/modules/skill/dto/res-dto/res-create-skill.dto";
 import { ResSkillTypeDto } from "apps/rating/src/modules/skill/dto/res-dto/res-skill-type.dto";
+import { SkillTypeService } from "libs/domains/skill/skill-type.service";
 
 @Injectable()
 export class SkillControllerService {
-  constructor(private skillService: SkillService) {}
+  constructor(
+    private readonly skillService: SkillService,
+    private readonly skillTypeService: SkillTypeService,
+  ) {}
 
   findAll(): Promise<ResSkillTypeFindAllDto[]> {
-    return this.skillService.findAll();
+    return this.skillTypeService.findAll();
   }
   findAllFromUser(userId: number): Promise<ResFindAllFromUserDto[]> {
     return this.skillService.findAllFromUser(userId);
@@ -26,7 +30,7 @@ export class SkillControllerService {
     return this.skillService.create(skill);
   }
   createSkillType(skillType: string): Promise<ResSkillTypeDto> {
-    return this.skillService.createSkillType(skillType);
+    return this.skillTypeService.createSkillType(skillType);
   }
 
   delete(id: number): Promise<ResCreateSkillDto> {
@@ -34,6 +38,6 @@ export class SkillControllerService {
   }
 
   deleteSkillType(id: number): Promise<ResSkillTypeDto> {
-    return this.skillService.deleteSkillType(id);
+    return this.skillTypeService.deleteSkillType(id);
   }
 }

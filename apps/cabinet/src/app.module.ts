@@ -6,6 +6,7 @@ import { AuthModule } from 'libs/services/auth/auth.module';
 import { AuthGuard } from 'libs/services/auth/guard/auth.guard';
 import { EmailControllerModule } from 'apps/cabinet/src/controllers/email/email-controller.module';
 import { LanguageSchemeControllerModule } from 'apps/cabinet/src/controllers/language-scheme/language-scheme-controller.module';
+import { NotificationControllerModule } from "apps/cabinet/src/controllers/notification/notification-controller.module";
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LanguageSchemeControllerModule } from 'apps/cabinet/src/controllers/lan
     AuthModule,
     EmailControllerModule,
     UserControllerModule,
+    NotificationControllerModule,
     LanguageSchemeControllerModule,
   ],
   providers: [
