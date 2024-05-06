@@ -186,14 +186,11 @@ const directions = [
 export const users = [
   {
     id: 1,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 1,
-    directionId: 1,
-    course: 4,
-    roleId: 1,
+    name: 'Imis',
+    surname: 'System',
+    roleId: 3,
     pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student@mail.com',
+    email: 'imis@mail.com',
   },
   {
     id: 2,

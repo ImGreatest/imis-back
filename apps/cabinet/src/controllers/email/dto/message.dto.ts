@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-export class IMessageTextDto {
+export class MessageTextDto {
   @ApiProperty({ example: '@mail.ru' })
   @IsString()
   to!: string;
@@ -15,7 +15,7 @@ export class IMessageTextDto {
   text!: string;
 }
 
-export class IMessageHtmlDto {
+export class MessageHtmlDto {
   @ApiProperty({ example: '@mail.ru' })
   @IsString()
   to!: string;
