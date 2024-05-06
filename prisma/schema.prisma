@@ -117,9 +117,10 @@ model Notifacation{
   recipient User @relation(fields: [recipientId], references: [id], name: "recipient")
   recipientId Int @db.Integer()
   status NotifacationStatus
-  @@unique([senderId,recipientId])
-    
+  dateTimeSent DateTime   @default(now())
+  visible Boolean @default(true)
 }
+
 enum RatingScoringType{
   average
   maximum

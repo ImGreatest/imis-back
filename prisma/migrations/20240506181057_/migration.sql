@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Notifacation" ALTER COLUMN "dateTimeSent" SET DEFAULT CURRENT_TIMESTAMP;
