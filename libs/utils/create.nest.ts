@@ -26,7 +26,7 @@ export async function createNest(
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
-  })
+  });
   swagger(app);
   console.log('00');
   await app.listen(port);

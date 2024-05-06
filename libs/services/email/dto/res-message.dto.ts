@@ -1,3 +1,3 @@
 export interface IResMessageTextDto {
-	state: boolean;
+  state: boolean;
 }

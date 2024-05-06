@@ -13,6 +13,7 @@ export class UserMockAdapter extends UserRepository {
   getStudents(): Promise<IResSuccessUser[]> {
     throw new Error('Method not implemented.');
   }
+
   constructor() {
     super();
   }

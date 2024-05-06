@@ -8,8 +8,8 @@ import { ICreateRating } from './interface/create.rating.interface';
 import { IUpdateRating } from './interface/update.rating.interface';
 import { IScopeRating } from './interface/scope.rating.interface';
 import { CronService } from 'libs/services/cron/cron.service';
-import { IFilter } from '../../shared/interface/filter.interface';
-import { IOrder } from '../../shared/interface/order.interface';
+import { IFilter } from 'libs/shared/interface/filter.interface';
+import { IOrder } from 'libs/shared/interface/order.interface';
 @Injectable()
 export class RatingService {
   constructor(

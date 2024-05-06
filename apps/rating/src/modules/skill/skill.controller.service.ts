@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ICreateSkill } from 'libs/domains/skill/interface/req.create.interface';
+import { ICreateSkill } from 'libs/domains/skill/dto/req-dto/req-create-skill.dto';
 import { SkillService } from 'libs/domains/skill/skill.service';
 
 @Injectable()
