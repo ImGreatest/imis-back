@@ -6,6 +6,7 @@ export class CreateSkillDto implements ICreateSkill {
   @ApiProperty({ example: 'python' })
   @IsString()
   name: string;
+
   @ApiProperty({ example: 1 })
   @IsInt()
   skillTypeId: number;
