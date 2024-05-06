@@ -16,3 +16,4 @@ import { CryptoModule } from 'libs/services/crypto/crypto.module';
   exports: [UserService],
 })
 export class UserModule {}
+
