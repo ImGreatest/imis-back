@@ -1,4 +1,3 @@
-
 export interface IResConfirmDto {
-	access: number;
+  access: number;
 }

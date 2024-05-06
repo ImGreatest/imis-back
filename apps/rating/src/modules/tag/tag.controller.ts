@@ -14,6 +14,7 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { TagControllerService } from './tag.controller.service';
 import { ReqCreateTagDto } from './dto/req.create.tag.dto';
 import { ReqUpdateTagDto } from './dto/req.update.tag.dto';
+import { Public } from 'libs/decorators/public.decorator';
 
 @Controller('tag')
 @ApiBearerAuth()

@@ -1,4 +1,4 @@
 export class ReqResetPasswordDto {
-	email: string;
-	newPassword: string;
+  email: string;
+  newPassword: string;
 }

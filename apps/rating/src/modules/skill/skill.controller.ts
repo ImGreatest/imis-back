@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SkillControllerService } from './skill.controller.service';
-import { CreateSkillDto } from './dto/req.create.dto';
+import { CreateSkillDto } from 'apps/rating/src/modules/skill/dto/req-dto/req-create.dto';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 
