@@ -198,7 +198,7 @@ model Project {
   createrId Int @db.Integer
   links Links[]
   projectSkils ProjectSkils[]
-  users UserProject[]
+  students UserProject[]
   usersWithFavor UserFavoritProject[]
 
 }

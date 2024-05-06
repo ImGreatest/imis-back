@@ -25,8 +25,27 @@ const tagCount = 20;
 const tagComplexity = 0.6;
 const successCount = 10;
 const projectCount = 10;
-
+//TODO Сделать рейтинг с оценкой тегов, темы
 async function fakeSeed() {
+  await prisma.skillType.createMany({
+    data: genArray(skillTypeCount).map(() => ({
+      name: faker.word.sample(),
+    })),
+    skipDuplicates: true,
+  });
+
+  const skillTypesIds = await getIds(prisma.skillType);
+
+  await prisma.skills.createMany({
+    data: genArray(skillsCount).map(() => ({
+      name: faker.word.sample(),
+      skillTypeId: faker.helpers.arrayElement(skillTypesIds),
+    })),
+    skipDuplicates: true,
+  });
+
+  const skillIds = await getIds(prisma.skills);
+
   await prisma.group.createMany({
     data: genArray(groupCount).map(() => ({
       name: faker.word.sample(),
@@ -55,6 +74,14 @@ async function fakeSeed() {
       roleId: 1,
       groupId: faker.helpers.arrayElement(groupsIds),
       directionId: faker.helpers.arrayElement(directionsIds),
+      userSkils: {
+        create: {
+          skillId: faker.helpers.arrayElements(
+            skillIds,
+            faker.number.int({ min: 1, max: 5 }),
+          ),
+        },
+      },
     })),
     skipDuplicates: true,
   });
@@ -79,23 +106,6 @@ async function fakeSeed() {
       name: faker.company.name(),
       description: faker.company.catchPhrase(),
       spokesPersonId: faker.helpers.arrayElement(employerWithourCompany),
-    })),
-    skipDuplicates: true,
-  });
-
-  await prisma.skillType.createMany({
-    data: genArray(skillTypeCount).map(() => ({
-      name: faker.word.sample(),
-    })),
-    skipDuplicates: true,
-  });
-
-  const skillTypesIds = await getIds(prisma.skillType);
-
-  await prisma.skills.createMany({
-    data: genArray(skillsCount).map(() => ({
-      name: faker.word.sample(),
-      skillTypeId: faker.helpers.arrayElement(skillTypesIds),
     })),
     skipDuplicates: true,
   });
@@ -139,14 +149,37 @@ async function fakeSeed() {
     })),
   });
 
+  const userIds = await getIds(prisma.user);
   const employerIds = await getIds(prisma.user, { roleId: 4 });
-
+  //TODO добавить проекты Статусы
   await prisma.project.createMany({
     data: genArray(projectCount).map(() => ({
       name: faker.word.sample(),
       descripton: faker.word.sample(),
       createrId: faker.helpers.arrayElement(employerIds),
       status: faker.word.words(),
+      students: {
+        create: {
+          studentId: faker.helpers.arrayElements(
+            studentIds,
+            faker.number.int({ min: 1, max: 4 }),
+          ),
+        },
+      },
+      usersWithFavor: {
+        create: {
+          studentId: faker.helpers.arrayElements(
+            userIds,
+            faker.number.int({ min: 1, max: 4 }),
+          ),
+        },
+      },
+      skills: {
+        create: faker.helpers.arrayElements(
+          skillIds,
+          faker.number.int({ min: 1, max: 4 }),
+        ),
+      },
     })),
   });
 }
