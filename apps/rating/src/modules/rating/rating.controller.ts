@@ -17,7 +17,8 @@ import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { Public } from 'libs/decorators/public.decorator';
 import { ReqUpdateScopeDto } from './dto/req.update.scope.dto';
-import { ReqGetPageDto } from '../../../../../libs/shared/interface/req.get.page.dto';
+import { ReqGetPageDto } from 'libs/shared/interface/req.get.page.dto';
+
 @Controller('rating')
 @ApiBearerAuth()
 @ApiTags('rating')

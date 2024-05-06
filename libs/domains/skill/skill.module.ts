@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
 import { SkillService } from './skill.service';
-import { SkillRepository } from './repositories/skill.repository';
+import { SkillRepository } from 'libs/domains/skill/repositories/skill.repository';
 import { SkillsAdapter } from 'libs/adapter/skills/skills.adapter';
-import { SkillTypeRepository } from './repositories/skill-type.repository';
-import { SkillTypeAdapter } from 'libs/adapter/skill-type/skill-type.adapter';
 
 @Module({
   providers: [
@@ -11,10 +9,6 @@ import { SkillTypeAdapter } from 'libs/adapter/skill-type/skill-type.adapter';
     {
       provide: SkillRepository,
       useClass: SkillsAdapter,
-    },
-    {
-      provide: SkillTypeRepository,
-      useClass: SkillTypeAdapter,
     },
   ],
   exports: [SkillService],
