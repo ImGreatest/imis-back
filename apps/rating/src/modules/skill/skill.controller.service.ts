@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ICreateSkill } from 'libs/domains/skill/dto/req-dto/req-create-skill.dto';
 import { SkillService } from 'libs/domains/skill/skill.service';
-import { ResSkillTypeFindAllDto } from "apps/rating/src/modules/skill/dto/res-dto/res-skill-type-find-all.dto";
-import { ResFindAllFromUserDto } from "apps/rating/src/modules/skill/dto/res-dto/res-find-all-from-user.dto";
-import { ResFindAllFromProjectDto } from "apps/rating/src/modules/skill/dto/res-dto/res-find-all-from-project.dto";
-import { ResCreateSkillDto } from "apps/rating/src/modules/skill/dto/res-dto/res-create-skill.dto";
-import { ResSkillTypeDto } from "apps/rating/src/modules/skill/dto/res-dto/res-skill-type.dto";
-import { SkillTypeService } from "libs/domains/skill/skill-type.service";
+import { ResSkillTypeFindAllDto } from 'apps/rating/src/modules/skill/dto/res-dto/res-skill-type-find-all.dto';
+import { ResFindAllFromUserDto } from 'apps/rating/src/modules/skill/dto/res-dto/res-find-all-from-user.dto';
+import { ResFindAllFromProjectDto } from 'apps/rating/src/modules/skill/dto/res-dto/res-find-all-from-project.dto';
+import { ResCreateSkillDto } from 'apps/rating/src/modules/skill/dto/res-dto/res-create-skill.dto';
+import { ResSkillTypeDto } from 'apps/rating/src/modules/skill/dto/res-dto/res-skill-type.dto';
+import { SkillTypeService } from 'libs/domains/skill/skill-type.service';
 
 @Injectable()
 export class SkillControllerService {

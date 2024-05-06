@@ -1,9 +1,9 @@
-import { NotifacationStatus } from '@prisma/client'
+import { NotifacationStatus } from '@prisma/client';
 
 export interface IReqCreateNoticeDto {
-	id: number;
-	senderId: number;
-	recipientId: number;
-	status: NotifacationStatus;
-	visible: boolean;
+  id: number;
+  senderId: number;
+  recipientId: number;
+  status: NotifacationStatus;
+  visible: boolean;
 }

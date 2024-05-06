@@ -7,9 +7,7 @@ import { IResFindAllFromProjectDto } from 'libs/domains/skill/dto/res-dto/res-fi
 
 @Injectable()
 export class SkillService {
-  constructor(
-    private readonly skillRep: SkillRepository,
-  ) {}
+  constructor(private readonly skillRep: SkillRepository) {}
 
   async findAllFromUser(userId: number): Promise<IResFindAllFromUserDto[]> {
     return this.skillRep.findAllFromUser(userId);
