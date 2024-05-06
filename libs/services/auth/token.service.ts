@@ -10,6 +10,7 @@ import { ReqRefreshDto } from 'libs/services/auth/dto/req-dto/req-refresh.dto';
 import { UserService } from 'libs/domains/user/user.service';
 import { ResSignInDto } from 'libs/services/auth/dto/res-dto/res-sign-in.dto';
 import { IResUser } from '../../domains/user/dto/res-dto/res-user.dto';
+import { RoleService } from '../../domains/role/role.service';
 
 @Injectable()
 export class AuthTokenService {
@@ -17,6 +18,7 @@ export class AuthTokenService {
     private prisma: PrismaService,
     private jwtService: JwtService,
     private userService: UserService,
+    private roleService: RoleService,
   ) {}
 
   generateJwt(payload: IPayload): string {
@@ -84,6 +86,7 @@ export class AuthTokenService {
     return {
       access: access,
       refresh: refresh,
+      permissions: this.roleService.getPermisionsByRoleId(roleUser.roleId),
     };
   }
 
