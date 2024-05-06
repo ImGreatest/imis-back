@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  OnApplicationBootstrap,
+} from '@nestjs/common';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { ICreateRole } from './interface/create.role.interface';
 import { IUpdateRole } from './interface/update.role.interface';
@@ -9,9 +13,34 @@ import {
   ruSybjects,
 } from 'libs/services/casl/ability.guard';
 @Injectable()
-export class RoleService {
+export class RoleService implements OnApplicationBootstrap {
   constructor(private prisma: PrismaService) {}
 
+  onApplicationBootstrap() {
+    this.getPermsToRole();
+  }
+
+  private permissionsToRole = {};
+  private async getPermsToRole() {
+    const roles = await this.prisma.userRole.findMany({
+      include: { Permission: true },
+    });
+    const ret = {};
+    roles.forEach((role) => {
+      ret[role.id] = {};
+      role.Permission.forEach((perm) => {
+        if (!ret[role.id][perm.subject]) ret[role.id][perm.subject] = [];
+        ret[role.id][perm.subject].push({
+          action: perm.action,
+          condition: perm.conditions,
+        });
+      });
+    });
+    this.permissionsToRole = ret;
+  }
+  getPermisionsByRoleId(roleId) {
+    return this.permissionsToRole[roleId];
+  }
   create(role: ICreateRole) {
     return this.prisma.userRole.create({
       data: role,
@@ -103,8 +132,11 @@ export class RoleService {
         roleId: roleInstance.id,
       },
     });
-    return this.prisma.permission.createMany({
+    const createdPermisions = await this.prisma.permission.createMany({
       data: newPermission.map((perm) => ({ ...perm, roleId: roleInstance.id })),
     });
+    this.getPermsToRole();
+
+    return createdPermisions;
   }
 }

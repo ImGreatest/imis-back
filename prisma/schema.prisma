@@ -271,7 +271,7 @@ model Tag{
   id Int @id @default(autoincrement())
   name String @unique @db.VarChar()
   description String @db.VarChar()
-  baseTag Tag? @relation("BaseTag", fields: [baseTagId], references: [id])
+  baseTag Tag? @relation("BaseTag", fields: [baseTagId], references: [id], onDelete: Cascade)
   baseTagId Int? @db.Integer()
   childTags Tag[] @relation("BaseTag")
 

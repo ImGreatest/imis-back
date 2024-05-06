@@ -7,6 +7,7 @@ import { config } from 'config/config';
 import { AuthTokenService } from 'libs/services/auth/token.service';
 import { JwtStrategy } from 'libs/services/auth/strategy/jwt.strategy';
 import { CryptoService } from 'libs/services/crypto/crypto.service';
+import { RoleModule } from 'libs/domains/role/role.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CryptoService } from 'libs/services/crypto/crypto.service';
         expiresIn: config.JwtExpiresIn,
       },
     }),
+    RoleModule,
   ],
   providers: [JwtStrategy, AuthTokenService, AuthService, CryptoService],
   controllers: [AuthController],
