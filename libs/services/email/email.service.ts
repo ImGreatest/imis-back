@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import * as nodemailer from 'nodemailer';
-import SMTPTransport from 'nodemailer/lib/smtp-transport';
+import nodemailer from 'nodemailer';
 import { emailConfig } from 'config/config';
 import { IResMessageTextDto } from 'libs/services/email/dto/res-message.dto';
 import {
@@ -11,7 +10,7 @@ import { IResConfirmDto } from 'libs/services/email/dto/res-confirm.dto';
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>;
+  private transporter: nodemailer.Transporter;
 
   constructor() {
     Logger.verbose(emailConfig.EmailFrom, emailConfig.EmailPass);
