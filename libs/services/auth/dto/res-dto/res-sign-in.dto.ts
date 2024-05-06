@@ -14,7 +14,7 @@ export class ResSignInDto {
   permissions: permissionsObject;
 }
 
-class permissionsObject {
+export class permissionsObject {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: { action: string; condition: any }[];
 }
