@@ -188,6 +188,7 @@ async function fakeSeed() {
   });
 
   const ratingCreaterIds = await getIds(prisma.user, { roleId: 3 });
+  const tagsIds = await getIds(prisma.tag);
   const scoringTypes = Object.keys(RatingScoringType);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const _ of genArray(ratingCount)) {
@@ -200,7 +201,7 @@ async function fakeSeed() {
           scoringTypes,
         ) as RatingScoringType,
         ratingScope: {
-          create: tagsForSuccess.map((tagId) => ({
+          create: tagsIds.map((tagId) => ({
             tagId: tagId,
             ratingScore: faker.datatype.float({ min: 1, max: 5 }),
           })),
