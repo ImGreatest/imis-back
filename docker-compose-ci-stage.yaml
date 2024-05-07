@@ -14,7 +14,18 @@ services:
     depends_on:
       migrations-stage:
         condition: service_completed_successfully
-      
+  
+  seed-fake-stage:
+    image: $DOCKER_TAG
+    env_file:
+        - $ENV
+    command: yarn seed-fake
+    depends_on:
+      migrations-stage:
+        condition: service_completed_successfully
+      seed:
+        condition-stage: service_completed_successfully
+   
 
   app-cabinet-stage:
     image: $DOCKER_TAG
@@ -29,6 +40,8 @@ services:
       migrations-stage:
         condition: service_completed_successfully
       seed-stage:
+        condition: service_completed_successfully
+      seed-fake-stage:
         condition: service_completed_successfully
 
   app-rating-stage:
@@ -45,6 +58,8 @@ services:
         condition: service_completed_successfully
       seed-stage:
         condition: service_completed_successfully
+      seed-fake-stage:
+        condition: service_completed_successfully
 
   app-employer-stage:
     image: $DOCKER_TAG
@@ -60,6 +75,8 @@ services:
         condition: service_completed_successfully
       seed-stage:
         condition: service_completed_successfully
+      seed-fake-stage:
+        condition: service_completed_successfully
         
   app-mobile-stage:
     image: $DOCKER_TAG
@@ -74,4 +91,6 @@ services:
       migrations-stage:
         condition: service_completed_successfully
       seed-stage:
+        condition: service_completed_successfully
+      seed-fake-stage:
         condition: service_completed_successfully

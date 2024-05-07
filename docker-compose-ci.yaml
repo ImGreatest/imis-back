@@ -10,9 +10,22 @@ services:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: sh -c "yarn seed-init && yarn seed-fake"
-    migrations:
-            condition: service_completed_successfully
+    command: yarn seed-init
+    depends_on:
+      migrations:
+              condition: service_completed_successfully
+
+  seed-fake:
+    image: $DOCKER_TAG
+    env_file:
+        - $ENV
+    command: yarn seed-fake
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+
 
   app-cabinet:
     image: $DOCKER_TAG
@@ -27,6 +40,8 @@ services:
       migrations:
         condition: service_completed_successfully
       seed:
+        condition: service_completed_successfully
+      seed-fake:
         condition: service_completed_successfully
 
   app-rating:
@@ -43,6 +58,8 @@ services:
         condition: service_completed_successfully
       seed:
         condition: service_completed_successfully
+      seed-fake:
+        condition: service_completed_successfully
 
   app-employer:
     image: $DOCKER_TAG
@@ -58,6 +75,8 @@ services:
         condition: service_completed_successfully
       seed:
         condition: service_completed_successfully
+      seed-fake:
+        condition: service_completed_successfully
         
   app-mobile:
     image: $DOCKER_TAG
@@ -72,4 +91,6 @@ services:
       migrations:
         condition: service_completed_successfully
       seed:
+        condition: service_completed_successfully
+      seed-fake:
         condition: service_completed_successfully
