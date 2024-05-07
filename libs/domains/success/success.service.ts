@@ -49,6 +49,12 @@ export class SuccessService {
             group: { select: { name: true } },
           },
         },
+        creater: {
+          select: {
+            name: true,
+            surname: true,
+          },
+        },
       },
       take: limit,
       skip: offset,
