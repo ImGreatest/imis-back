@@ -142,7 +142,7 @@ model Rating{
 model RatingScope{
   rating Rating @relation(fields: [ratingId], references: [id], onDelete: Cascade)
   ratingId Int @db.Integer()
-  tag Tag @relation(fields: [tagId], references: [id])
+  tag Tag @relation(fields: [tagId], references: [id],onDelete: Cascade)
   tagId Int @db.Integer()
   ratingScore Int @db.Integer
   @@id([ratingId,tagId])
@@ -151,7 +151,7 @@ model RatingScope{
 model Score{
   rating Rating @relation(fields: [ratingId], references: [id], onDelete: Cascade)
   ratingId Int @db.Integer()
-  student User @relation(fields: [studentId],references: [id])
+  student User @relation(fields: [studentId],references: [id],onDelete: Cascade)
   studentId Int @db.Integer
   ratingScore Int @db.Integer
   @@id([ratingId,studentId])
@@ -175,7 +175,7 @@ model Company {
 model Theme {
   id Int @default(autoincrement()) @id
   name String @unique @db.VarChar()
-  descripton String @db.VarChar()
+  description String @db.VarChar()
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   deletedAt DateTime? @db.Timestamp()

@@ -244,56 +244,64 @@ export const users = [
 
 const prisma = new PrismaClient();
 
+async function truncateAllTables() {
+  const prisma = new PrismaClient();
+
+  try {
+    const modelNames = Object.keys(prisma);
+    console.log(modelNames);
+    for (const modelName of modelNames) {
+      if (
+        modelName !== '$connect' &&
+        modelName !== '$disconnect' &&
+        !modelName.startsWith('_') &&
+        !modelName.startsWith('$')
+      ) {
+        await prisma.$executeRawUnsafe(
+          `TRUNCATE TABLE "${modelName === 'userRole' ? 'roles' : modelName === 'permission' ? 'permissions' : modelName.charAt(0).toUpperCase() + modelName.slice(1)}" CASCADE;`,
+        );
+        console.log(`All data truncated from ${modelName} successfully.`);
+      }
+    }
+    console.log('All data truncated from all tables successfully.');
+  } catch (error) {
+    console.error('Error truncating data:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function main() {
+  await truncateAllTables();
   for await (const role of roles) {
     const roleAttrs = cloneDeep(role);
-    await prisma.userRole.upsert({
-      where: {
-        id: role.id,
-      },
-      create: roleAttrs,
-      update: roleAttrs,
+    await prisma.userRole.create({
+      data: roleAttrs,
     });
   }
 
   for await (const permission of permissions) {
     const permissionAttrs = cloneDeep(permission);
-    await prisma.permission.upsert({
-      where: {
-        id: permission.id,
-      },
-      create: permissionAttrs,
-      update: permissionAttrs,
+    await prisma.permission.create({
+      data: permissionAttrs,
     });
   }
   for await (const group of groups) {
     const groupAttrs = cloneDeep(group);
-    await prisma.group.upsert({
-      where: {
-        id: group.id,
-      },
-      create: groupAttrs,
-      update: groupAttrs,
+    await prisma.group.create({
+      data: groupAttrs,
     });
   }
   for await (const direction of directions) {
     const directionAttrs = cloneDeep(direction);
-    await prisma.direction.upsert({
-      where: {
-        id: direction.id,
-      },
-      create: directionAttrs,
-      update: directionAttrs,
+    await prisma.direction.create({
+      data: directionAttrs,
     });
   }
   for await (const user of users) {
     const userAttrs = cloneDeep(user);
-    await prisma.user.upsert({
-      where: {
-        id: user.id,
-      },
-      create: userAttrs,
-      update: userAttrs,
+    await prisma.user.create({
+      data: userAttrs,
     });
   }
 }

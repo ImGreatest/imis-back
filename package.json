@@ -6,7 +6,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "seed init": "ts-node prisma/seed/init.seed.ts",
+    "seed-init": "ts-node prisma/seed/init.seed.ts",
+    "seed-fake": "ts-node prisma/seed/fake.seed.ts",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
