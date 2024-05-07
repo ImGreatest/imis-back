@@ -23,7 +23,7 @@ services:
     depends_on:
       migrations-stage:
         condition: service_completed_successfully
-      seed:
+      seed-stage:
         condition-stage: service_completed_successfully
    
 
