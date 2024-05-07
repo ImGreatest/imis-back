@@ -189,6 +189,7 @@ async function fakeSeed() {
 
   const ratingCreaterIds = await getIds(prisma.user, { roleId: 3 });
   const scoringTypes = Object.keys(RatingScoringType);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const _ of genArray(ratingCount)) {
     await prisma.rating.create({
       data: {
