@@ -51,6 +51,7 @@ export class SuccessService {
         },
         creater: {
           select: {
+            id: true,
             name: true,
             surname: true,
           },
@@ -73,7 +74,27 @@ export class SuccessService {
   async getById(id: number) {
     return this.prisma.success.findUnique({
       where: { id: id },
-      include: { tags: { include: { tag: true } }, student: true },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        tags: { select: { tag: { select: { id: true, name: true } } } },
+        student: {
+          select: {
+            name: true,
+            surname: true,
+            direction: { select: { name: true } },
+            group: { select: { name: true } },
+          },
+        },
+        creater: {
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+          },
+        },
+      },
     });
   }
   async update(id: number, success: IUpdateSuccess) {
