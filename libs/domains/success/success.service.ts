@@ -126,10 +126,11 @@ export class SuccessService {
       where: { successId: successId },
       select: { tagId: true },
     });
+
     const toCreate = tagsIds.filter((tagId) => {
       return curTags.includes({ tagId: tagId }) === false;
     });
-    console.log(curTags, toCreate, tagsIds);
+
     const toDelete = curTags.filter((tag) => {
       return !tagsIds.includes(tag.tagId);
     });

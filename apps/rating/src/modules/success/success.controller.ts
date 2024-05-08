@@ -30,7 +30,7 @@ export class SuccessController {
   @UseGuards(AbilitiesGuard)
   @Post()
   async create(@Body() success: ReqCreateSuccessDto, @Req() req) {
-    const createrId = req.user.id;
+    const createrId = req.user.sub;
     return this.successService.create(createrId, success);
   }
 
