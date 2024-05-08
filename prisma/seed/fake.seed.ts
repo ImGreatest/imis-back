@@ -69,7 +69,7 @@ async function fakeSeed() {
     await prisma.user.create({
       data: {
         name: faker.name.firstName(),
-        surname: faker.name.middleName(),
+        surname: faker.name.lastName(),
         course: faker.number.int({ min: 1, max: 5 }),
         email: faker.internet.email(),
         pass: bcrypt.hashSync(faker.internet.password(), config.HashSaltRound),
