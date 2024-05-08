@@ -106,6 +106,7 @@ async function fakeSeed() {
       name: faker.company.name(),
       description: faker.company.catchPhrase(),
       spokesPersonId: faker.helpers.arrayElement(employerWithourCompany),
+      adress: faker.location.city(),
     })),
     skipDuplicates: true,
   });
