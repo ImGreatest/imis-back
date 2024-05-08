@@ -81,28 +81,57 @@ model User {
   dogName String @default(dbgenerated("gen_random_uuid()"))
 
   links Links[]
+
   refreshToken RefreshToken[]
+  
   userSkils UserSkills[]
+  
   projects UserProject[]
   createdProjects Project[]
+  favoriteProject UserFavoriteProject[]
+  
   successStudent Success[] @relation("success-student")
   successCreate Success[] @relation("success-creater")
-  favoritProject UserFavoritProject[]
+  
+  eventCreate Event[] @relation("event-creater")
+  eventConfident Event[] @relation("event-confident")
+  events GuestEvent[]
+  favoriteEvents FavoriteEvent[]
+
   company Company?
+
   themes Theme[]
+
   ratings Rating[]
+
   score Score[]
+
   sendedNotifications Notifacation[] @relation("sender")
   getNotifications Notifacation[] @relation("recipient")
 }
-
+enum LinkType{
+  phone
+  social
+  mail
+  url
+}
 model Links {
   id    Int     @default(autoincrement()) @id
+  
   user User? @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId Int?
+  
   project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
   projectId Int?
-  name String
+  
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId Int?
+  
+  event Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId Int?
+
+  linkType LinkType
+
   link String
 }
 
@@ -161,6 +190,9 @@ model Company {
   id    Int     @default(autoincrement()) @id
   name String @unique @db.VarChar()
   description String @db.VarChar()
+  adress String
+
+  limks Links[]
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
@@ -199,7 +231,7 @@ model Project {
   links Links[]
   projectSkils ProjectSkils[]
   students UserProject[]
-  usersWithFavor UserFavoritProject[]
+  usersWithFavor UserFavoriteProject[]
 
 }
 model SkillType {
@@ -242,7 +274,7 @@ model UserProject{
   @@id([userId,projectId])
 
 }
-model UserFavoritProject{
+model UserFavoriteProject{
   user User @relation(fields: [userId], references: [id])
   userId Int @db.Integer()
   project Project @relation(fields: [projectId], references: [id])
@@ -292,4 +324,47 @@ model SuccessTags{
   tagId Int @db.Integer()
   @@id([successId,tagId])
 
+}
+
+enum EventStatus {
+  planned 
+  confirmed 
+  canceled
+  completed 
+  rescheduled
+  }
+model Event{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar()
+  dateStart DateTime
+  dateEnd DateTime
+  status EventStatus
+  creater User @relation(fields: [createrId],references: [id],name:"event-creater")
+  createrId Int @db.Integer()
+
+  confidentPerson User @relation(fields: [confidentPersonId],references: [id],name:"event-confident")
+  confidentPersonId Int @db.Integer()
+
+  links Links[]
+
+  guests GuestEvent[]
+
+  userWithFavorite FavoriteEvent[]
+
+}
+
+model GuestEvent{
+  guest User @relation(fields: [guestId],references: [id],onDelete: Cascade)
+  guestId Int
+  event Event @relation(fields: [eventId],references: [id],onDelete: Cascade)
+  eventId Int
+  @@id([guestId,eventId])
+}
+
+model FavoriteEvent{
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  userId Int
+  event Event @relation(fields: [eventId],references: [id],onDelete: Cascade)
+  eventId Int
+  @@id([userId,eventId])
 }
