@@ -68,8 +68,8 @@ async function fakeSeed() {
   await genArray(studentCount).forEach(async () => {
     await prisma.user.create({
       data: {
-        name: faker.name.firstName(),
-        surname: faker.name.lastName(),
+        name: faker.person.firstName(),
+        surname: faker.person.lastName(),
         course: faker.number.int({ min: 1, max: 5 }),
         email: faker.internet.email(),
         pass: bcrypt.hashSync(faker.internet.password(), config.HashSaltRound),
@@ -87,8 +87,8 @@ async function fakeSeed() {
 
   await prisma.user.createMany({
     data: genArray(companyAndEmployerCount).map(() => ({
-      name: faker.name.firstName(),
-      surname: faker.name.middleName(),
+      name: faker.person.firstName(),
+      surname: faker.person.lastName(),
       email: faker.internet.email(),
       pass: bcrypt.hashSync(faker.internet.password(), config.HashSaltRound),
       roleId: 4,
