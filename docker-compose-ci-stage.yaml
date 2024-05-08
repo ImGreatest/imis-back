@@ -4,7 +4,7 @@ services:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: npx prisma migrate deploy 
+    command: npx prisma migrate reset 
 
   seed-stage:
     image: $DOCKER_TAG
