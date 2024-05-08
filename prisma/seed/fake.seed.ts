@@ -111,31 +111,35 @@ async function fakeSeed() {
   });
 
   for (let i = 0; i < tagCount; i++) {
-    if (Math.random() < tagComplexity) {
-      const tagsIds = await getIds(prisma.tag);
-      if (tagsIds.length === 0) {
-        await prisma.tag.create({
-          data: {
-            name: faker.word.sample(),
-            description: faker.word.sample(),
-          },
-        });
+    try {
+      if (Math.random() < tagComplexity) {
+        const tagsIds = await getIds(prisma.tag);
+        if (tagsIds.length === 0) {
+          await prisma.tag.create({
+            data: {
+              name: faker.word.sample(),
+              description: faker.word.sample(),
+            },
+          });
+        } else {
+          await prisma.tag.create({
+            data: {
+              name: faker.word.sample(),
+              description: faker.word.sample(),
+              baseTagId: faker.helpers.arrayElement(tagsIds),
+            },
+          });
+        }
       } else {
         await prisma.tag.create({
           data: {
             name: faker.word.sample(),
             description: faker.word.sample(),
-            baseTagId: faker.helpers.arrayElement(tagsIds),
           },
         });
       }
-    } else {
-      await prisma.tag.create({
-        data: {
-          name: faker.word.sample(),
-          description: faker.word.sample(),
-        },
-      });
+    } catch {
+      console.log('tag not created');
     }
   }
   const tagsForSuccess = await getIds(prisma.tag, { childTags: { none: {} } });
