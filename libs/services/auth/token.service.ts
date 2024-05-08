@@ -87,6 +87,7 @@ export class AuthTokenService {
       access: access,
       refresh: refresh,
       permissions: this.roleService.getPermisionsByRoleId(roleUser.roleId),
+      id: roleUser.id,
     };
   }
 

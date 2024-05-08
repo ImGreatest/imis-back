@@ -61,6 +61,7 @@ export class AuthService {
       access,
       refresh,
       permissions: perm,
+      id: user.id,
     };
   }
 
