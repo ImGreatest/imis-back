@@ -7,8 +7,9 @@ export class User {
   pass: string;
   course?: number;
   direction?: number;
-  group?: number;
+  groupId?: number;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
+  description?: string;
 }

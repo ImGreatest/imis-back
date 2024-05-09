@@ -308,6 +308,7 @@ export const users = [
     roleId: 1,
     pass: bcrypt.hashSync('somePass', config.HashSaltRound),
     email: 'student6@mail.com',
+    description: "тут что-то должно быть написано обо мне"
   },
   {
     id: 14,

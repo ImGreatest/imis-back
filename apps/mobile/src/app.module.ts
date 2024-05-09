@@ -6,11 +6,12 @@ import { AuthModule } from 'libs/services/auth/auth.module';
 import { RolesGuard } from 'libs/services/auth/guard/roles.guard';
 import { ScheduleModule } from '@nestjs/schedule';
 import { RatingControllerModule } from './modules/rating/rating.controller.module';
-import { UserModule } from './modules/user/user.module';
+import { UserModule } from 'libs/domains/user/user.module';
+import { UserControllerModule } from './modules/user/user-controller.module';
 
 
 @Module({
-  imports: [PrismaModule, AuthModule, UserModule,ScheduleModule.forRoot(), RatingControllerModule,
+  imports: [PrismaModule, AuthModule, UserModule,UserControllerModule, ScheduleModule.forRoot(), RatingControllerModule,
     ],
   providers: [
     {

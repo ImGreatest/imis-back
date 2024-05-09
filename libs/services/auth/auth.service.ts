@@ -13,6 +13,7 @@ import { UserService } from 'libs/domains/user/user.service';
 import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
 import { ReqResetPasswordDto } from 'libs/services/auth/dto/req-dto/req-reset-password.dto';
 import { ResUserDto } from 'apps/cabinet/src/controllers/user/dto/res-user.dto';
+import { group } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -42,11 +43,15 @@ export class AuthService {
       role: user.roleId,
       name: user.name,
       surname: user.surname,
+      groupId: user.groupId,
       course: user.course,
       direction: user.direction,
+      description: user.description,
+     
     });
 
     Logger.verbose('Аутентификация прошла успешно', access);
+    Logger.verbose(user.groupId)
 
     const refresh: string = await this.authTokenService.generateRefreshToken(
       user.id,
@@ -95,8 +100,10 @@ export class AuthService {
       surname: user.surname,
       course: user.course,
       direction: user.direction,
+      description: user.description,
+      groupId: user.groupId,
     });
-
+   
     Logger.verbose('access token - ', access);
 
     const refresh: string = await this.authTokenService.generateRefreshToken(
