@@ -1,4 +1,4 @@
 export class GetSubsDto {
-	userId: number;
-	projectId: number;
+  userId: number;
+  projectId: number;
 }
