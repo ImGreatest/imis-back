@@ -7,6 +7,7 @@ import { AuthGuard } from 'libs/services/auth/guard/auth.guard';
 import { EmailControllerModule } from 'apps/cabinet/src/controllers/email/email-controller.module';
 import { LanguageSchemeControllerModule } from 'apps/cabinet/src/controllers/language-scheme/language-scheme-controller.module';
 import { NotificationControllerModule } from 'apps/cabinet/src/controllers/notification/notification-controller.module';
+import { UserFavoriteProjectControllerModule } from './controllers/user-favorite-project/user-favorite-project-controller.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { NotificationControllerModule } from 'apps/cabinet/src/controllers/notif
     EmailControllerModule,
     UserControllerModule,
     NotificationControllerModule,
+    UserFavoriteProjectControllerModule,
     LanguageSchemeControllerModule,
   ],
   providers: [
