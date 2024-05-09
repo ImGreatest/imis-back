@@ -108,6 +108,9 @@ model User {
 
   sendedNotifications Notifacation[] @relation("sender")
   getNotifications Notifacation[] @relation("recipient")
+
+  inFavotite FavoriteUser[] @relation("favoriteUser")
+  userFavorite FavoriteUser[] @relation("ownerUser")
 }
 enum LinkType{
   phone
@@ -148,6 +151,13 @@ model Notifacation{
   status NotifacationStatus
   dateTimeSent DateTime   @default(now())
   visible Boolean @default(true)
+}
+model FavoriteUser{
+  favorite User @relation(fields: [favoriteId], references: [id], name: "favoriteUser")
+  favoriteId Int @db.Integer()
+  owner User @relation(fields: [ownerId], references: [id], name: "ownerUser")
+  ownerId Int @db.Integer()
+  @@id([favoriteId,ownerId])
 }
 
 enum RatingScoringType{
