@@ -54,6 +54,7 @@ export class AuthController {
   getPayload(
     @Req() data,
   ) {
+    console.log(data['user'])
     return data['user'];
   }
 }

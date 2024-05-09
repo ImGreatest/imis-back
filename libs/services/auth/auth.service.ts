@@ -44,11 +44,14 @@ export class AuthService {
       role: user.roleId,
       name: user.name,
       surname: user.surname,
+      groupId: user.groupId,
       course: user.course,
       direction: user.direction,
+      description: user.description,
     });
 
     Logger.verbose('Аутентификация прошла успешно', access);
+    Logger.verbose(user.groupId);
 
     const refresh: string = await this.authTokenService.generateRefreshToken(
       user.id,
@@ -99,6 +102,8 @@ export class AuthService {
       surname: user.surname,
       course: user.course,
       direction: user.direction,
+      description: user.description,
+      groupId: user.groupId,
     });
 
     Logger.verbose('access token - ', access);
