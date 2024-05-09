@@ -186,14 +186,11 @@ const directions = [
 export const users = [
   {
     id: 1,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 1,
-    directionId: 1,
-    course: 4,
-    roleId: 1,
+    name: 'Imis',
+    surname: 'System',
+    roleId: 3,
     pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student@mail.com',
+    email: 'imis@mail.com',
   },
   {
     id: 2,
@@ -243,338 +240,68 @@ export const users = [
     pass: bcrypt.hashSync('somePass', config.HashSaltRound),
     email: 'rukovod@mail.com',
   },
-  {
-    id: 8,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 1,
-    course: 4,
-    directionId: 1,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student1@mail.com',
-  },
-  {
-    id: 9,
-    name: 'Billian',
-    surname: 'David',
-    course: 3,
-    groupId: 2,
-    directionId: 1,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student2@mail.com',
-  },
-  {
-    id: 10,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 2,
-    course: 3,
-    directionId: 1,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student3@mail.com',
-  },
-  {
-    id: 11,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 3,
-    directionId: 2,
-    course: 3,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student4@mail.com',
-  },
-  {
-    id: 12,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 3,
-    course: 3,
-    directionId: 2,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student5@mail.com',
-  },
-  {
-    id: 13,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 3,
-    directionId: 2,
-    course: 3,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student6@mail.com',
-    description: "тут что-то должно быть написано обо мне"
-  },
-  {
-    id: 14,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 3,
-    course: 3,
-    directionId: 2,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student7@mail.com',
-  },
-  {
-    id: 15,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 3,
-    course: 3,
-    directionId: 2,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student8@mail.com',
-  },
-  {
-    id: 16,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 3,
-    course: 3,
-    directionId: 2,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student9@mail.com',
-  },
-  {
-    id: 17,
-    name: 'Billian',
-    groupId: 3,
-    directionId: 2,
-    course: 3,
-    surname: 'David',
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student10@mail.com',
-  },
-  {
-    id: 18,
-    name: 'Billian',
-    groupId: 3,
-    course: 3,
-    directionId: 2,
-    surname: 'David',
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student11@mail.com',
-  },
-  {
-    id: 19,
-    name: 'Billian',
-    surname: 'David',
-    groupId: 3,
-    course: 3,
-    directionId: 2,
-    roleId: 1,
-    pass: bcrypt.hashSync('somePass', config.HashSaltRound),
-    email: 'student12@mail.com',
-  },
-];
-const tags = [
-  {
-    id: 1,
-    name: 'tag1',
-    description: 'tag1 description',
-  },
-  {
-    id: 2,
-    name: 'tag2',
-    description: 'tag2 description',
-  },
-];
-
-const rating = {
-  id: 1,
-  name: 'rating1',
-  minuteUpdate: 0,
-  createrId: 3,
-  default:true,
-};
-
-const ratingScope = [
-  {
-    ratingId: 1,
-    tagId: 1,
-    ratingScore: 3,
-  },
-  {
-    ratingId: 1,
-    tagId: 2,
-    ratingScore: 3,
-  },
-];
-const ratingScore = [
-  {
-    ratingId: 1,
-    studentId: 1,
-    ratingScore: 3,
-  },
-  {
-    ratingId: 1,
-    studentId: 8,
-    ratingScore: 164,
-  },
-  {
-    ratingId: 1,
-    studentId: 9,
-    ratingScore: 143,
-  },
-  {
-    ratingId: 1,
-    studentId: 10,
-    ratingScore: 234,
-  },
-  {
-    ratingId: 1,
-    studentId: 11,
-    ratingScore: 123,
-  },
-  {
-    ratingId: 1,
-    studentId: 12,
-    ratingScore: 57,
-  },
-  {
-    ratingId: 1,
-    studentId: 13,
-    ratingScore: 76,
-  },
-  {
-    ratingId: 1,
-    studentId: 14,
-    ratingScore: 36,
-  },
-  {
-    ratingId: 1,
-    studentId: 15,
-    ratingScore: 25,
-  },
-  {
-    ratingId: 1,
-    studentId: 16,
-    ratingScore: 23,
-  },
-  {
-    ratingId: 1,
-    studentId: 17,
-    ratingScore: 2,
-  },
-  {
-    ratingId: 1,
-    studentId: 18,
-    ratingScore: 8,
-  },
-  {
-    ratingId: 1,
-    studentId: 19,
-    ratingScore: 10,
-  },
 ];
 
 const prisma = new PrismaClient();
 
+async function truncateAllTables() {
+  const prisma = new PrismaClient();
+
+  try {
+    const modelNames = Object.keys(prisma);
+    console.log(modelNames);
+    for (const modelName of modelNames) {
+      if (
+        modelName !== '$connect' &&
+        modelName !== '$disconnect' &&
+        !modelName.startsWith('_') &&
+        !modelName.startsWith('$')
+      ) {
+        await prisma.$executeRawUnsafe(
+          `TRUNCATE TABLE "${modelName === 'userRole' ? 'roles' : modelName === 'permission' ? 'permissions' : modelName.charAt(0).toUpperCase() + modelName.slice(1)}" CASCADE;`,
+        );
+        console.log(`All data truncated from ${modelName} successfully.`);
+      }
+    }
+    console.log('All data truncated from all tables successfully.');
+  } catch (error) {
+    console.error('Error truncating data:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function main() {
+  await truncateAllTables();
   for await (const role of roles) {
     const roleAttrs = cloneDeep(role);
-    await prisma.userRole.upsert({
-      where: {
-        id: role.id,
-      },
-      create: roleAttrs,
-      update: roleAttrs,
+    await prisma.userRole.create({
+      data: roleAttrs,
     });
   }
 
   for await (const permission of permissions) {
     const permissionAttrs = cloneDeep(permission);
-    await prisma.permission.upsert({
-      where: {
-        id: permission.id,
-      },
-      create: permissionAttrs,
-      update: permissionAttrs,
+    await prisma.permission.create({
+      data: permissionAttrs,
     });
   }
   for await (const group of groups) {
     const groupAttrs = cloneDeep(group);
-    await prisma.group.upsert({
-      where: {
-        id: group.id,
-      },
-      create: groupAttrs,
-      update: groupAttrs,
+    await prisma.group.create({
+      data: groupAttrs,
     });
   }
   for await (const direction of directions) {
     const directionAttrs = cloneDeep(direction);
-    await prisma.direction.upsert({
-      where: {
-        id: direction.id,
-      },
-      create: directionAttrs,
-      update: directionAttrs,
+    await prisma.direction.create({
+      data: directionAttrs,
     });
   }
   for await (const user of users) {
     const userAttrs = cloneDeep(user);
-    await prisma.user.upsert({
-      where: {
-        id: user.id,
-      },
-      create: userAttrs,
-      update: userAttrs,
-    });
-  }
-
-  for await (const tag of tags) {
-    const tagAttrs = cloneDeep(tag);
-    await prisma.tag.upsert({
-      where: {
-        id: tag.id,
-      },
-      create: tagAttrs,
-      update: tagAttrs,
-    });
-  }
-
-  await prisma.rating.upsert({
-    where: {
-      id: rating.id,
-    },
-    create: rating,
-    update: rating,
-  });
-  for await (const scope of ratingScope) {
-    const scopeAttrs = cloneDeep(scope);
-    await prisma.ratingScope.upsert({
-      where: {
-        ratingId_tagId: {
-          ratingId: scope.ratingId,
-          tagId: scope.tagId,
-        },
-      },
-      create: scopeAttrs,
-      update: scopeAttrs,
-    });
-  }
-  for await (const score of ratingScore) {
-    const scoreAttrs = cloneDeep(score);
-    await prisma.score.upsert({
-      where: {
-        ratingId_studentId: {
-          ratingId: score.ratingId,
-          studentId: score.studentId,
-        },
-      },
-      create: scoreAttrs,
-      update: scoreAttrs,
+    await prisma.user.create({
+      data: userAttrs,
     });
   }
 }
@@ -586,3 +313,4 @@ main()
     console.log(error);
     await prisma.$disconnect();
   });
+

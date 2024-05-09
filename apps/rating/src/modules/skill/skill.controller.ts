@@ -9,10 +9,9 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { SkillControllerService } from './skill.controller.service';
-import { CreateSkillDto } from './dto/req.create.dto';
+import { CreateSkillDto } from 'apps/rating/src/modules/skill/dto/req-dto/req-create.dto';
 import { checkAbilities } from 'libs/decorators/abilities.decorator';
 import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
-import { Public } from 'libs/decorators/public.decorator';
 
 @Controller('skill')
 @ApiBearerAuth()
@@ -20,12 +19,11 @@ import { Public } from 'libs/decorators/public.decorator';
 export class SkillController {
   constructor(private skillService: SkillControllerService) {}
 
-  // @checkAbilities({
-  //   action: 'read',
-  //   subject: 'Skills',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'read',
+    subject: 'Skills',
+  })
+  @UseGuards(AbilitiesGuard)
   @Get()
   findAll() {
     return this.skillService.findAll();
@@ -51,43 +49,39 @@ export class SkillController {
     return this.skillService.findAllFromProject(projectId);
   }
 
-  // @checkAbilities({
-  //   action: 'create',
-  //   subject: 'Skills',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'create',
+    subject: 'Skills',
+  })
+  @UseGuards(AbilitiesGuard)
   @Post()
   create(@Body() skill: CreateSkillDto) {
     return this.skillService.create(skill);
   }
-  // @checkAbilities({
-  //   action: 'create',
-  //   subject: 'Skills',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'create',
+    subject: 'Skills',
+  })
+  @UseGuards(AbilitiesGuard)
   @Post('/skillType/:skillType')
   createSkillType(@Param('skillType') skillType: string) {
     return this.skillService.createSkillType(skillType);
   }
 
-  // @checkAbilities({
-  //   action: 'delete',
-  //   subject: 'Skills',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'delete',
+    subject: 'Skills',
+  })
+  @UseGuards(AbilitiesGuard)
   @Delete(':id')
   delete(@Param('id') id: number) {
     return this.skillService.delete(id);
   }
-  // @checkAbilities({
-  //   action: 'delete',
-  //   subject: 'Skills',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'delete',
+    subject: 'Skills',
+  })
+  @UseGuards(AbilitiesGuard)
   @Delete('/skillType/:id')
   deleteSkillType(@Param('id') id: number) {
     return this.skillService.deleteSkillType(id);

@@ -1,56 +1,29 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { ICreateSkill } from './interface/req.create.interface';
+import { ICreateSkill } from 'libs/domains/skill/dto/req-dto/req-create-skill.dto';
+import { IResFindAllFromUserDto } from 'libs/domains/skill/dto/res-dto/res-find-all-from-user.dto';
+import { IResCreateSkillDto } from 'libs/domains/skill/dto/res-dto/res-create-skill.dto';
+import { SkillRepository } from 'libs/domains/skill/repositories/skill.repository';
+import { IResFindAllFromProjectDto } from 'libs/domains/skill/dto/res-dto/res-find-all-from-project.dto';
 
 @Injectable()
 export class SkillService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly skillRep: SkillRepository) {}
 
-  findAll() {
-    return this.prisma.skillType.findMany({
-      select: {
-        id: true,
-        name: true,
-        skills: {
-          select: { id: true, name: true },
-        },
-      },
-    });
-  }
-  findAllFromUser(userId: number) {
-    return this.prisma.user.findMany({
-      where: { id: userId },
-      select: {
-        userSkils: {
-          select: { skils: { select: { id: true, name: true } } },
-        },
-      },
-    });
+  async findAllFromUser(userId: number): Promise<IResFindAllFromUserDto[]> {
+    return this.skillRep.findAllFromUser(userId);
   }
 
-  findAllFromProject(projectId: number) {
-    return this.prisma.project.findMany({
-      where: { id: projectId },
-      select: {
-        projectSkils: {
-          select: { skils: { select: { id: true, name: true } } },
-        },
-      },
-    });
+  async findAllFromProject(
+    projectId: number,
+  ): Promise<IResFindAllFromProjectDto[]> {
+    return this.skillRep.findAllFromProject(projectId);
   }
 
-  create(skill: ICreateSkill) {
-    return this.prisma.skills.create({ data: skill });
+  create(skill: ICreateSkill): Promise<IResCreateSkillDto> {
+    return this.skillRep.create(skill);
   }
 
-  createSkillType(skillType: string) {
-    return this.prisma.skillType.create({ data: { name: skillType } });
-  }
-
-  delete(id: number) {
-    return this.prisma.skills.delete({ where: { id: id } });
-  }
-  deleteSkillType(id: number) {
-    return this.prisma.skillType.delete({ where: { id: id } });
+  delete(id: number): Promise<IResCreateSkillDto> {
+    return this.skillRep.delete(id);
   }
 }

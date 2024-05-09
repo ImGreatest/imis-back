@@ -32,7 +32,6 @@ export class UserController {
 
   @Get('get-user-by-email/:email')
   getUserByEmail(@Param('email') email: string): Promise<ResUserDto> {
-    console.log(email);
     return this.userService.getUserByEmail(email);
   }
 
@@ -49,6 +48,11 @@ export class UserController {
   @Get('get-users')
   getUsers(): Promise<ResUserDto[] | null> {
     return this.userService.getUsers();
+  }
+
+  @Get('students')
+  getStudents() {
+    return this.userService.getStudents();
   }
 
   @Put('update/:id')

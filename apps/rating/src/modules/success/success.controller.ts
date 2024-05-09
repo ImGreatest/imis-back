@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { SuccessControllerService } from './success.controller.service';
@@ -15,7 +16,6 @@ import { AbilitiesGuard } from 'libs/services/casl/ability.guard';
 import { ReqCreateSuccessDto } from './dto/req.create.success.dto';
 import { ReqUpdateSuccessDto } from './dto/req.update.success.dto';
 import { ReqGetPageDto } from 'libs/shared/interface/req.get.page.dto';
-import { Public } from 'libs/decorators/public.decorator';
 
 @Controller('success')
 @ApiBearerAuth()
@@ -29,16 +29,16 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Post()
-  async create(@Body() success: ReqCreateSuccessDto) {
-    return this.successService.create(success);
+  async create(@Body() success: ReqCreateSuccessDto, @Req() req) {
+    const createrId = req.user.sub;
+    return this.successService.create(createrId, success);
   }
 
-  // @checkAbilities({
-  //   action: 'read',
-  //   subject: 'Success',
-  // })
-  // @UseGuards(AbilitiesGuard)
-  @Public()
+  @checkAbilities({
+    action: 'read',
+    subject: 'Success',
+  })
+  @UseGuards(AbilitiesGuard)
   @Put('/page')
   async getPage(@Body() getData: ReqGetPageDto) {
     return this.successService.getPage(
@@ -65,7 +65,7 @@ export class SuccessController {
   })
   @UseGuards(AbilitiesGuard)
   @Put(':id')
-  async update(@Param('id') id: number, success: ReqUpdateSuccessDto) {
+  async update(@Param('id') id: number, @Body() success: ReqUpdateSuccessDto) {
     return this.successService.update(id, success);
   }
   @checkAbilities({

@@ -8,8 +8,9 @@ import { ICreateRating } from './interface/create.rating.interface';
 import { IUpdateRating } from './interface/update.rating.interface';
 import { IScopeRating } from './interface/scope.rating.interface';
 import { CronService } from 'libs/services/cron/cron.service';
-import { IFilter } from '../../shared/interface/filter.interface';
-import { IOrder } from '../../shared/interface/order.interface';
+import { IFilter } from 'libs/shared/interface/filter.interface';
+import { IOrder } from 'libs/shared/interface/order.interface';
+
 @Injectable()
 export class RatingService {
   constructor(
@@ -17,6 +18,33 @@ export class RatingService {
     private cronService: CronService,
   ) {}
 
+  /**
+   * Sets up intervals for updating ratings.
+   *
+   * @return {Promise<void>} A promise that resolves when the intervals are set up.
+   */
+  async setIntervalsRating() {
+    const ratings = await this.prisma.rating.findMany({
+      where: { minuteUpdate: { gt: 0 } },
+    });
+    ratings.forEach((rating) => {
+      if (rating.minuteUpdate) {
+        this.cronService.addInterval(
+          `rating-${rating.id}`,
+          1000 * 60 * rating.minuteUpdate,
+          () => this.updateRatingScore(rating.id),
+        );
+      }
+    });
+  }
+
+  /**
+   * Creates a new rating for a creator.
+   *
+   * @param {number} createrId - The ID of the creator.
+   * @param {ICreateRating} rating - The rating to be created.
+   * @return {Promise<Rating>} The created rating.
+   */
   async createRating(createrId: number, rating: ICreateRating) {
     const scope = rating.scope;
     delete rating.scope;
@@ -44,6 +72,16 @@ export class RatingService {
     }
     return createdRating;
   }
+  /**
+   * Retrieves a page of ratings based on the provided filters and pagination parameters.
+   *
+   * @param {number} limit - The maximum number of ratings to retrieve per page.
+   * @param {number} page - The page number of the ratings to retrieve.
+   * @param {IFilter[]} [filters=[]] - Optional array of filters to apply to the ratings.
+   * @param {IOrder} orderProps - The properties to order the ratings by.
+   * @return {Promise<{info: {page: number, pageSize: number, totalCount: number, totalPages: number}, rows: Rating[]}>}
+   * A promise that resolves to an object containing information about the retrieved page and the ratings themselves.
+   */
   async getPage(
     limit: number,
     page: number,
@@ -80,11 +118,24 @@ export class RatingService {
       rows: ratings,
     };
   }
+  /**
+   * Retrieves a rating by its ID.
+   *
+   * @param {number} id - The ID of the rating to retrieve.
+   * @return {Promise<Rating | null>} A promise that resolves to the rating with the specified ID, or null if not found.
+   */
   async getById(id: number) {
     return this.prisma.rating.findUnique({
       where: { id: id },
     });
   }
+  /**
+   * Updates the rating information based on the provided ID and rating data.
+   *
+   * @param {number} id - The ID of the rating to update.
+   * @param {IUpdateRating} rating - The updated rating data.
+   * @return {Promise<Rating>} A promise that resolves to the updated rating.
+   */
   async updateRating(id: number, rating: IUpdateRating) {
     const dbRating = await this.prisma.rating.findUnique({
       where: { id: id },
@@ -117,6 +168,13 @@ export class RatingService {
     });
   }
 
+  /**
+   * Deletes a rating by its ID.
+   *
+   * @param {number} id - The ID of the rating to be deleted.
+   * @return {Promise<void>} - A promise that resolves when the rating is successfully deleted.
+   * @throws {NotFoundException} - If the rating with the specified ID is not found.
+   */
   async deleteRating(id: number) {
     try {
       this.cronService.deleteInterval(`rating-${id}`);
@@ -132,6 +190,12 @@ export class RatingService {
       where: { id: id },
     });
   }
+  /**
+   * Deletes and creates multiple rating scopes based on the provided rating ID and new scope data.
+   *
+   * @param {number} ratingId - The ID of the rating.
+   * @param {IScopeRating[]} newScope - An array of new scope ratings to be created.
+   */
   async deleteAndCreateRatingsScope(
     ratingId: number,
     newScope: IScopeRating[],
@@ -145,6 +209,12 @@ export class RatingService {
       data: newScope.map((scope) => ({ ...scope, ratingId: ratingId })),
     });
   }
+  /**
+   * Calculates the median value of an array of numbers.
+   *
+   * @param {number[]} array - The input array of numbers.
+   * @return {number} The median value of the input array.
+   */
   getMediana(array: number[]) {
     const sortedArray = array.slice().sort((a, b) => a - b);
     const middleIndex = Math.floor(sortedArray.length / 2);
@@ -157,6 +227,17 @@ export class RatingService {
       return middleValuesSum / 2;
     }
   }
+  /**
+   * Retrieves the default rating score along with detailed information about the scores.
+   *
+   * @param {IFilter[]} [filters=[]] - Optional array of filters to apply to the ratings.
+   * @param {number} page - The page number of the ratings to retrieve.
+   * @param {number} limit - The maximum number of ratings to retrieve per page.
+   * @param {IOrder} orderProps - The properties to order the ratings by.
+   * @param {boolean} [all=false] - Flag indicating whether to retrieve all scores or not.
+   * @return {Promise<{info: {page: number, pageSize: number, totalCount: number, totalPages: number, minScores: number, maxScores: number}, rows: Score[]}>}
+   * A promise that resolves to an object containing detailed information about the default rating score and the scores themselves.
+   */
   async getDefaultRatingScore(
     filters: IFilter[] = [],
     page: number,
@@ -214,6 +295,18 @@ export class RatingService {
       rows: scores,
     };
   }
+  /**
+   * Retrieves the rating score based on the provided ID, filters, pagination parameters, and order properties.
+   *
+   * @param {number} id - The ID of the rating.
+   * @param {IFilter[]} [filters=[]] - Optional array of filters to apply to the scores.
+   * @param {number} page - The page number of the scores to retrieve.
+   * @param {number} limit - The maximum number of scores to retrieve per page.
+   * @param {IOrder} orderProps - The properties to order the scores by.
+   * @param {boolean} [all=false] - Flag indicating whether to retrieve all scores or not.
+   * @return {Promise<{info: {page: number, pageSize: number, totalCount: number, totalPages: number, minScores: number, maxScores: number}, rows: Score[]}>}
+   * A promise that resolves to an object containing detailed information about the rating score and the scores themselves.
+   */
   async getRatingScore(
     id: number,
     filters: IFilter[] = [],
@@ -268,20 +361,13 @@ export class RatingService {
       rows: scores,
     };
   }
-  async setIntervalsRating() {
-    const ratings = await this.prisma.rating.findMany({
-      where: { minuteUpdate: { gt: 0 } },
-    });
-    ratings.forEach((rating) => {
-      if (rating.minuteUpdate) {
-        this.cronService.addInterval(
-          `rating-${rating.id}`,
-          1000 * 60 * rating.minuteUpdate,
-          () => this.updateRatingScore(rating.id),
-        );
-      }
-    });
-  }
+
+  /**
+   * Updates the score of a rating.
+   *
+   * @param {number} id - The ID of the rating.
+   * @return {Promise<void>} A promise that resolves when the score is updated.
+   */
   async updateRatingScore(id: number) {
     const rating = await this.prisma.rating.findUnique({
       where: { id: id },
@@ -299,7 +385,7 @@ export class RatingService {
       where: { role: { name: 'student' } },
     });
     const success = await this.prisma.success.findMany({
-      where: { userId: { in: students.map((student) => student.id) } },
+      where: { studentId: { in: students.map((student) => student.id) } },
       include: {
         tags: {
           include: {
@@ -342,7 +428,7 @@ export class RatingService {
 
     const scorePromises = students.map(async (student) => {
       const studentSuccess = success.filter(
-        (success) => success.userId === student.id,
+        (success) => success.studentId === student.id,
       );
       const sum = await Promise.all(
         studentSuccess.map(async (success) => {

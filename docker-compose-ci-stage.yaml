@@ -4,14 +4,29 @@ services:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: npx prisma migrate deploy 
+    command: npx prisma migrate reset --force  
 
   seed-stage:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: yarn seed 
-      
+    command: yarn seed-init
+    depends_on:
+      migrations-stage:
+        condition: service_completed_successfully
+  
+  seed-fake-stage:
+    image: $DOCKER_TAG
+    env_file:
+        - $ENV
+    command: yarn seed-fake
+    restart: on-failure
+    depends_on:
+      migrations-stage:
+        condition: service_completed_successfully
+      seed-stage:
+        condition: service_completed_successfully
+   
 
   app-cabinet-stage:
     image: $DOCKER_TAG
@@ -26,6 +41,8 @@ services:
       migrations-stage:
         condition: service_completed_successfully
       seed-stage:
+        condition: service_completed_successfully
+      seed-fake-stage:
         condition: service_completed_successfully
 
   app-rating-stage:
@@ -42,6 +59,8 @@ services:
         condition: service_completed_successfully
       seed-stage:
         condition: service_completed_successfully
+      seed-fake-stage:
+        condition: service_completed_successfully
 
   app-employer-stage:
     image: $DOCKER_TAG
@@ -57,6 +76,8 @@ services:
         condition: service_completed_successfully
       seed-stage:
         condition: service_completed_successfully
+      seed-fake-stage:
+        condition: service_completed_successfully
         
   app-mobile-stage:
     image: $DOCKER_TAG
@@ -71,4 +92,6 @@ services:
       migrations-stage:
         condition: service_completed_successfully
       seed-stage:
+        condition: service_completed_successfully
+      seed-fake-stage:
         condition: service_completed_successfully

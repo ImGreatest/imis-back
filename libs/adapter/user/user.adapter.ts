@@ -1,11 +1,14 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { UserRepository } from 'libs/domains/user/repositories/user.repository';
-import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.interface.dto';
-import { IResUser } from 'libs/domains/user/dto/res-dto/res-user.dto';
+import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.dto';
+import {
+  IResSuccessUser,
+  IResUser,
+} from 'libs/domains/user/dto/res-dto/res-user.dto';
 import { PrismaService } from 'libs/services/prisma/prisma.service';
 import { IResGetUserAndCountDto } from 'libs/domains/user/dto/res-dto/res-get-user-and-count.dto';
 import { User } from 'libs/domains/user/entities/user.entity';
-import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.interface.dto';
+import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.dto';
 import { CryptoService } from 'libs/services/crypto/crypto.service';
 
 @Injectable()
@@ -96,6 +99,27 @@ export class UserAdapter extends UserRepository {
     return user;
   }
 
+  getStudents(): Promise<IResSuccessUser[]> {
+    Logger.verbose('getStudents');
+    const users = this.prisma.user.findMany({
+      where: { deletedAt: null, roleId: 1 },
+      select: {
+        id: true,
+        name: true,
+        surname: true,
+        direction: { select: { name: true } },
+        group: { select: { name: true } },
+      },
+    });
+
+    Logger.verbose('getStudents', users);
+
+    if (!users) throw new NotFoundException();
+
+    Logger.verbose('getStudents', users);
+
+    return users;
+  }
   async getUsers(): Promise<IResUser[]> {
     Logger.verbose('getUsers');
     const users = this.prisma.user.findMany({

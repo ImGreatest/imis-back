@@ -51,6 +51,7 @@ export class TagService {
       hourlyUpdate: hourlyUpdate,
       scoringType: scoringType,
       tag: tagWithChild,
+      default: rating.default,
     };
   }
 

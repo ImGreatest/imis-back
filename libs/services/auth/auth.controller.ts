@@ -8,8 +8,8 @@ import { ResSignInDto } from './dto/res-dto/res-sign-in.dto';
 import { ResSignUpDto } from './dto/res-dto/res-sign-up.dto';
 import { AuthTokenService } from './token.service';
 import { Public } from 'libs/decorators/public.decorator';
-import { ReqResetPasswordDto } from "libs/services/auth/dto/req-dto/req-reset-password.dto";
-import { ResUserDto } from "apps/cabinet/src/controllers/user/dto/res-user.dto";
+import { ReqResetPasswordDto } from 'libs/services/auth/dto/req-dto/req-reset-password.dto';
+import { ResUserDto } from 'apps/cabinet/src/controllers/user/dto/res-user.dto';
 
 @ApiTags('auth')
 @ApiBearerAuth()

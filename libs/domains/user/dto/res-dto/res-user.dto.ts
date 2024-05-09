@@ -13,3 +13,11 @@ export interface IResUser {
   deletedAt?: Date;
   description?: string;
 }
+
+export interface IResSuccessUser {
+  id: number;
+  name: string;
+  surname: string;
+  direction: { name: string };
+  group: { name: string };
+}

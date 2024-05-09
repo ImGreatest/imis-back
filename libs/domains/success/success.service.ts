@@ -8,14 +8,15 @@ import { IOrder } from 'libs/shared/interface/order.interface';
 export class SuccessService {
   constructor(private prisma: PrismaService) {}
 
-  async create(success: ICreateSuccess) {
+  async create(createrId: number, success: ICreateSuccess) {
     const tags = success.tags;
     delete success.tags;
     const createdSuccess = await this.prisma.success.create({
       data: {
-        userId: success.userId,
+        studentId: success.userId,
         name: success.name,
         description: success.description,
+        createrId: createrId,
       },
     });
     await this.deleteAddTags(createdSuccess.id, tags);
@@ -40,12 +41,19 @@ export class SuccessService {
         name: true,
         description: true,
         tags: { select: { tag: { select: { id: true, name: true } } } },
-        user: {
+        student: {
           select: {
             name: true,
             surname: true,
             direction: { select: { name: true } },
             group: { select: { name: true } },
+          },
+        },
+        creater: {
+          select: {
+            id: true,
+            name: true,
+            surname: true,
           },
         },
       },
@@ -66,13 +74,45 @@ export class SuccessService {
   async getById(id: number) {
     return this.prisma.success.findUnique({
       where: { id: id },
-      include: { tags: { include: { tag: true } } },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        tags: { select: { tag: { select: { id: true, name: true } } } },
+        student: {
+          select: {
+            name: true,
+            surname: true,
+            direction: { select: { name: true } },
+            group: { select: { name: true } },
+          },
+        },
+        creater: {
+          select: {
+            id: true,
+            name: true,
+            surname: true,
+          },
+        },
+      },
     });
   }
   async update(id: number, success: IUpdateSuccess) {
+    await this.prisma.successTags.deleteMany({
+      where: { successId: id },
+    });
     return this.prisma.success.update({
       where: { id: id },
-      data: success,
+      data: {
+        name: success.name,
+        description: success.description,
+        studentId: success.userId,
+        tags: {
+          create: success.tags.map((tagId) => {
+            return { tagId: tagId };
+          }),
+        },
+      },
     });
   }
 
@@ -86,10 +126,11 @@ export class SuccessService {
       where: { successId: successId },
       select: { tagId: true },
     });
+
     const toCreate = tagsIds.filter((tagId) => {
       return curTags.includes({ tagId: tagId }) === false;
     });
-    console.log(curTags, toCreate, tagsIds);
+
     const toDelete = curTags.filter((tag) => {
       return !tagsIds.includes(tag.tagId);
     });

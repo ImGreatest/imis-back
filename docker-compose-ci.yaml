@@ -4,14 +4,28 @@ services:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: npx prisma migrate deploy 
+    command: npx prisma migrate reset --force 
 
   seed:
     image: $DOCKER_TAG
     env_file:
       - $ENV
-    command: yarn seed 
+    command: yarn seed-init
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
 
+  seed-fake:
+    image: $DOCKER_TAG
+    env_file:
+      - $ENV
+    command: yarn seed-fake
+    restart: on-failure
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
 
   app-cabinet:
     image: $DOCKER_TAG
@@ -20,12 +34,14 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$CABPORT:3000"
+      - '$CABPORT:3000'
     command: node ./dist/apps/cabinet/src/main.js
     depends_on:
       migrations:
         condition: service_completed_successfully
       seed:
+        condition: service_completed_successfully
+      seed-fake:
         condition: service_completed_successfully
 
   app-rating:
@@ -35,12 +51,14 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$RATINGPORT:3001"
+      - '$RATINGPORT:3001'
     command: node ./dist/apps/rating/src/main.js
     depends_on:
       migrations:
         condition: service_completed_successfully
       seed:
+        condition: service_completed_successfully
+      seed-fake:
         condition: service_completed_successfully
 
   app-employer:
@@ -50,14 +68,16 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$EMPLOYERPORT:3002"
+      - '$EMPLOYERPORT:3002'
     command: node ./dist/apps/employer/src/main.js
     depends_on:
       migrations:
         condition: service_completed_successfully
       seed:
         condition: service_completed_successfully
-        
+      seed-fake:
+        condition: service_completed_successfully
+
   app-mobile:
     image: $DOCKER_TAG
     container_name: SH-b-mobile-$CI_COMMIT_BRANCH
@@ -65,10 +85,12 @@ services:
     env_file:
       - $ENV
     ports:
-      - "$MOBILEPORT:3003"
+      - '$MOBILEPORT:3003'
     command: node ./dist/apps/mobile/src/main.js
     depends_on:
       migrations:
         condition: service_completed_successfully
       seed:
+        condition: service_completed_successfully
+      seed-fake:
         condition: service_completed_successfully
