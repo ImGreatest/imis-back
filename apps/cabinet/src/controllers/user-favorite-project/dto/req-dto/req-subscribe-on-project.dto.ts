@@ -4,9 +4,9 @@ import { IsNumber } from 'class-validator';
 export class ReqSubscribeOnProjectDto {
   @ApiProperty({ example: 1 })
   @IsNumber()
-  userId!: number;
+  userId: number;
 
   @ApiProperty({ example: 1 })
   @IsNumber()
-  projectId!: number;
+  projectId: number;
 }

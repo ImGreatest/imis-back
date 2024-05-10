@@ -15,12 +15,12 @@ export class UserFavoriteProjectController {
 
   @Post('subscribe-on-project')
   @ApiBody({ type: ReqSubscribeOnProjectDto })
-  subProject(@Body('data') data: ReqSubscribeOnProjectDto): Promise<void> {
+  subProject(@Body() data: ReqSubscribeOnProjectDto): Promise<void> {
     return this.userFavorPrjService.subProject(data);
   }
 
-  @Get('get-subs-by-user')
-  getSubsByUser(@Param('userId') userId: number): Promise<ResGetSubsDto[]> {
+  @Get('get-subs-by-user/:id')
+  getSubsByUser(@Param('id') userId: number): Promise<ResGetSubsDto[]> {
     return this.userFavorPrjService.getSubsByUser(userId);
   }
 

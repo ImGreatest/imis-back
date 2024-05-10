@@ -1,19 +1,19 @@
 import { UserFavoriteEventControllerService } from "./user-favorite-event-controller.service";
 import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
-import { ApiBody, ApiParam, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from "@nestjs/swagger";
 import { ReqSubscribeOnEventDto } from "./dto/req-dto/req-subscribe-on-event.dto";
 import { ResGetSubscribesDto } from "./dto/res-dto/res-get-subscribes.dto";
 import { ReqUnsubscribeOnEventDto } from "./dto/req-dto/req-unsubscribe-on-event.dto";
 
 @ApiTags('user-favorite-event')
-// @ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('user-favorite-event')
 export class UserFavoriteEventController {
 	constructor(private userFavoriteEventService: UserFavoriteEventControllerService) {}
 
 	@Post('subscribe-on-event')
 	@ApiBody({ type: ReqSubscribeOnEventDto })
-	subEvent(data: ReqSubscribeOnEventDto): Promise<void> {
+	subEvent(@Body() data: ReqSubscribeOnEventDto): Promise<void> {
 		return this.userFavoriteEventService.subEvent(data);
 	}
 
