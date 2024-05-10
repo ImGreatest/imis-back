@@ -1,7 +1,7 @@
 export enum EStatusEvent {
-	planned,
-	confirmed,
-	canceled,
-	completed,
-	rescheduled
+  planned,
+  confirmed,
+  canceled,
+  completed,
+  rescheduled,
 }

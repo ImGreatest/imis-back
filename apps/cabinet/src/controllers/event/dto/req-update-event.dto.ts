@@ -1,3 +1,3 @@
-import { ReqCreateEventDto } from "./req-create-event.dto";
+import { ReqCreateEventDto } from './req-create-event.dto';
 
 export class ReqUpdateEventDto extends ReqCreateEventDto {}
