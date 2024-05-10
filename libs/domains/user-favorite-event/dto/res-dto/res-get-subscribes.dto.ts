@@ -1,4 +1,4 @@
 export interface IResGetSubscribesDto {
-	userId: number;
-	eventId: number;
+  userId: number;
+  eventId: number;
 }

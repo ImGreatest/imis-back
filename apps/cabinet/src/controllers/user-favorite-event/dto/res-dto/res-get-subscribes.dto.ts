@@ -1,12 +1,12 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator';
 
 export class ResGetSubscribesDto {
-	@ApiProperty()
-	@IsNumber()
-	userId: number;
+  @ApiProperty()
+  @IsNumber()
+  userId: number;
 
-	@ApiProperty()
-	@IsNumber()
-	eventId: number;
+  @ApiProperty()
+  @IsNumber()
+  eventId: number;
 }

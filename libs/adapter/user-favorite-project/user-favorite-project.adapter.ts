@@ -15,7 +15,7 @@ export class UserFavoriteProjectAdapter extends UserFavoriteProjectRepository {
     await this.prisma.userFavoriteProject.create({
       data: {
         userId: data.userId,
-        projectId: data.projectId
+        projectId: data.projectId,
       },
     });
   }

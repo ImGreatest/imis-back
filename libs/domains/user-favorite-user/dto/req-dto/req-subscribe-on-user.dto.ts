@@ -1,4 +1,4 @@
 export interface IReqSubscribeOnUserDto {
-	favoriteId: number,
-	ownerId: number
+  favoriteId: number;
+  ownerId: number;
 }

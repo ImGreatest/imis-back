@@ -1,4 +1,4 @@
 export interface IResGetSubscribesDto {
-	favoriteId: number,
-	ownerId: number
+  favoriteId: number;
+  ownerId: number;
 }

@@ -1,4 +1,4 @@
 export interface IReqSubscribeOnEventDto {
-	userId: number;
-	eventId: number;
+  userId: number;
+  eventId: number;
 }
