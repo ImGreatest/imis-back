@@ -54,7 +54,7 @@ export class AuthTokenService {
       },
     });
     const roleUser: IResUser = await this.userService.getUserById(
-      oldRefresh.userId, 
+      oldRefresh.userId,
     );
 
     if (!oldRefresh || !roleUser) {
@@ -71,7 +71,7 @@ export class AuthTokenService {
     });
     const accessPayload: IPayload = {
       sub: oldRefresh.userId,
-      role: roleUser.roleId, 
+      role: roleUser.roleId,
       name: roleUser.name,
       surname: roleUser.surname,
       course: roleUser.course,

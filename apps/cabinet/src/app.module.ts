@@ -10,6 +10,7 @@ import { NotificationControllerModule } from 'apps/cabinet/src/controllers/notif
 import { UserFavoriteProjectControllerModule } from './controllers/user-favorite-project/user-favorite-project-controller.module';
 import { UserFavoriteUserControllerModule } from './controllers/user-favorite-user/user-favorite-user-controller.module';
 import { UserFavoriteEventControllerModule } from './controllers/user-favorite-event/user-favorite-event-controller.module';
+import { EventControllerModule } from "./controllers/event/event-controller.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UserFavoriteEventControllerModule } from './controllers/user-favorite-e
     EmailControllerModule,
     UserControllerModule,
     NotificationControllerModule,
+    EventControllerModule,
     UserFavoriteProjectControllerModule,
     UserFavoriteUserControllerModule,
     UserFavoriteEventControllerModule,
