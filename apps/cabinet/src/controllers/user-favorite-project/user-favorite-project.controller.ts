@@ -1,9 +1,9 @@
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { UserFavoriteProjectControllerService } from './user-favorite-project-controller.service';
-import { SubscribeOnProjectDto } from './dto/req-dto/subscribe-on-project.dto';
-import { UnsubscribeOnProjectDto } from './dto/req-dto/unsubscribe-on-project.dto';
-import { GetSubsDto } from './dto/res-dto/get-subs.dto';
+import { ReqSubscribeOnProjectDto } from './dto/req-dto/req-subscribe-on-project.dto';
+import { ReqUnsubscribeOnProjectDto } from './dto/req-dto/req-unsubscribe-on-project.dto';
+import { ResGetSubsDto } from './dto/res-dto/res-get-subs.dto';
 
 @ApiTags('user-favorite-project')
 @ApiBearerAuth()
@@ -14,26 +14,26 @@ export class UserFavoriteProjectController {
   ) {}
 
   @Post('subscribe-on-project')
-  @ApiBody({ type: SubscribeOnProjectDto })
-  subProject(@Body('data') data: SubscribeOnProjectDto): Promise<void> {
+  @ApiBody({ type: ReqSubscribeOnProjectDto })
+  subProject(@Body('data') data: ReqSubscribeOnProjectDto): Promise<void> {
     return this.userFavorPrjService.subProject(data);
   }
 
   @Get('get-subs-by-user')
-  getSubsByUser(@Param('userId') userId: number): Promise<GetSubsDto[]> {
+  getSubsByUser(@Param('userId') userId: number): Promise<ResGetSubsDto[]> {
     return this.userFavorPrjService.getSubsByUser(userId);
   }
 
   @Get('get-subs-by-project')
   getSubsByProject(
     @Param('projectId') projectId: number,
-  ): Promise<GetSubsDto[]> {
+  ): Promise<ResGetSubsDto[]> {
     return this.userFavorPrjService.getSubsByProject(projectId);
   }
 
   @Delete('unsubscribe-on-project')
-  @ApiBody({ type: UnsubscribeOnProjectDto })
-  unsubProject(@Body('data') data: UnsubscribeOnProjectDto): Promise<void> {
+  @ApiBody({ type: ReqUnsubscribeOnProjectDto })
+  unsubProject(@Body('data') data: ReqUnsubscribeOnProjectDto): Promise<void> {
     return this.userFavorPrjService.unsubProject(data);
   }
 }
