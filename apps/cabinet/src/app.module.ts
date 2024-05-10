@@ -8,6 +8,8 @@ import { EmailControllerModule } from 'apps/cabinet/src/controllers/email/email-
 import { LanguageSchemeControllerModule } from 'apps/cabinet/src/controllers/language-scheme/language-scheme-controller.module';
 import { NotificationControllerModule } from 'apps/cabinet/src/controllers/notification/notification-controller.module';
 import { UserFavoriteProjectControllerModule } from './controllers/user-favorite-project/user-favorite-project-controller.module';
+import { UserFavoriteUserControllerModule } from './controllers/user-favorite-user/user-favorite-user-controller.module';
+import { UserFavoriteEventControllerModule } from './controllers/user-favorite-event/user-favorite-event-controller.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { UserFavoriteProjectControllerModule } from './controllers/user-favorite
     UserControllerModule,
     NotificationControllerModule,
     UserFavoriteProjectControllerModule,
+    UserFavoriteUserControllerModule,
+    UserFavoriteEventControllerModule,
     LanguageSchemeControllerModule,
   ],
   providers: [
