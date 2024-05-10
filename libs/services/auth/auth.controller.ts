@@ -1,5 +1,13 @@
-import { Controller, Post, Body, ValidationPipe, Put } from '@nestjs/common';
-import { ApiTags, ApiBody } from '@nestjs/swagger';
+import {
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  Put,
+  Get,
+  Req,
+} from '@nestjs/common';
+import { ApiTags, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { ReqRefreshDto } from './dto/req-dto/req-refresh.dto';
 import { ReqSignInDto } from './dto/req-dto/req-sign-in.dto';
@@ -12,6 +20,8 @@ import { ReqResetPasswordDto } from 'libs/services/auth/dto/req-dto/req-reset-pa
 import { ResUserDto } from 'apps/cabinet/src/controllers/user/dto/res-user.dto';
 
 @ApiTags('auth')
+@ApiBearerAuth()
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -47,5 +57,10 @@ export class AuthController {
   @ApiBody({ type: ReqResetPasswordDto })
   resetPassword(@Body() data: ReqResetPasswordDto): Promise<ResUserDto> {
     return this.authService.resetPassword(data);
+  }
+
+  @Get('payload')
+  getPayload(@Req() data) {
+    return data['user'];
   }
 }

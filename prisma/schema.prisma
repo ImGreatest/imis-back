@@ -76,7 +76,7 @@ model User {
   groupId Int? @db.Integer()
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime? @db.Timestamp()
+  deletedAt DateTime? @db.Timestamp() 
 
   dogName String @default(dbgenerated("gen_random_uuid()"))
 

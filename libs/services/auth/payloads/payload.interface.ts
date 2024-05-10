@@ -3,6 +3,9 @@ export interface IPayload {
   role: number;
   name: string;
   surname: string;
+  groupId: number,
   course: number;
   direction: number;
+  description: string,
+  
 }

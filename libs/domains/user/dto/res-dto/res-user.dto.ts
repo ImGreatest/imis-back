@@ -7,10 +7,11 @@ export interface IResUser {
   pass: string;
   course?: number;
   direction?: number;
-  group?: number;
+  groupId?: number;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;
+  description?: string;
 }
 
 export interface IResSuccessUser {
