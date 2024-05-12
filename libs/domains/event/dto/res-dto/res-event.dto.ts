@@ -1,4 +1,4 @@
-import { EventStatus } from "@prisma/client";
+import { EventStatus } from '@prisma/client';
 
 export interface IResEventDto {
   id: number;

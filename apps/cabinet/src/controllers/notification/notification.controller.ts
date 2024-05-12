@@ -30,7 +30,6 @@ export class NotificationController {
     private readonly notificationService: NotificationControllerService,
   ) {}
 
-  @Public()
   @Post('create-notice')
   @ApiBody({ type: ReqCreateNoticeDto })
   createNotice(@Body() data: ReqCreateNoticeDto): Promise<ResNoticeDto> {
@@ -55,22 +54,15 @@ export class NotificationController {
     example: 1,
   })
   @ApiQuery({
-    name: 'date',
-    description: 'zerous is **_required_**',
-    required: false,
-    example: new Date().toISOString().slice(0, 10),
-  })
-  @ApiQuery({
     name: 'visible',
     required: false,
     example: true,
   })
   getBySender(
     @Param('id') id: number,
-    @Query('date') date?: string,
     @Query('visible') visible?: boolean,
   ): Promise<ResNoticeDto[]> {
-    return this.notificationService.getBySender(id, date, visible);
+    return this.notificationService.getBySender(id, visible);
   }
 
   @Get('get-by-recipient/:id')
@@ -80,22 +72,15 @@ export class NotificationController {
     example: 1,
   })
   @ApiQuery({
-    name: 'date',
-    description: 'zerous is **_required_**',
-    required: false,
-    example: new Date().toISOString().slice(0, 10),
-  })
-  @ApiQuery({
     name: 'visible',
     required: false,
     example: true,
   })
   getByRecipient(
     @Param('id') id: number,
-    @Query('date') date: string,
     @Query('visible') visible: boolean,
   ): Promise<ResNoticeDto[]> {
-    return this.notificationService.getByRecipient(id, date, visible);
+    return this.notificationService.getByRecipient(id, visible);
   }
 
   @Get('get-by-status/:status')
@@ -106,22 +91,15 @@ export class NotificationController {
     example: NotifacationStatus.unread,
   })
   @ApiQuery({
-    name: 'date',
-    description: 'zeroes is **_required_**',
-    required: false,
-    example: new Date().toISOString().slice(0, 10),
-  })
-  @ApiQuery({
     name: 'visible',
     required: false,
     example: true,
   })
   getByStatus(
     @Param('status') status: NotifacationStatus,
-    @Query('date') date: string,
     @Query('visible') visible: boolean,
   ): Promise<ResNoticeDto[]> {
-    return this.notificationService.getByStatus(status, date, visible);
+    return this.notificationService.getByStatus(status, visible);
   }
 
   @Get('get-by-time/:date')

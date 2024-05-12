@@ -17,28 +17,22 @@ export class NotificationService {
     return this.notificationRep.getCurrent(id);
   }
 
-  async getBySender(
-    id: number,
-    date?: string,
-    visible?: boolean,
-  ): Promise<IResNoticeDto[]> {
-    return this.notificationRep.getBySender(id, date, visible);
+  async getBySender(id: number, visible?: boolean): Promise<IResNoticeDto[]> {
+    return this.notificationRep.getBySender(id, visible);
   }
 
   async getByRecipient(
     id: number,
-    date?: string,
     visible?: boolean,
   ): Promise<IResNoticeDto[]> {
-    return this.notificationRep.getByRecipient(id, date, visible);
+    return this.notificationRep.getByRecipient(id, visible);
   }
 
   async getByStatus(
     status: NotifacationStatus,
-    date?: string,
     visible?: boolean,
   ): Promise<IResNoticeDto[]> {
-    return this.notificationRep.getByStatus(status, date, visible);
+    return this.notificationRep.getByStatus(status, visible);
   }
 
   async getByTime(date: string, visible?: boolean): Promise<IResNoticeDto[]> {

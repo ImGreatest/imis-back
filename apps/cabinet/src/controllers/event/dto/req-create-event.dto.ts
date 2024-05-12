@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsEnum, IsNumber, IsString } from 'class-validator';
-import { EStatusEvent } from '../enums/status-event.enum';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { EventStatus } from '@prisma/client';
 
 export class ReqCreateEventDto {
@@ -9,14 +8,14 @@ export class ReqCreateEventDto {
   name: string;
 
   @ApiProperty({ example: '2024-05-10' })
-  @IsDate()
-  dateStart: Date;
+  @IsString()
+  dateStart: string;
 
   @ApiProperty({ example: '2024-05-11' })
-  @IsDate()
-  dateEnd: Date;
+  @IsString()
+  dateEnd: string;
 
-  @ApiProperty({ example: EStatusEvent.planned })
+  @ApiProperty({ example: EventStatus.planned })
   @IsEnum(EventStatus)
   status: EventStatus;
 

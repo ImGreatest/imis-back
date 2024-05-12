@@ -60,6 +60,7 @@ export class AuthService {
 
     Logger.verbose('Токен обновлен', refresh);
     const perm = this.roleService.getPermisionsByRoleId(user.roleId);
+
     return {
       access,
       refresh,

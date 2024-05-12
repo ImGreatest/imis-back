@@ -10,21 +10,15 @@ export abstract class NotificationRepository {
 
   abstract getCurrent(id: number): Promise<IResNoticeDto>;
 
-  abstract getBySender(
-    id: number,
-    date?: string,
-    visible?: boolean,
-  ): Promise<IResNoticeDto[]>;
+  abstract getBySender(id: number, visible?: boolean): Promise<IResNoticeDto[]>;
 
   abstract getByRecipient(
     id: number,
-    date?: string,
     visible?: boolean,
   ): Promise<IResNoticeDto[]>;
 
   abstract getByStatus(
     status: NotifacationStatus,
-    date?: string,
     visible?: boolean,
   ): Promise<IResNoticeDto[]>;
 

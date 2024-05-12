@@ -19,28 +19,22 @@ export class NotificationMockAdapter extends NotificationRepository {
     throw new Error(`${id}`);
   }
 
-  async getBySender(
-    id: number,
-    date?: string,
-    visible?: boolean,
-  ): Promise<IResNoticeDto[]> {
-    throw new Error(`${id}, ${date}, ${visible}`);
+  async getBySender(id: number, visible?: boolean): Promise<IResNoticeDto[]> {
+    throw new Error(`${id}, ${visible}`);
   }
 
   async getByRecipient(
     id: number,
-    date?: string,
     visible?: boolean,
   ): Promise<IResNoticeDto[]> {
-    throw new Error(`${id}, ${date}, ${visible}`);
+    throw new Error(`${id}, ${visible}`);
   }
 
   async getByStatus(
     status: NotifacationStatus,
-    date?: string,
     visible?: boolean,
   ): Promise<IResNoticeDto[]> {
-    throw new Error(`${status}, ${date}, ${visible}`);
+    throw new Error(`${status}, ${visible}`);
   }
 
   async getByTime(date: string, visible?: boolean): Promise<IResNoticeDto[]> {

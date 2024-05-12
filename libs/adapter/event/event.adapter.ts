@@ -14,7 +14,12 @@ export class EventAdapter extends EventRepository {
   async createEvent(data: IReqCreateEventDto): Promise<void> {
     await this.prisma.event.create({
       data: {
-        ...data,
+        name: data.name,
+        dateStart: new Date(data.dateStart),
+        dateEnd: new Date(data.dateEnd),
+        status: data.status,
+        createrId: data.createrId,
+        confidentPersonId: data.confidentPersonId,
       },
     });
   }
@@ -36,7 +41,14 @@ export class EventAdapter extends EventRepository {
       where: {
         id: id,
       },
-      data: { ...data },
+      data: {
+        name: data.name,
+        dateStart: new Date(data.dateStart),
+        dateEnd: new Date(data.dateEnd),
+        status: data.status,
+        createrId: data.createrId,
+        confidentPersonId: data.confidentPersonId,
+      },
     });
   }
 
