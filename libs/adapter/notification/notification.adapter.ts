@@ -57,15 +57,11 @@ export class NotificationAdapter extends NotificationRepository {
     return notice;
   }
 
-  async getBySender(
-    id: number,
-    date: string,
-    visible: boolean,
-  ): Promise<IResNoticeDto[]> {
-    console.log(id, date, visible);
-    Logger.verbose('getBySender', id, date, visible);
+  async getBySender(id: number, visible: boolean): Promise<IResNoticeDto[]> {
+    console.log(id, visible);
+    Logger.verbose('getBySender', id, visible);
 
-    let notices: IResNoticeDto[] = await this.prisma.notifacation.findMany({
+    const notices: IResNoticeDto[] = await this.prisma.notifacation.findMany({
       where: {
         senderId: id,
         visible: visible,
@@ -76,21 +72,13 @@ export class NotificationAdapter extends NotificationRepository {
       throw new Error('Notices is not found');
     }
 
-    if (date) {
-      notices = this.checkDateTime(notices, date);
-    }
-
     return notices;
   }
 
-  async getByRecipient(
-    id: number,
-    date: string,
-    visible: boolean,
-  ): Promise<IResNoticeDto[]> {
-    Logger.verbose('getByRecipient', id, date, visible);
+  async getByRecipient(id: number, visible: boolean): Promise<IResNoticeDto[]> {
+    Logger.verbose('getByRecipient', id, visible);
 
-    let notices = await this.prisma.notifacation.findMany({
+    const notices = await this.prisma.notifacation.findMany({
       where: {
         recipientId: id,
         visible: visible,
@@ -103,21 +91,16 @@ export class NotificationAdapter extends NotificationRepository {
       });
     }
 
-    if (date) {
-      notices = this.checkDateTime(notices, date);
-    }
-
     return notices;
   }
 
   async getByStatus(
     status: NotifacationStatus,
-    date: string,
     visible: boolean,
   ): Promise<IResNoticeDto[]> {
-    Logger.verbose('getByStatus', status, date, visible);
+    Logger.verbose('getByStatus', status, visible);
 
-    let notices = await this.prisma.notifacation.findMany({
+    const notices = await this.prisma.notifacation.findMany({
       where: {
         status: status,
         visible: visible,
@@ -128,10 +111,6 @@ export class NotificationAdapter extends NotificationRepository {
       throw new BackendExceptions(EErrorCode.NotFound, {
         messageDebug: 'Notices is not found with this status!',
       });
-    }
-
-    if (date) {
-      notices = this.checkDateTime(notices, date);
     }
 
     return notices;
