@@ -46,7 +46,7 @@ export class EventController {
     return this.eventService.updateEvent(id, data);
   }
 
-  @Delete('delete-event')
+  @Delete('delete-event/:id')
   @ApiParam({
     name: 'id',
     required: true,
