@@ -1,39 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'libs/services/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
-import { User } from './user.interface';
+import { IReqCreateUser } from 'libs/domains/user/dto/req-dto/req-create-user.dto';
+import { IReqUpdateUser } from 'libs/domains/user/dto/req-dto/req-update-user.dto';
+import { IResSuccessUser, IResUser } from './dto/res-dto/res-user.dto';
+import { IResGetUserAndCountDto } from './dto/res-dto/res-get-user-and-count.dto';
+import { UserRepository } from './repositories/user.repository';
+
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly userRep: UserRepository) {}
 
-  async createUser(user: Prisma.UserCreateInput) {
-    return this.prisma.user.create({
-      data: user,
-    });
+  async createUser(user: IReqCreateUser): Promise<IResUser> {
+    return this.userRep.createUser(user);
   }
 
-  async findAndCount() {
-    const users = await this.prisma.user.findMany();
-    const totalCount = await this.prisma.user.count();
-
-    const resListDto = {
-      rows: users,
-      count: totalCount,
-    };
-
-    return resListDto;
+  async getUserAndCount(): Promise<IResGetUserAndCountDto> {
+    return this.userRep.getUserAndCount();
   }
 
-  async findOneByEmail(mail: string) {
-    return this.prisma.user.findFirst({ where: { email: mail } });
+  async getUserByEmail(email: string): Promise<IResUser> {
+    return this.userRep.getUserByEmail(email);
   }
-  async findOneById(id: number) {
-    return this.prisma.user.findFirst({ where: { id } });
+  getStudents(): Promise<IResSuccessUser[]> {
+    return this.userRep.getStudents();
   }
-  async updateUser(id: number, user: User) {
-    return await this.prisma.user.update({
-      where: { id: id },
-      data: user,
-    });
+
+  async getUserById(id: number): Promise<IResUser> {
+    return this.userRep.getUserById(id);
+  }
+
+  async getUsers(): Promise<IResUser[]> {
+    return this.userRep.getUsers();
+  }
+
+  async getUserRoleId(id: number): Promise<number> {
+    return this.userRep.getUserRoleId(id);
+  }
+
+  async updateUser(id: number, user: IReqUpdateUser): Promise<IResUser> {
+    return this.userRep.updateUser(id, user);
+  }
+
+  async deleteUser(id: number): Promise<IResUser> {
+    return this.userRep.deleteUser(id);
   }
 }

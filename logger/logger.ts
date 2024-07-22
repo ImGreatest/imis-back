@@ -7,7 +7,7 @@ export const winstonModuleOptions = (filename: string) => ({
       format: winston.format.combine(
         winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss.SSS' }),
         winston.format.ms(),
-        utilities.format.nestLike('example-app-name', {
+        utilities.format.nestLike(`${filename}-name`, {
           prettyPrint: true,
           colors: true,
         }),
@@ -17,6 +17,8 @@ export const winstonModuleOptions = (filename: string) => ({
     new winston.transports.File({
       dirname: 'logs',
       filename: `${filename}.log`,
+      zippedArchive: true,
+      maxsize: 200,
       format: winston.format.combine(
         winston.format.timestamp(),
         winston.format.logstash(),

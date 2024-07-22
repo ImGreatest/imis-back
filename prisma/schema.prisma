@@ -10,154 +10,371 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  student
-  teacher
-  supervisor
+model UserRole {
+  id         Int       @unique @default(autoincrement())
+  name       String   @unique @db.VarChar()
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
+
+  Permission Permission[]
+  User       User[]
+
+  @@map("roles")
+}
+model Permission {
+  id         Int     @unique @default(autoincrement())
+  role       UserRole    @relation(fields: [roleId], references: [id])
+  roleId    Int     @db.Integer()
+  action     String  @db.VarChar()
+  subject    String  @db.VarChar()
+  inverted   Boolean @default(false)
+  conditions Json?   @db.JsonB()
+  reason     String? @db.Text()
+
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt()
+  deleted_at DateTime? @db.Timestamp()
+
+
+  @@map("permissions")
 }
 
+model RefreshToken{
+  token String
+  deviceId String
+  user User @relation(fields: [userId], references: [id])
+  userId Int @db.Integer()
+  created_at DateTime  @default(now())
+  expieres_at DateTime
+  @@id([token,deviceId])
+}
+model Group{
+  id    Int     @default(autoincrement()) @id
+  name String @unique @db.VarChar(50)
+  students User[]
+}
+
+model Direction{
+  id    Int     @default(autoincrement()) @id
+  name String @unique @db.VarChar(50)
+  students User[]
+}
 model User {
   id    Int     @default(autoincrement()) @id
-  email String  @unique
-  name  String
-  surname String
-  role UserRole
-  pass String
-  course Int?
-  direction String?
-  group String?
+  email String  @unique @db.VarChar()
+  description String @db.Text @default("")
+  name  String @db.VarChar(100)
+  surname String @db.VarChar(100)
+  role    UserRole @relation(fields: [roleId], references: [id])
+  roleId Int  @db.Integer()
+  pass String @db.VarChar()
+  course Int? @db.Integer()
+  direction    Direction? @relation(fields: [directionId], references: [id])
+  directionId Int? @db.Integer()
+  group    Group? @relation(fields: [groupId], references: [id])
+  groupId Int? @db.Integer()
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp() 
 
+  dogName String @default(dbgenerated("gen_random_uuid()"))
+
+  links Links[]
+
+  refreshToken RefreshToken[]
+  
   userSkils UserSkills[]
+  
   projects UserProject[]
-  success Success[]
-  favoritProject UserFavoritProject[]
+  createdProjects Project[]
+  favoriteProject UserFavoriteProject[]
+  
+  successStudent Success[] @relation("success-student")
+  successCreate Success[] @relation("success-creater")
+  
+  eventCreate Event[] @relation("event-creater")
+  eventConfident Event[] @relation("event-confident")
+  events GuestEvent[]
+  favoriteEvents FavoriteEvent[]
+
   company Company?
+
+  themes Theme[]
+
+  ratings Rating[]
+
+  score Score[]
+
+  sendedNotifications Notifacation[] @relation("sender")
+  getNotifications Notifacation[] @relation("recipient")
+
+  inFavotite FavoriteUser[] @relation("favoriteUser")
+  userFavorite FavoriteUser[] @relation("ownerUser")
+}
+enum LinkType{
+  phone
+  social
+  mail
+  url
+}
+model Links {
+  id    Int     @default(autoincrement()) @id
+  
+  user User? @relation(fields: [userId], references: [id],onDelete: Cascade)
+  userId Int?
+  
+  project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int?
+  
+  company Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId Int?
+  
+  event Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId Int?
+
+  linkType LinkType
+
+  link String
 }
 
+enum NotifacationStatus{
+  read
+  unread
+}
+model Notifacation{
+  id    Int     @default(autoincrement()) @id
+  sender User @relation(fields: [senderId], references: [id], name: "sender")
+  senderId Int @db.Integer()
+  recipient User @relation(fields: [recipientId], references: [id], name: "recipient")
+  recipientId Int @db.Integer()
+  status NotifacationStatus
+  dateTimeSent DateTime   @default(now())
+  visible Boolean @default(true)
+}
+model FavoriteUser{
+  favorite User @relation(fields: [favoriteId], references: [id], name: "favoriteUser")
+  favoriteId Int @db.Integer()
+  owner User @relation(fields: [ownerId], references: [id], name: "ownerUser")
+  ownerId Int @db.Integer()
+  @@id([favoriteId,ownerId])
+}
+
+enum RatingScoringType{
+  average
+  maximum
+  sum
+  mediana
+}
+model Rating{
+  id    Int     @default(autoincrement()) @id
+  name String @db.VarChar() @unique
+  minuteUpdate Int @db.Integer() @default(0)
+  creater User @relation(fields: [createrId], references: [id])
+  createrId Int @db.Integer()
+  scoringType RatingScoringType @default(average)
+  default Boolean @default(false)
+  score Score[]
+  ratingScope RatingScope[]
+  
+}
+model RatingScope{
+  rating Rating @relation(fields: [ratingId], references: [id], onDelete: Cascade)
+  ratingId Int @db.Integer()
+  tag Tag @relation(fields: [tagId], references: [id],onDelete: Cascade)
+  tagId Int @db.Integer()
+  ratingScore Int @db.Integer
+  @@id([ratingId,tagId])
+
+}
+model Score{
+  rating Rating @relation(fields: [ratingId], references: [id], onDelete: Cascade)
+  ratingId Int @db.Integer()
+  student User @relation(fields: [studentId],references: [id],onDelete: Cascade)
+  studentId Int @db.Integer
+  ratingScore Int @db.Integer
+  @@id([ratingId,studentId])
+
+}
 model Company {
   id    Int     @default(autoincrement()) @id
-  name String @unique
-  description String
+  name String @unique @db.VarChar()
+  description String @db.VarChar()
+  adress String
+
+  limks Links[]
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
 
   spokesPerson User @relation(fields: [spokesPersonId], references: [id])
-  spokesPersonId Int @unique
+  spokesPersonId Int @unique @db.Integer()
 
   themes Theme[]
 }
 
 model Theme {
   id Int @default(autoincrement()) @id
-  name String @unique
-  descripton String
+  name String @unique @db.VarChar()
+  description String @db.VarChar()
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
   company Company? @relation(fields: [companyId], references: [id])
-  companyId Int?
+  companyId Int? @db.Integer()
+  student User? @relation(fields: [studentId],references: [id])
+  studentId Int? @db.Integer()
 }
 
 model Project {
   id Int @default(autoincrement()) @id
-  name String @unique
+  name String @unique @db.VarChar()
   
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
-  
-  descripton String
-
+  deletedAt DateTime? @db.Timestamp()
+  status String @db.VarChar()
+  descripton String @db.VarChar()
+  creater User @relation(fields: [createrId],references: [id])
+  createrId Int @db.Integer
+  links Links[]
   projectSkils ProjectSkils[]
-  users UserProject[]
-  usersWithFavor UserFavoritProject[]
+  students UserProject[]
+  usersWithFavor UserFavoriteProject[]
 
 }
-
+model SkillType {
+  id Int @default(autoincrement()) @id
+  name String @unique @db.VarChar()
+  skills Skills[]
+}
 model Skills {
   id Int @default(autoincrement()) @id
-  name String @unique
+  name String @unique @db.VarChar()
 
-  createdAt  DateTime   @default(now())
-  updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  skillType SkillType @relation(fields: [skillTypeId], references: [id], onDelete: Cascade)
+  skillTypeId Int
 
   projectSkils ProjectSkils[]
   userSkils UserSkills[]
 }
 
 model ProjectSkils{
-  project Project @relation(fields: [projectId], references: [id])
-  projectId Int
-  skils Skills @relation(fields: [skilsId], references: [id])
-  skilsId Int
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int @db.Integer()
+  skils Skills @relation(fields: [skilsId], references: [id], onDelete: Cascade)
+  skilsId Int @db.Integer()
   @@id([projectId,skilsId])
 }
 
 model UserSkills{
-  user User @relation(fields: [userId], references: [id])
-  userId Int
-  skils Skills @relation(fields: [skilsId], references: [id])
-  skilsId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int @db.Integer()
+  skils Skills @relation(fields: [skilsId], references: [id], onDelete: Cascade)
+  skilsId Int @db.Integer()
   @@id([userId,skilsId])
 }
 
 model UserProject{
   user User @relation(fields: [userId], references: [id])
-  userId Int
+  userId Int @db.Integer()
   project Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  projectId Int @db.Integer()
   @@id([userId,projectId])
 
 }
-model UserFavoritProject{
+model UserFavoriteProject{
   user User @relation(fields: [userId], references: [id])
-  userId Int
+  userId Int @db.Integer()
   project Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  projectId Int @db.Integer()
   @@id([userId,projectId])
 }
 model Success{
   id Int @default(autoincrement()) @id
-  name String @unique
-  description String
+  name String @db.VarChar()
+  description String @db.VarChar()
   
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
   
-  user User @relation(fields: [userId],references: [id])
-  userId Int
-
+  student User @relation(fields: [studentId],references: [id],name: "success-student")
+  studentId Int @db.Integer()
+  
+  creater User @relation(fields: [createrId],references: [id],name:"success-creater")
+  createrId Int @db.Integer()
+  
   tags SuccessTags[]
 }
 
 model Tag{
   id Int @id @default(autoincrement())
-  name String @unique
-  description String
-  baseTag Tag? @relation("BaseTag", fields: [baseTagId], references: [id])
-  baseTagId Int?
+  name String @unique @db.VarChar()
+  description String @db.VarChar()
+  baseTag Tag? @relation("BaseTag", fields: [baseTagId], references: [id], onDelete: Cascade)
+  baseTagId Int? @db.Integer()
   childTags Tag[] @relation("BaseTag")
 
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  deletedAt DateTime?
+  deletedAt DateTime? @db.Timestamp()
   
   success SuccessTags[]
+
+  ratingScope RatingScope[]
 
 }
 
 model SuccessTags{
   success Success @relation(fields: [successId], references: [id])
-  successId Int
+  successId Int @db.Integer()
   tag Tag @relation(fields: [tagId], references: [id])
-  tagId Int
+  tagId Int @db.Integer()
   @@id([successId,tagId])
 
+}
+
+enum EventStatus {
+  planned 
+  confirmed 
+  canceled
+  completed 
+  rescheduled
+  }
+model Event{
+  id Int @id @default(autoincrement())
+  name String @db.VarChar()
+  dateStart DateTime
+  dateEnd DateTime
+  status EventStatus
+  creater User @relation(fields: [createrId],references: [id],name:"event-creater")
+  createrId Int @db.Integer()
+
+  confidentPerson User @relation(fields: [confidentPersonId],references: [id],name:"event-confident")
+  confidentPersonId Int @db.Integer()
+
+  links Links[]
+
+  guests GuestEvent[]
+
+  userWithFavorite FavoriteEvent[]
+
+}
+
+model GuestEvent{
+  guest User @relation(fields: [guestId],references: [id],onDelete: Cascade)
+  guestId Int
+  event Event @relation(fields: [eventId],references: [id],onDelete: Cascade)
+  eventId Int
+  @@id([guestId,eventId])
+}
+
+model FavoriteEvent{
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+  userId Int
+  event Event @relation(fields: [eventId],references: [id],onDelete: Cascade)
+  eventId Int
+  @@id([userId,eventId])
 }

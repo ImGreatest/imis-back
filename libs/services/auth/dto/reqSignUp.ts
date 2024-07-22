@@ -1,17 +1,13 @@
 // user.dto.ts
 
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsString,
-  MinLength,
-} from 'class-validator';
-import { UserRole } from 'libs/enums/role'; // Import the UserRole enum
-import { IsignUp } from '../interface/signUp';
+import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { ISignUpDto } from 'libs/services/auth/interface/signUp.interface';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class signUpDto implements IsignUp {
+export class signUpDto implements ISignUpDto {
+  @IsNotEmpty({ message: 'roleId is required' })
+  @ApiProperty({ example: 1 })
+  roleId: number;
   @IsEmail({}, { message: 'Please enter a valid email address' })
   @IsNotEmpty({ message: 'Email is required' })
   @ApiProperty({ example: 'examleple@mail.ru' })
@@ -26,11 +22,6 @@ export class signUpDto implements IsignUp {
   @IsNotEmpty({ message: 'Surname is required' })
   @ApiProperty({ example: 'Ivanov' })
   surname: string;
-
-  @IsEnum(UserRole, { message: 'Invalid role' })
-  @IsNotEmpty({ message: 'Role is required' })
-  @ApiProperty({ enum: UserRole, enumName: 'UserRole' })
-  role: UserRole;
 
   @IsString({ message: 'Password must be a string' })
   @IsNotEmpty({ message: 'Password is required' })
